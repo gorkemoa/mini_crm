@@ -204,5 +204,13 @@
   "errorReminderAdd": "افزودن یادآوری ممکن نشد.",
   "errorExportFailed": "صدور داده‌ها شکست خورد.",
   "errorFileRead": "خواندن فایل ممکن نشد.",
-  "errorImportFailed": "ورود داده‌ها شکست خورد."
+  "errorImportFailed": "ورود داده‌ها شکست خورد.",
+
+  "validationRequired": "این فیلد الزامی است.",
+  "validationEmail": "یک آدرس ایمیل معتبر وارد کنید.",
+  "validationPhone": "یک شماره تلفن معتبر وارد کنید.",
+  "validationAmountRequired": "مبلغ الزامی است.",
+  "validationAmountInvalid": "یک مبلغ معتبر وارد کنید.",
+  "validationAmountPositive": "مبلغ باید بیشتر از 0 باشد.",
+  "validationSelectClient": "لطفاً یک مشتری انتخاب کنید."
 }

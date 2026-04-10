@@ -204,5 +204,13 @@
   "errorReminderAdd": "リマインダーを追加できませんでした。",
   "errorExportFailed": "エクスポートに失敗しました。",
   "errorFileRead": "ファイルを読み込めませんでした。",
-  "errorImportFailed": "インポートに失敗しました。"
+  "errorImportFailed": "インポートに失敗しました。",
+
+  "validationRequired": "このフィールドは必須です。",
+  "validationEmail": "有効なメールアドレスを入力してください。",
+  "validationPhone": "有効な電話番号を入力してください。",
+  "validationAmountRequired": "金額は必須です。",
+  "validationAmountInvalid": "有効な金額を入力してください。",
+  "validationAmountPositive": "金額は0より大きくなければなりません。",
+  "validationSelectClient": "クライアントを選択してください。"
 }

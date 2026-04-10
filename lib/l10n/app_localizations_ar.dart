@@ -579,4 +579,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorImportFailed => 'فشل الاستيراد.';
+
+  @override
+  String get validationRequired => 'هذا الحقل مطلوب.';
+
+  @override
+  String get validationEmail => 'أدخل بريدًا إلكترونيًا صحيحًا.';
+
+  @override
+  String get validationPhone => 'أدخل رقم هاتف صحيحًا.';
+
+  @override
+  String get validationAmountRequired => 'المبلغ مطلوب.';
+
+  @override
+  String get validationAmountInvalid => 'أدخل مبلغًا صحيحًا.';
+
+  @override
+  String get validationAmountPositive => 'يجب أن يكون المبلغ أكبر من 0.';
+
+  @override
+  String get validationSelectClient => 'الرجاء تحديد عميل.';
 }

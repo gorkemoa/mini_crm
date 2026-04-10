@@ -22,7 +22,7 @@ class ProjectsViewModel extends BaseViewModel {
       _all = await _repo.getAll();
       _applyFilter();
     } catch (e) {
-      setError('Projeler yüklenemedi.');
+      setError('errorProjectsLoad');
     } finally {
       setLoading(false);
     }
@@ -50,7 +50,7 @@ class ProjectsViewModel extends BaseViewModel {
       _all.removeWhere((p) => p.id == id);
       _applyFilter();
     } catch (e) {
-      setError('Proje silinemedi.');
+      setError('errorProjectDelete');
     }
   }
 }

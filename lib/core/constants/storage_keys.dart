@@ -3,4 +3,5 @@ abstract class StorageKeys {
   static const String lastExportDate = 'last_export_date';
   static const String onboardingDone = 'onboarding_done';
   static const String themeMode = 'theme_mode';
+  static const String locale = 'app_locale';
 }

@@ -204,5 +204,13 @@
   "errorReminderAdd": "Não foi possível adicionar o lembrete.",
   "errorExportFailed": "Falha na exportação.",
   "errorFileRead": "Não foi possível ler o arquivo.",
-  "errorImportFailed": "Falha na importação."
+  "errorImportFailed": "Falha na importação.",
+
+  "validationRequired": "Este campo é obrigatório.",
+  "validationEmail": "Insira um endereço de e-mail válido.",
+  "validationPhone": "Insira um número de telefone válido.",
+  "validationAmountRequired": "O valor é obrigatório.",
+  "validationAmountInvalid": "Insira um valor válido.",
+  "validationAmountPositive": "O valor deve ser maior que 0.",
+  "validationSelectClient": "Por favor, selecione um cliente."
 }

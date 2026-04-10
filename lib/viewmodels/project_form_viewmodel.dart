@@ -53,14 +53,14 @@ class ProjectFormViewModel extends BaseViewModel {
         selectedClientId = preselectedClientId;
       }
     } catch (e) {
-      setError('Form verileri yüklenemedi.');
+      setError('errorFormDataLoad');
     } finally {
       setLoading(false);
     }
   }
 
   String? validateClient() =>
-      selectedClientId == null ? 'Müşteri seçiniz.' : null;
+      selectedClientId == null ? 'validationSelectClient' : null;
   String? validateTitle() => Validators.required(title, fieldName: 'Başlık');
 
   bool validate() =>
@@ -94,7 +94,7 @@ class ProjectFormViewModel extends BaseViewModel {
       _saved = true;
       notifyListeners();
     } catch (e) {
-      setError('Proje kaydedilemedi.');
+      setError('errorProjectSave');
     } finally {
       setLoading(false);
     }

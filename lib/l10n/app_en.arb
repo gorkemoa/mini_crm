@@ -204,5 +204,13 @@
   "errorReminderAdd": "Reminder could not be added.",
   "errorExportFailed": "Export failed.",
   "errorFileRead": "File could not be read.",
-  "errorImportFailed": "Import failed."
+  "errorImportFailed": "Import failed.",
+
+  "validationRequired": "This field is required.",
+  "validationEmail": "Enter a valid email address.",
+  "validationPhone": "Enter a valid phone number.",
+  "validationAmountRequired": "Amount is required.",
+  "validationAmountInvalid": "Enter a valid amount.",
+  "validationAmountPositive": "Amount must be greater than 0.",
+  "validationSelectClient": "Please select a client."
 }

@@ -204,5 +204,13 @@
   "errorReminderAdd": "अनुस्मारक जोड़ा नहीं जा सका।",
   "errorExportFailed": "निर्यात विफल हुआ।",
   "errorFileRead": "फ़ाइल पढ़ी नहीं जा सकी।",
-  "errorImportFailed": "आयात विफल हुआ।"
+  "errorImportFailed": "आयात विफल रहा।",
+
+  "validationRequired": "यह फ़ील्ड आवश्यक है।",
+  "validationEmail": "एक वैध ईमेल पता दर्ज करें।",
+  "validationPhone": "एक वैध फ़ोन नंबर दर्ज करें।",
+  "validationAmountRequired": "राशि आवश्यक है।",
+  "validationAmountInvalid": "एक वैध राशि दर्ज करें।",
+  "validationAmountPositive": "राशि 0 से अधिक होनी चाहिए।",
+  "validationSelectClient": "कृपया एक ग्राहक चुनें।"
 }

@@ -579,4 +579,25 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get errorImportFailed => 'আমদানি ব্যর্থ হয়েছে।';
+
+  @override
+  String get validationRequired => 'এই ক্ষেত্রটি আবশ্যক।';
+
+  @override
+  String get validationEmail => 'একটি বৈধ ইমেল ঠিকানা লিখুন।';
+
+  @override
+  String get validationPhone => 'একটি বৈধ ফোন নম্বর লিখুন।';
+
+  @override
+  String get validationAmountRequired => 'পরিমাণ আবশ্যক।';
+
+  @override
+  String get validationAmountInvalid => 'একটি বৈধ পরিমাণ লিখুন।';
+
+  @override
+  String get validationAmountPositive => 'পরিমাণ ০-এর চেয়ে বেশি হতে হবে।';
+
+  @override
+  String get validationSelectClient => 'একটি ক্লায়েন্ট নির্বাচন করুন।';
 }

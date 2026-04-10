@@ -580,4 +580,25 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get errorImportFailed => 'Impor gagal.';
+
+  @override
+  String get validationRequired => 'Kolom ini wajib diisi.';
+
+  @override
+  String get validationEmail => 'Masukkan alamat email yang valid.';
+
+  @override
+  String get validationPhone => 'Masukkan nomor telepon yang valid.';
+
+  @override
+  String get validationAmountRequired => 'Jumlah wajib diisi.';
+
+  @override
+  String get validationAmountInvalid => 'Masukkan jumlah yang valid.';
+
+  @override
+  String get validationAmountPositive => 'Jumlah harus lebih dari 0.';
+
+  @override
+  String get validationSelectClient => 'Silakan pilih klien.';
 }

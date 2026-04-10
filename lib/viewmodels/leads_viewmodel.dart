@@ -22,7 +22,7 @@ class LeadsViewModel extends BaseViewModel {
       _all = await _repo.getAll();
       _applyFilter();
     } catch (e) {
-      setError('Leadler yüklenemedi.');
+      setError('errorLeadsLoad');
     } finally {
       setLoading(false);
     }
@@ -50,7 +50,7 @@ class LeadsViewModel extends BaseViewModel {
       _all.removeWhere((l) => l.id == id);
       _applyFilter();
     } catch (e) {
-      setError('Lead silinemedi.');
+      setError('errorLeadDelete');
     }
   }
 }

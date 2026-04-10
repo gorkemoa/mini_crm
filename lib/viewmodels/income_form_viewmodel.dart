@@ -45,7 +45,7 @@ class IncomeFormViewModel extends BaseViewModel {
         note = editIncome.note ?? '';
       }
     } catch (e) {
-      setError('Form verileri yüklenemedi.');
+      setError('errorFormDataLoad');
     } finally {
       setLoading(false);
     }
@@ -81,7 +81,7 @@ class IncomeFormViewModel extends BaseViewModel {
       _saved = true;
       notifyListeners();
     } catch (e) {
-      setError('Gelir kaydedilemedi.');
+      setError('errorIncomeSave');
     } finally {
       setLoading(false);
     }

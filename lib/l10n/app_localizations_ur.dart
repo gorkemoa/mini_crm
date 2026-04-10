@@ -579,4 +579,25 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get errorImportFailed => 'درآمد ناکام ہو گئی۔';
+
+  @override
+  String get validationRequired => 'یہ فیلڈ ضروری ہے۔';
+
+  @override
+  String get validationEmail => 'ایک درست ای میل پتہ درج کریں۔';
+
+  @override
+  String get validationPhone => 'ایک درست فون نمبر درج کریں۔';
+
+  @override
+  String get validationAmountRequired => 'رقم ضروری ہے۔';
+
+  @override
+  String get validationAmountInvalid => 'ایک درست رقم درج کریں۔';
+
+  @override
+  String get validationAmountPositive => 'رقم 0 سے زیادہ ہونی چاہیے۔';
+
+  @override
+  String get validationSelectClient => 'براہ کرم ایک کلائنٹ منتخب کریں۔';
 }

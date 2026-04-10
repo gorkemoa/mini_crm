@@ -49,14 +49,14 @@ class DebtFormViewModel extends BaseViewModel {
         selectedClientId = preselectedClientId;
       }
     } catch (e) {
-      setError('Form verileri yüklenemedi.');
+      setError('errorFormDataLoad');
     } finally {
       setLoading(false);
     }
   }
 
   String? validateClient() =>
-      selectedClientId == null ? 'Müşteri seçiniz.' : null;
+      selectedClientId == null ? 'validationSelectClient' : null;
   String? validateTitle() => Validators.required(title, fieldName: 'Başlık');
   String? validateAmount() => Validators.amount(amount);
 
@@ -91,7 +91,7 @@ class DebtFormViewModel extends BaseViewModel {
       _saved = true;
       notifyListeners();
     } catch (e) {
-      setError('Alacak kaydedilemedi.');
+      setError('errorDebtSave');
     } finally {
       setLoading(false);
     }

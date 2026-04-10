@@ -29,7 +29,7 @@ class DebtsViewModel extends BaseViewModel {
       _totalPending = results[1] as double;
       _applyFilter();
     } catch (e) {
-      setError('Alacaklar yüklenemedi.');
+      setError('errorDebtsLoad');
     } finally {
       setLoading(false);
     }
@@ -63,7 +63,7 @@ class DebtsViewModel extends BaseViewModel {
           .fold(0, (sum, d) => sum + d.amount);
       _applyFilter();
     } catch (e) {
-      setError('Alacak silinemedi.');
+      setError('errorDebtDelete');
     }
   }
 }

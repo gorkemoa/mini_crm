@@ -204,5 +204,13 @@
   "errorReminderAdd": "ไม่สามารถเพิ่มการแจ้งเตือนได้",
   "errorExportFailed": "การส่งออกล้มเหลว",
   "errorFileRead": "ไม่สามารถอ่านไฟล์ได้",
-  "errorImportFailed": "การนำเข้าล้มเหลว"
+  "errorImportFailed": "การนำเข้าล้มเหลว",
+
+  "validationRequired": "ช่องนี้จำเป็นต้องกรอก",
+  "validationEmail": "กรุณาใส่ที่อยู่อีเมลที่ถูกต้อง",
+  "validationPhone": "กรุณาใส่หมายเลขโทรศัพท์ที่ถูกต้อง",
+  "validationAmountRequired": "กรุณาใส่จำนวนเงิน",
+  "validationAmountInvalid": "กรุณาใส่จำนวนเงินที่ถูกต้อง",
+  "validationAmountPositive": "จำนวนเงินต้องมากกว่า 0",
+  "validationSelectClient": "กรุณาเลือกลูกค้า"
 }

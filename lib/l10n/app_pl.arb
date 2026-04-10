@@ -204,5 +204,13 @@
   "errorReminderAdd": "Nie udało się dodać przypomnienia.",
   "errorExportFailed": "Eksport nie powiódł się.",
   "errorFileRead": "Nie udało się odczytać pliku.",
-  "errorImportFailed": "Import nie powiódł się."
+  "errorImportFailed": "Import nie powiódł się.",
+
+  "validationRequired": "To pole jest wymagane.",
+  "validationEmail": "Wprowadź prawidłowy adres e-mail.",
+  "validationPhone": "Wprowadź prawidłowy numer telefonu.",
+  "validationAmountRequired": "Kwota jest wymagana.",
+  "validationAmountInvalid": "Wprowadź prawidłową kwotę.",
+  "validationAmountPositive": "Kwota musi być większa niż 0.",
+  "validationSelectClient": "Proszę wybrać klienta."
 }

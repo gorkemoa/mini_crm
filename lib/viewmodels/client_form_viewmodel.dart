@@ -69,7 +69,7 @@ class ClientFormViewModel extends BaseViewModel {
       _saved = true;
       notifyListeners();
     } catch (e) {
-      setError('Müşteri kaydedilemedi.');
+      setError('errorClientSave');
     } finally {
       setLoading(false);
     }

@@ -69,7 +69,7 @@ class LeadFormViewModel extends BaseViewModel {
       _saved = true;
       notifyListeners();
     } catch (e) {
-      setError('Lead kaydedilemedi.');
+      setError('errorLeadSave');
     } finally {
       setLoading(false);
     }

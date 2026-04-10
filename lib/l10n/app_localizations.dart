@@ -1273,6 +1273,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Import failed.'**
   String get errorImportFailed;
+
+  /// No description provided for @validationRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required.'**
+  String get validationRequired;
+
+  /// No description provided for @validationEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address.'**
+  String get validationEmail;
+
+  /// No description provided for @validationPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid phone number.'**
+  String get validationPhone;
+
+  /// No description provided for @validationAmountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount is required.'**
+  String get validationAmountRequired;
+
+  /// No description provided for @validationAmountInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid amount.'**
+  String get validationAmountInvalid;
+
+  /// No description provided for @validationAmountPositive.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount must be greater than 0.'**
+  String get validationAmountPositive;
+
+  /// No description provided for @validationSelectClient.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a client.'**
+  String get validationSelectClient;
 }
 
 class _AppLocalizationsDelegate

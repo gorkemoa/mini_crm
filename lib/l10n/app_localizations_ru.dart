@@ -580,4 +580,26 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorImportFailed => 'Ошибка импорта.';
+
+  @override
+  String get validationRequired => 'Это поле обязательно для заполнения.';
+
+  @override
+  String get validationEmail =>
+      'Введите действительный адрес электронной почты.';
+
+  @override
+  String get validationPhone => 'Введите действительный номер телефона.';
+
+  @override
+  String get validationAmountRequired => 'Сумма обязательна.';
+
+  @override
+  String get validationAmountInvalid => 'Введите допустимую сумму.';
+
+  @override
+  String get validationAmountPositive => 'Сумма должна быть больше 0.';
+
+  @override
+  String get validationSelectClient => 'Пожалуйста, выберите клиента.';
 }

@@ -24,7 +24,7 @@ class RemindersViewModel extends BaseViewModel {
       _all = await _repo.getAll();
       _applyFilter();
     } catch (e) {
-      setError('Hatırlatıcılar yüklenemedi.');
+      setError('errorRemindersLoad');
     } finally {
       setLoading(false);
     }
@@ -75,7 +75,7 @@ class RemindersViewModel extends BaseViewModel {
       }
       _applyFilter();
     } catch (e) {
-      setError('Durum güncellenemedi.');
+      setError('errorStatusUpdate');
     }
   }
 
@@ -85,7 +85,7 @@ class RemindersViewModel extends BaseViewModel {
       _all.removeWhere((r) => r.id == id);
       _applyFilter();
     } catch (e) {
-      setError('Hatırlatıcı silinemedi.');
+      setError('errorReminderDelete');
     }
   }
 
@@ -113,7 +113,7 @@ class RemindersViewModel extends BaseViewModel {
       _all.insert(0, created);
       _applyFilter();
     } catch (e) {
-      setError('Hatırlatıcı eklenemedi.');
+      setError('errorReminderAdd');
     }
   }
 }

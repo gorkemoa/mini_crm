@@ -577,4 +577,25 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get errorImportFailed => '导入失败。';
+
+  @override
+  String get validationRequired => '此字段是必填项。';
+
+  @override
+  String get validationEmail => '请输入有效的电子邮件地址。';
+
+  @override
+  String get validationPhone => '请输入有效的电话号码。';
+
+  @override
+  String get validationAmountRequired => '金额为必填项。';
+
+  @override
+  String get validationAmountInvalid => '请输入有效金额。';
+
+  @override
+  String get validationAmountPositive => '金额必须大于0。';
+
+  @override
+  String get validationSelectClient => '请选择一个客户。';
 }

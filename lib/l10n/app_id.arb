@@ -204,5 +204,13 @@
   "errorReminderAdd": "Pengingat tidak dapat ditambahkan.",
   "errorExportFailed": "Ekspor gagal.",
   "errorFileRead": "File tidak dapat dibaca.",
-  "errorImportFailed": "Impor gagal."
+  "errorImportFailed": "Impor gagal.",
+
+  "validationRequired": "Kolom ini wajib diisi.",
+  "validationEmail": "Masukkan alamat email yang valid.",
+  "validationPhone": "Masukkan nomor telepon yang valid.",
+  "validationAmountRequired": "Jumlah wajib diisi.",
+  "validationAmountInvalid": "Masukkan jumlah yang valid.",
+  "validationAmountPositive": "Jumlah harus lebih dari 0.",
+  "validationSelectClient": "Silakan pilih klien."
 }

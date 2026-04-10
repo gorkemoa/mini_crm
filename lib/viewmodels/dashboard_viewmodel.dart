@@ -65,7 +65,7 @@ class DashboardViewModel extends BaseViewModel {
           .take(3)
           .toList();
     } catch (e) {
-      setError('Veriler yüklenemedi.');
+      setError('errorDataLoad');
     } finally {
       setLoading(false);
     }

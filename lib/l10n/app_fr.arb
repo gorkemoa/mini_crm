@@ -204,5 +204,13 @@
   "errorReminderAdd": "Impossible d'ajouter le rappel.",
   "errorExportFailed": "Échec de l'exportation.",
   "errorFileRead": "Impossible de lire le fichier.",
-  "errorImportFailed": "Échec de l'importation."
+  "errorImportFailed": "Échec de l'importation.",
+
+  "validationRequired": "Ce champ est obligatoire.",
+  "validationEmail": "Saisissez une adresse e-mail valide.",
+  "validationPhone": "Saisissez un numéro de téléphone valide.",
+  "validationAmountRequired": "Le montant est obligatoire.",
+  "validationAmountInvalid": "Saisissez un montant valide.",
+  "validationAmountPositive": "Le montant doit être supérieur à 0.",
+  "validationSelectClient": "Veuillez sélectionner un client."
 }

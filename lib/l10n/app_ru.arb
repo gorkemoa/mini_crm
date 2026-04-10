@@ -204,5 +204,13 @@
   "errorReminderAdd": "Не удалось добавить напоминание.",
   "errorExportFailed": "Ошибка экспорта.",
   "errorFileRead": "Не удалось прочитать файл.",
-  "errorImportFailed": "Ошибка импорта."
+  "errorImportFailed": "Ошибка импорта.",
+
+  "validationRequired": "Это поле обязательно для заполнения.",
+  "validationEmail": "Введите действительный адрес электронной почты.",
+  "validationPhone": "Введите действительный номер телефона.",
+  "validationAmountRequired": "Сумма обязательна.",
+  "validationAmountInvalid": "Введите допустимую сумму.",
+  "validationAmountPositive": "Сумма должна быть больше 0.",
+  "validationSelectClient": "Пожалуйста, выберите клиента."
 }

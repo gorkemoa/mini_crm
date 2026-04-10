@@ -204,5 +204,13 @@
   "errorReminderAdd": "تعذر إضافة التذكير.",
   "errorExportFailed": "فشل التصدير.",
   "errorFileRead": "تعذر قراءة الملف.",
-  "errorImportFailed": "فشل الاستيراد."
+  "errorImportFailed": "فشل الاستيراد.",
+
+  "validationRequired": "هذا الحقل مطلوب.",
+  "validationEmail": "أدخل بريدًا إلكترونيًا صحيحًا.",
+  "validationPhone": "أدخل رقم هاتف صحيحًا.",
+  "validationAmountRequired": "المبلغ مطلوب.",
+  "validationAmountInvalid": "أدخل مبلغًا صحيحًا.",
+  "validationAmountPositive": "يجب أن يكون المبلغ أكبر من 0.",
+  "validationSelectClient": "الرجاء تحديد عميل."
 }

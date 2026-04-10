@@ -579,4 +579,25 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get errorImportFailed => 'การนำเข้าล้มเหลว';
+
+  @override
+  String get validationRequired => 'ช่องนี้จำเป็นต้องกรอก';
+
+  @override
+  String get validationEmail => 'กรุณาใส่ที่อยู่อีเมลที่ถูกต้อง';
+
+  @override
+  String get validationPhone => 'กรุณาใส่หมายเลขโทรศัพท์ที่ถูกต้อง';
+
+  @override
+  String get validationAmountRequired => 'กรุณาใส่จำนวนเงิน';
+
+  @override
+  String get validationAmountInvalid => 'กรุณาใส่จำนวนเงินที่ถูกต้อง';
+
+  @override
+  String get validationAmountPositive => 'จำนวนเงินต้องมากกว่า 0';
+
+  @override
+  String get validationSelectClient => 'กรุณาเลือกลูกค้า';
 }

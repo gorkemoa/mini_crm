@@ -580,4 +580,25 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get errorImportFailed => 'İçe aktarma başarısız.';
+
+  @override
+  String get validationRequired => 'Bu alan zorunludur.';
+
+  @override
+  String get validationEmail => 'Geçerli bir e-posta adresi girin.';
+
+  @override
+  String get validationPhone => 'Geçerli bir telefon numarası girin.';
+
+  @override
+  String get validationAmountRequired => 'Tutar zorunludur.';
+
+  @override
+  String get validationAmountInvalid => 'Geçerli bir tutar girin.';
+
+  @override
+  String get validationAmountPositive => 'Tutar 0\'dan büyük olmalıdır.';
+
+  @override
+  String get validationSelectClient => 'Lütfen bir müşteri seçin.';
 }

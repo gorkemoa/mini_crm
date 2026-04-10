@@ -204,5 +204,13 @@
   "errorReminderAdd": "Hatırlatıcı eklenemedi.",
   "errorExportFailed": "Dışa aktarma başarısız.",
   "errorFileRead": "Dosya okunamadı.",
-  "errorImportFailed": "İçe aktarma başarısız."
+  "errorImportFailed": "İçe aktarma başarısız.",
+
+  "validationRequired": "Bu alan zorunludur.",
+  "validationEmail": "Geçerli bir e-posta adresi girin.",
+  "validationPhone": "Geçerli bir telefon numarası girin.",
+  "validationAmountRequired": "Tutar zorunludur.",
+  "validationAmountInvalid": "Geçerli bir tutar girin.",
+  "validationAmountPositive": "Tutar 0'dan büyük olmalıdır.",
+  "validationSelectClient": "Lütfen bir müşteri seçin."
 }

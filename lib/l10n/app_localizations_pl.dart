@@ -581,4 +581,25 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get errorImportFailed => 'Import nie powiódł się.';
+
+  @override
+  String get validationRequired => 'To pole jest wymagane.';
+
+  @override
+  String get validationEmail => 'Wprowadź prawidłowy adres e-mail.';
+
+  @override
+  String get validationPhone => 'Wprowadź prawidłowy numer telefonu.';
+
+  @override
+  String get validationAmountRequired => 'Kwota jest wymagana.';
+
+  @override
+  String get validationAmountInvalid => 'Wprowadź prawidłową kwotę.';
+
+  @override
+  String get validationAmountPositive => 'Kwota musi być większa niż 0.';
+
+  @override
+  String get validationSelectClient => 'Proszę wybrać klienta.';
 }

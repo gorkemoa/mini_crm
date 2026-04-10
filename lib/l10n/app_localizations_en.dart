@@ -579,4 +579,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorImportFailed => 'Import failed.';
+
+  @override
+  String get validationRequired => 'This field is required.';
+
+  @override
+  String get validationEmail => 'Enter a valid email address.';
+
+  @override
+  String get validationPhone => 'Enter a valid phone number.';
+
+  @override
+  String get validationAmountRequired => 'Amount is required.';
+
+  @override
+  String get validationAmountInvalid => 'Enter a valid amount.';
+
+  @override
+  String get validationAmountPositive => 'Amount must be greater than 0.';
+
+  @override
+  String get validationSelectClient => 'Please select a client.';
 }

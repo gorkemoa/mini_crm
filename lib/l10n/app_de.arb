@@ -204,5 +204,13 @@
   "errorReminderAdd": "Erinnerung konnte nicht hinzugefügt werden.",
   "errorExportFailed": "Export fehlgeschlagen.",
   "errorFileRead": "Datei konnte nicht gelesen werden.",
-  "errorImportFailed": "Import fehlgeschlagen."
+  "errorImportFailed": "Import fehlgeschlagen.",
+
+  "validationRequired": "Dieses Feld ist erforderlich.",
+  "validationEmail": "Geben Sie eine gültige E-Mail-Adresse ein.",
+  "validationPhone": "Geben Sie eine gültige Telefonnummer ein.",
+  "validationAmountRequired": "Betrag ist erforderlich.",
+  "validationAmountInvalid": "Geben Sie einen gültigen Betrag ein.",
+  "validationAmountPositive": "Der Betrag muss größer als 0 sein.",
+  "validationSelectClient": "Bitte wählen Sie einen Kunden aus."
 }

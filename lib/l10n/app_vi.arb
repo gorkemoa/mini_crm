@@ -204,5 +204,13 @@
   "errorReminderAdd": "Không thể thêm nhắc nhở.",
   "errorExportFailed": "Xuất thất bại.",
   "errorFileRead": "Không thể đọc tệp.",
-  "errorImportFailed": "Nhập thất bại."
+  "errorImportFailed": "Nhập thất bại.",
+
+  "validationRequired": "Trường này là bắt buộc.",
+  "validationEmail": "Nhập địa chỉ email hợp lệ.",
+  "validationPhone": "Nhập số điện thoại hợp lệ.",
+  "validationAmountRequired": "Số tiền là bắt buộc.",
+  "validationAmountInvalid": "Nhập số tiền hợp lệ.",
+  "validationAmountPositive": "Số tiền phải lớn hơn 0.",
+  "validationSelectClient": "Vui lòng chọn khách hàng."
 }

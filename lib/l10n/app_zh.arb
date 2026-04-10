@@ -204,5 +204,13 @@
   "errorReminderAdd": "提醒添加失败。",
   "errorExportFailed": "导出失败。",
   "errorFileRead": "文件读取失败。",
-  "errorImportFailed": "导入失败。"
+  "errorImportFailed": "导入失败。",
+
+  "validationRequired": "此字段是必填项。",
+  "validationEmail": "请输入有效的电子邮件地址。",
+  "validationPhone": "请输入有效的电话号码。",
+  "validationAmountRequired": "金额为必填项。",
+  "validationAmountInvalid": "请输入有效金额。",
+  "validationAmountPositive": "金额必须大于0。",
+  "validationSelectClient": "请选择一个客户。"
 }

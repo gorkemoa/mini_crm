@@ -1,32 +1,32 @@
 abstract class Validators {
-  static String? required(String? value, {String fieldName = 'Bu alan'}) {
+  static String? required(String? value, {String fieldName = ''}) {
     if (value == null || value.trim().isEmpty) {
-      return '$fieldName zorunludur.';
+      return 'validationRequired';
     }
     return null;
   }
 
   static String? amount(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Tutar zorunludur.';
+      return 'validationAmountRequired';
     }
     final parsed = double.tryParse(value.replaceAll(',', '.'));
-    if (parsed == null) return 'Geçerli bir tutar girin.';
-    if (parsed <= 0) return 'Tutar 0\'dan büyük olmalıdır.';
+    if (parsed == null) return 'validationAmountInvalid';
+    if (parsed <= 0) return 'validationAmountPositive';
     return null;
   }
 
   static String? email(String? value) {
     if (value == null || value.trim().isEmpty) return null;
     final regex = RegExp(r'^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$');
-    if (!regex.hasMatch(value.trim())) return 'Geçerli bir e-posta adresi girin.';
+    if (!regex.hasMatch(value.trim())) return 'validationEmail';
     return null;
   }
 
   static String? phone(String? value) {
     if (value == null || value.trim().isEmpty) return null;
     final digits = value.replaceAll(RegExp(r'\D'), '');
-    if (digits.length < 10) return 'Geçerli bir telefon numarası girin.';
+    if (digits.length < 10) return 'validationPhone';
     return null;
   }
 

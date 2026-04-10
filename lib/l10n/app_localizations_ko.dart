@@ -579,4 +579,25 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get errorImportFailed => '가져오기에 실패했습니다.';
+
+  @override
+  String get validationRequired => '이 필드는 필수입니다.';
+
+  @override
+  String get validationEmail => '유효한 이메일 주소를 입력해 주세요.';
+
+  @override
+  String get validationPhone => '유효한 전화번호를 입력해 주세요.';
+
+  @override
+  String get validationAmountRequired => '금액은 필수입니다.';
+
+  @override
+  String get validationAmountInvalid => '유효한 금액을 입력해 주세요.';
+
+  @override
+  String get validationAmountPositive => '금액은 0보다 커야 합니다.';
+
+  @override
+  String get validationSelectClient => '클라이언트를 선택해 주세요.';
 }

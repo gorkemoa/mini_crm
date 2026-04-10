@@ -24,7 +24,7 @@ class ClientsViewModel extends BaseViewModel {
       _all = await _repo.getAll();
       _applyFilter();
     } catch (e) {
-      setError('Müşteriler yüklenemedi.');
+      setError('errorClientsLoad');
     } finally {
       setLoading(false);
     }
@@ -66,7 +66,7 @@ class ClientsViewModel extends BaseViewModel {
       _all.removeWhere((c) => c.id == id);
       _applyFilter();
     } catch (e) {
-      setError('Müşteri silinemedi.');
+      setError('errorClientDelete');
     }
   }
 }

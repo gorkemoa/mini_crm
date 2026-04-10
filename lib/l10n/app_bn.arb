@@ -204,5 +204,13 @@
   "errorReminderAdd": "অনুস্মারক যোগ করা যায়নি।",
   "errorExportFailed": "রপ্তানি ব্যর্থ হয়েছে।",
   "errorFileRead": "ফাইল পড়া যায়নি।",
-  "errorImportFailed": "আমদানি ব্যর্থ হয়েছে।"
+  "errorImportFailed": "আমদানি ব্যর্থ হয়েছে।",
+
+  "validationRequired": "এই ক্ষেত্রটি আবশ্যক।",
+  "validationEmail": "একটি বৈধ ইমেল ঠিকানা লিখুন।",
+  "validationPhone": "একটি বৈধ ফোন নম্বর লিখুন।",
+  "validationAmountRequired": "পরিমাণ আবশ্যক।",
+  "validationAmountInvalid": "একটি বৈধ পরিমাণ লিখুন।",
+  "validationAmountPositive": "পরিমাণ ০-এর চেয়ে বেশি হতে হবে।",
+  "validationSelectClient": "একটি ক্লায়েন্ট নির্বাচন করুন।"
 }

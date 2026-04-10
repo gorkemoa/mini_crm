@@ -204,5 +204,13 @@
   "errorReminderAdd": "Impossibile aggiungere il promemoria.",
   "errorExportFailed": "Esportazione non riuscita.",
   "errorFileRead": "Impossibile leggere il file.",
-  "errorImportFailed": "Importazione non riuscita."
+  "errorImportFailed": "Importazione non riuscita.",
+
+  "validationRequired": "Questo campo è obbligatorio.",
+  "validationEmail": "Inserire un indirizzo email valido.",
+  "validationPhone": "Inserire un numero di telefono valido.",
+  "validationAmountRequired": "L'importo è obbligatorio.",
+  "validationAmountInvalid": "Inserire un importo valido.",
+  "validationAmountPositive": "L'importo deve essere maggiore di 0.",
+  "validationSelectClient": "Selezionare un cliente."
 }

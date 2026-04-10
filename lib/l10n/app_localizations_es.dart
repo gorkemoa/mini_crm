@@ -582,4 +582,25 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get errorImportFailed => 'Error al importar.';
+
+  @override
+  String get validationRequired => 'Este campo es obligatorio.';
+
+  @override
+  String get validationEmail => 'Ingrese un correo electrónico válido.';
+
+  @override
+  String get validationPhone => 'Ingrese un número de teléfono válido.';
+
+  @override
+  String get validationAmountRequired => 'El monto es obligatorio.';
+
+  @override
+  String get validationAmountInvalid => 'Ingrese un monto válido.';
+
+  @override
+  String get validationAmountPositive => 'El monto debe ser mayor a 0.';
+
+  @override
+  String get validationSelectClient => 'Por favor seleccione un cliente.';
 }

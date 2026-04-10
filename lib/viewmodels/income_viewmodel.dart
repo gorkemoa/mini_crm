@@ -29,7 +29,7 @@ class IncomeViewModel extends BaseViewModel {
       _byPlatform = results[1] as Map<String, double>;
       _thisMonthTotal = results[2] as double;
     } catch (e) {
-      setError('Gelirler yüklenemedi.');
+      setError('errorIncomeLoad');
     } finally {
       setLoading(false);
     }
@@ -49,7 +49,7 @@ class IncomeViewModel extends BaseViewModel {
           .fold(0, (sum, i) => sum + i.amount);
       notifyListeners();
     } catch (e) {
-      setError('Gelir silinemedi.');
+      setError('errorIncomeDelete');
     }
   }
 }

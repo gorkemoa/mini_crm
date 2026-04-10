@@ -578,5 +578,26 @@ class AppLocalizationsHi extends AppLocalizations {
   String get errorFileRead => 'फ़ाइल पढ़ी नहीं जा सकी।';
 
   @override
-  String get errorImportFailed => 'आयात विफल हुआ।';
+  String get errorImportFailed => 'आयात विफल रहा।';
+
+  @override
+  String get validationRequired => 'यह फ़ील्ड आवश्यक है।';
+
+  @override
+  String get validationEmail => 'एक वैध ईमेल पता दर्ज करें।';
+
+  @override
+  String get validationPhone => 'एक वैध फ़ोन नंबर दर्ज करें।';
+
+  @override
+  String get validationAmountRequired => 'राशि आवश्यक है।';
+
+  @override
+  String get validationAmountInvalid => 'एक वैध राशि दर्ज करें।';
+
+  @override
+  String get validationAmountPositive => 'राशि 0 से अधिक होनी चाहिए।';
+
+  @override
+  String get validationSelectClient => 'कृपया एक ग्राहक चुनें।';
 }

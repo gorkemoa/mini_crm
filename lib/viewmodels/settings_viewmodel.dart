@@ -1,5 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../core/base/base_viewmodel.dart';
 import '../core/constants/app_constants.dart';
+import '../core/constants/storage_keys.dart';
 import '../services/storage/file_export_service.dart';
 import '../services/storage/file_import_service.dart';
 import '../models/export_bundle_model.dart';
@@ -15,6 +18,51 @@ class SettingsViewModel extends BaseViewModel {
         _importService = importService;
 
   String get appVersion => AppConstants.appVersion;
+
+  // ── Locale ──────────────────────────────────────────────────────────────
+
+  Locale _locale = const Locale('tr');
+  Locale get locale => _locale;
+
+  static const List<Map<String, String>> supportedLanguages = [
+    {'code': 'en', 'name': 'English'},
+    {'code': 'tr', 'name': 'Türkçe'},
+    {'code': 'ar', 'name': 'العربية'},
+    {'code': 'zh', 'name': '中文'},
+    {'code': 'es', 'name': 'Español'},
+    {'code': 'hi', 'name': 'हिन्दी'},
+    {'code': 'pt', 'name': 'Português'},
+    {'code': 'fr', 'name': 'Français'},
+    {'code': 'id', 'name': 'Indonesia'},
+    {'code': 'ja', 'name': '日本語'},
+    {'code': 'de', 'name': 'Deutsch'},
+    {'code': 'ru', 'name': 'Русский'},
+    {'code': 'ko', 'name': '한국어'},
+    {'code': 'bn', 'name': 'বাংলা'},
+    {'code': 'ur', 'name': 'اردو'},
+    {'code': 'vi', 'name': 'Tiếng Việt'},
+    {'code': 'it', 'name': 'Italiano'},
+    {'code': 'fa', 'name': 'فارسی'},
+    {'code': 'pl', 'name': 'Polski'},
+    {'code': 'th', 'name': 'ภาษาไทย'},
+  ];
+
+  Future<void> loadLocale() async {
+    final prefs = await SharedPreferences.getInstance();
+    final code = prefs.getString(StorageKeys.locale) ?? 'tr';
+    _locale = Locale(code);
+    notifyListeners();
+  }
+
+  Future<void> setLocale(Locale locale) async {
+    if (_locale == locale) return;
+    _locale = locale;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(StorageKeys.locale, locale.languageCode);
+    notifyListeners();
+  }
+
+  // ── Export / Import ──────────────────────────────────────────────────────
 
   bool _exportSuccess = false;
   bool _importSuccess = false;
@@ -32,7 +80,7 @@ class SettingsViewModel extends BaseViewModel {
       await _exportService.exportAndShare();
       _exportSuccess = true;
     } catch (e) {
-      setError('Dışa aktarma başarısız: $e');
+      setError('errorExportFailed');
     } finally {
       setLoading(false);
     }
@@ -45,7 +93,7 @@ class SettingsViewModel extends BaseViewModel {
     try {
       _pendingImport = await _importService.pickAndParse();
     } catch (e) {
-      setError('Dosya okunamadı: $e');
+      setError('errorFileRead');
     } finally {
       setLoading(false);
     }
@@ -62,7 +110,7 @@ class SettingsViewModel extends BaseViewModel {
       _importSuccess = true;
       _pendingImport = null;
     } catch (e) {
-      setError('İçe aktarma başarısız: $e');
+      setError('errorImportFailed');
     } finally {
       setLoading(false);
     }

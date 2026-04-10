@@ -579,4 +579,25 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get errorImportFailed => 'ورود داده‌ها شکست خورد.';
+
+  @override
+  String get validationRequired => 'این فیلد الزامی است.';
+
+  @override
+  String get validationEmail => 'یک آدرس ایمیل معتبر وارد کنید.';
+
+  @override
+  String get validationPhone => 'یک شماره تلفن معتبر وارد کنید.';
+
+  @override
+  String get validationAmountRequired => 'مبلغ الزامی است.';
+
+  @override
+  String get validationAmountInvalid => 'یک مبلغ معتبر وارد کنید.';
+
+  @override
+  String get validationAmountPositive => 'مبلغ باید بیشتر از 0 باشد.';
+
+  @override
+  String get validationSelectClient => 'لطفاً یک مشتری انتخاب کنید.';
 }

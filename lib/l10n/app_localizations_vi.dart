@@ -579,4 +579,25 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get errorImportFailed => 'Nhập thất bại.';
+
+  @override
+  String get validationRequired => 'Trường này là bắt buộc.';
+
+  @override
+  String get validationEmail => 'Nhập địa chỉ email hợp lệ.';
+
+  @override
+  String get validationPhone => 'Nhập số điện thoại hợp lệ.';
+
+  @override
+  String get validationAmountRequired => 'Số tiền là bắt buộc.';
+
+  @override
+  String get validationAmountInvalid => 'Nhập số tiền hợp lệ.';
+
+  @override
+  String get validationAmountPositive => 'Số tiền phải lớn hơn 0.';
+
+  @override
+  String get validationSelectClient => 'Vui lòng chọn khách hàng.';
 }

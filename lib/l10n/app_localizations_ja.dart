@@ -579,4 +579,25 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get errorImportFailed => 'インポートに失敗しました。';
+
+  @override
+  String get validationRequired => 'このフィールドは必須です。';
+
+  @override
+  String get validationEmail => '有効なメールアドレスを入力してください。';
+
+  @override
+  String get validationPhone => '有効な電話番号を入力してください。';
+
+  @override
+  String get validationAmountRequired => '金額は必須です。';
+
+  @override
+  String get validationAmountInvalid => '有効な金額を入力してください。';
+
+  @override
+  String get validationAmountPositive => '金額は0より大きくなければなりません。';
+
+  @override
+  String get validationSelectClient => 'クライアントを選択してください。';
 }

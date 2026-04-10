@@ -204,5 +204,13 @@
   "errorReminderAdd": "알림을 추가할 수 없습니다.",
   "errorExportFailed": "내보내기에 실패했습니다.",
   "errorFileRead": "파일을 읽을 수 없습니다.",
-  "errorImportFailed": "가져오기에 실패했습니다."
+  "errorImportFailed": "가져오기에 실패했습니다.",
+
+  "validationRequired": "이 필드는 필수입니다.",
+  "validationEmail": "유효한 이메일 주소를 입력해 주세요.",
+  "validationPhone": "유효한 전화번호를 입력해 주세요.",
+  "validationAmountRequired": "금액은 필수입니다.",
+  "validationAmountInvalid": "유효한 금액을 입력해 주세요.",
+  "validationAmountPositive": "금액은 0보다 커야 합니다.",
+  "validationSelectClient": "클라이언트를 선택해 주세요."
 }

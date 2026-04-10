@@ -204,5 +204,13 @@
   "errorReminderAdd": "یاد دہانی شامل نہیں ہو سکی۔",
   "errorExportFailed": "برآمد ناکام ہو گئی۔",
   "errorFileRead": "فائل پڑھی نہیں جا سکی۔",
-  "errorImportFailed": "درآمد ناکام ہو گئی۔"
+  "errorImportFailed": "درآمد ناکام ہو گئی۔",
+
+  "validationRequired": "یہ فیلڈ ضروری ہے۔",
+  "validationEmail": "ایک درست ای میل پتہ درج کریں۔",
+  "validationPhone": "ایک درست فون نمبر درج کریں۔",
+  "validationAmountRequired": "رقم ضروری ہے۔",
+  "validationAmountInvalid": "ایک درست رقم درج کریں۔",
+  "validationAmountPositive": "رقم 0 سے زیادہ ہونی چاہیے۔",
+  "validationSelectClient": "براہ کرم ایک کلائنٹ منتخب کریں۔"
 }
