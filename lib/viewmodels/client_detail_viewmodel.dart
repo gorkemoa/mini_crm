@@ -40,7 +40,7 @@ class ClientDetailViewModel extends BaseViewModel {
       _debts = results[1] as List<DebtModel>;
       _projects = results[2] as List<ProjectModel>;
     } catch (e) {
-      setError('Müşteri detayı yüklenemedi.');
+      setError('errorClientDetailLoad');
     } finally {
       setLoading(false);
     }

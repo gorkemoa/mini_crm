@@ -61,7 +61,7 @@ class ProjectFormViewModel extends BaseViewModel {
 
   String? validateClient() =>
       selectedClientId == null ? 'validationSelectClient' : null;
-  String? validateTitle() => Validators.required(title, fieldName: 'Başlık');
+  String? validateTitle() => Validators.required(title);
 
   bool validate() =>
       validateClient() == null && validateTitle() == null;

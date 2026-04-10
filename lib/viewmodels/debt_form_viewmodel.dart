@@ -57,7 +57,7 @@ class DebtFormViewModel extends BaseViewModel {
 
   String? validateClient() =>
       selectedClientId == null ? 'validationSelectClient' : null;
-  String? validateTitle() => Validators.required(title, fieldName: 'Başlık');
+  String? validateTitle() => Validators.required(title);
   String? validateAmount() => Validators.amount(amount);
 
   bool validate() =>

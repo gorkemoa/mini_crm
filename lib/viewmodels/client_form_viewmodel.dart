@@ -34,7 +34,7 @@ class ClientFormViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  String? validateFullName() => Validators.required(fullName, fieldName: 'Ad Soyad');
+  String? validateFullName() => Validators.required(fullName);
   String? validateEmail() => Validators.email(email.isEmpty ? null : email);
   String? validatePhone() => Validators.phone(phone.isEmpty ? null : phone);
 

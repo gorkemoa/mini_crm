@@ -37,7 +37,7 @@ class LeadFormViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  String? validateName() => Validators.required(name, fieldName: 'İsim');
+  String? validateName() => Validators.required(name);
 
   bool validate() => validateName() == null;
 
