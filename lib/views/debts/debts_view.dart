@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../core/constants/route_names.dart';
 import '../../core/utils/currency_utils.dart';
 import '../../core/utils/date_utils.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/debt_model.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
@@ -31,6 +32,7 @@ class _DebtsViewState extends State<DebtsView> {
   Widget build(BuildContext context) {
     return Consumer<DebtsViewModel>(
       builder: (context, vm, _) {
+        final l10n = AppLocalizations.of(context)!;
         return Scaffold(
           backgroundColor: AppColors.background,
           body: SafeArea(
@@ -50,10 +52,10 @@ class _DebtsViewState extends State<DebtsView> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Alacaklar', style: AppTextStyles.largeTitle),
+                          Text(l10n.debtsTitle, style: AppTextStyles.largeTitle),
                           if (!vm.isLoading)
                             Text(
-                              '${CurrencyUtils.format(vm.totalPending, 'TRY')} bekliyor',
+                              '${CurrencyUtils.format(vm.totalPending, 'TRY')} ${l10n.debtWaiting}',
                               style: AppTextStyles.footnote.copyWith(
                                 color: AppColors.warning,
                               ),
@@ -89,7 +91,7 @@ class _DebtsViewState extends State<DebtsView> {
                     child: Row(
                       children: [
                         _Chip(
-                          label: 'Tümü',
+                          label: l10n.all,
                           isSelected: vm.statusFilter == null,
                           onTap: () => vm.filterByStatus(null),
                         ),
@@ -99,7 +101,12 @@ class _DebtsViewState extends State<DebtsView> {
                                 right: AppSpacing.xs,
                               ),
                               child: _Chip(
-                                label: s.label,
+                                label: switch (s) {
+                                  DebtStatus.pending => l10n.debtPending,
+                                  DebtStatus.overdue => l10n.debtOverdue,
+                                  DebtStatus.paid => l10n.debtPaid,
+                                  DebtStatus.partial => l10n.debtPartial,
+                                },
                                 isSelected: vm.statusFilter == s,
                                 onTap: () => vm.filterByStatus(s),
                               ),
@@ -116,9 +123,9 @@ class _DebtsViewState extends State<DebtsView> {
                       : vm.items.isEmpty
                           ? EmptyState(
                               icon: Icons.account_balance_wallet_outlined,
-                              title: 'Henüz alacak yok',
-                              subtitle: 'İlk alacağını ekleyerek başla.',
-                              actionLabel: 'Alacak Ekle',
+                              title: l10n.noDebtsYet,
+                              subtitle: l10n.noDebtsSubtitle,
+                              actionLabel: l10n.addDebt,
                               onAction: () async {
                                 await Navigator.pushNamed(
                                   context,
@@ -281,15 +288,15 @@ class _DebtTile extends StatelessWidget {
                     size: 20,
                   ),
                   itemBuilder: (_) => [
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'edit',
-                      child: Text('Düzenle'),
+                      child: Text(AppLocalizations.of(context)!.edit),
                     ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'delete',
                       child: Text(
-                        'Sil',
-                        style: TextStyle(color: AppColors.danger),
+                        AppLocalizations.of(context)!.delete,
+                        style: const TextStyle(color: AppColors.danger),
                       ),
                     ),
                   ],

@@ -42,3 +42,8 @@ String localizeKey(AppLocalizations l10n, String? key) {
     _ => l10n.errorOccurred,
   };
 }
+
+/// Wraps [localizeKey] for use as a FormField validator.
+/// Returns null (valid) when [key] is null, otherwise returns the localized string.
+String? localizeValidator(AppLocalizations l10n, String? key) =>
+    key == null ? null : localizeKey(l10n, key);

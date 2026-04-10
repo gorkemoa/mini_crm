@@ -84,7 +84,7 @@ class _ClientFormViewState extends State<ClientFormView> {
                           label: l10n.fullName,
                           hint: l10n.fullNameHint,
                           onChanged: (v) => vm.fullName = v,
-                          validator: (_) => localizeKey(l10n, vm.validateFullName()),
+                          validator: (_) => localizeValidator(l10n, vm.validateFullName()),
                           textCapitalization: TextCapitalization.words,
                         ),
                         _AppTextField(
@@ -104,7 +104,7 @@ class _ClientFormViewState extends State<ClientFormView> {
                           label: l10n.emailOptional,
                           hint: l10n.emailHint,
                           onChanged: (v) => vm.email = v,
-                          validator: (_) => localizeKey(l10n, vm.validateEmail()),
+                          validator: (_) => localizeValidator(l10n, vm.validateEmail()),
                           keyboardType: TextInputType.emailAddress,
                         ),
                         _AppTextField(
@@ -112,7 +112,7 @@ class _ClientFormViewState extends State<ClientFormView> {
                           label: l10n.phoneOptional,
                           hint: l10n.phoneHint,
                           onChanged: (v) => vm.phone = v,
-                          validator: (_) => localizeKey(l10n, vm.validatePhone()),
+                          validator: (_) => localizeValidator(l10n, vm.validatePhone()),
                           keyboardType: TextInputType.phone,
                         ),
                       ],
