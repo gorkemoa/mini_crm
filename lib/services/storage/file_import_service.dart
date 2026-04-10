@@ -1,6 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import '../../core/errors/app_exceptions.dart';
 import '../../models/export_bundle_model.dart';
 import '../repositories/client_repository.dart';
@@ -34,17 +33,14 @@ class FileImportService {
 
   Future<ExportBundleModel?> pickAndParse() async {
     try {
-      final result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['json'],
-        allowMultiple: false,
+      const XTypeGroup typeGroup = XTypeGroup(
+        label: 'JSON',
+        extensions: ['json'],
       );
-      if (result == null || result.files.isEmpty) return null;
+      final XFile? file = await openFile(acceptedTypeGroups: [typeGroup]);
+      if (file == null) return null;
 
-      final path = result.files.first.path;
-      if (path == null) throw const ImportException('Dosya yolu alınamadı.');
-
-      final content = await File(path).readAsString();
+      final content = await file.readAsString();
       return _parse(content);
     } on ImportException {
       rethrow;

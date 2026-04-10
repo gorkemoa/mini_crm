@@ -19,6 +19,14 @@ class SettingsView extends StatelessWidget {
         final l10n = AppLocalizations.of(context)!;
         return Scaffold(
           backgroundColor: AppColors.background,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.primary),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
           body: SafeArea(
             child: ListView(
               padding: const EdgeInsets.only(bottom: AppSpacing.xxxl),

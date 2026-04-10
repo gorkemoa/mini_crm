@@ -29,7 +29,7 @@ dependencies:
   shared_preferences: ^2.3.2
 
   # File operations (export / import)
-  file_picker: ^8.1.6
+  file_selector: ^1.0.3
   share_plus: ^10.1.4
 
 dev_dependencies:
