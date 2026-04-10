@@ -1287,17 +1287,24 @@ class _AppLocalizationsDelegate
   @override
   bool isSupported(Locale locale) => <String>[
     'ar',
+    'bn',
     'de',
     'en',
     'es',
+    'fa',
     'fr',
     'hi',
     'id',
+    'it',
     'ja',
     'ko',
+    'pl',
     'pt',
     'ru',
+    'th',
     'tr',
+    'ur',
+    'vi',
     'zh',
   ].contains(locale.languageCode);
 
@@ -1310,28 +1317,42 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'ar':
       return AppLocalizationsAr();
+    case 'bn':
+      return AppLocalizationsBn();
     case 'de':
       return AppLocalizationsDe();
     case 'en':
       return AppLocalizationsEn();
     case 'es':
       return AppLocalizationsEs();
+    case 'fa':
+      return AppLocalizationsFa();
     case 'fr':
       return AppLocalizationsFr();
     case 'hi':
       return AppLocalizationsHi();
     case 'id':
       return AppLocalizationsId();
+    case 'it':
+      return AppLocalizationsIt();
     case 'ja':
       return AppLocalizationsJa();
     case 'ko':
       return AppLocalizationsKo();
+    case 'pl':
+      return AppLocalizationsPl();
     case 'pt':
       return AppLocalizationsPt();
     case 'ru':
       return AppLocalizationsRu();
+    case 'th':
+      return AppLocalizationsTh();
     case 'tr':
       return AppLocalizationsTr();
+    case 'ur':
+      return AppLocalizationsUr();
+    case 'vi':
+      return AppLocalizationsVi();
     case 'zh':
       return AppLocalizationsZh();
   }
