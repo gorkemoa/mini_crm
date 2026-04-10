@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/route_names.dart';
 import '../../core/utils/currency_utils.dart';
 import '../../core/utils/date_utils.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/project_model.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
@@ -37,6 +38,7 @@ class _ProjectDetailViewState extends State<ProjectDetailView> {
   @override
   Widget build(BuildContext context) {
     final p = _project;
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -104,22 +106,22 @@ class _ProjectDetailViewState extends State<ProjectDetailView> {
                 children: [
                   if (p.budget != null)
                     InfoRow(
-                      label: 'Bütçe',
+                      label: l10n.budget,
                       value: CurrencyUtils.format(p.budget!, p.currency),
                     ),
                   if (p.startDate != null)
                     InfoRow(
-                      label: 'Başlangıç',
+                      label: l10n.startDate,
                       value: AppDateUtils.toDisplay(p.startDate!),
                     ),
                   if (p.endDate != null)
                     InfoRow(
-                      label: 'Bitiş',
+                      label: l10n.endDate,
                       value: AppDateUtils.toDisplay(p.endDate!),
                     ),
                   if (p.description != null && p.description!.isNotEmpty)
                     InfoRow(
-                      label: 'Açıklama',
+                      label: l10n.description,
                       value: p.description!,
                       isLast: true,
                     ),
@@ -137,7 +139,7 @@ class _ProjectDetailViewState extends State<ProjectDetailView> {
               padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.screenPaddingH),
               child: PrimaryButton(
-                label: 'Düzenle',
+                label: l10n.edit,
                 onPressed: () async {
                   final changed = await Navigator.pushNamed(
                     context,

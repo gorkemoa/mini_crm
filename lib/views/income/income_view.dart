@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../core/constants/route_names.dart';
 import '../../core/utils/currency_utils.dart';
 import '../../core/utils/date_utils.dart';
+import '../../l10n/app_localizations.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -30,6 +31,7 @@ class _IncomeViewState extends State<IncomeView> {
   Widget build(BuildContext context) {
     return Consumer<IncomeViewModel>(
       builder: (context, vm, _) {
+        final l10n = AppLocalizations.of(context)!;
         return Scaffold(
           backgroundColor: AppColors.background,
           body: SafeArea(
@@ -49,10 +51,10 @@ class _IncomeViewState extends State<IncomeView> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Gelirler', style: AppTextStyles.largeTitle),
+                          Text(l10n.incomeTitle, style: AppTextStyles.largeTitle),
                           if (!vm.isLoading)
                             Text(
-                              'Bu ay: ${CurrencyUtils.format(vm.thisMonthTotal, 'TRY')}',
+                              '${l10n.thisMonthPrefix}${CurrencyUtils.format(vm.thisMonthTotal, 'TRY')}',
                               style: AppTextStyles.footnote
                                   .copyWith(color: AppColors.success),
                             ),
@@ -105,10 +107,9 @@ class _IncomeViewState extends State<IncomeView> {
                       : vm.items.isEmpty
                           ? EmptyState(
                               icon: Icons.attach_money,
-                              title: 'Henüz gelir yok',
-                              subtitle:
-                                  'Aldığın ödemeleri buraya ekle.',
-                              actionLabel: 'Gelir Ekle',
+                              title: l10n.noIncomeYet,
+                              subtitle: l10n.noIncomeSubtitle,
+                              actionLabel: l10n.addIncome,
                               onAction: () async {
                                 await Navigator.pushNamed(
                                   context,
@@ -229,7 +230,7 @@ class _IncomeTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        income.sourcePlatform ?? 'Gelir',
+                        income.sourcePlatform ?? AppLocalizations.of(context)!.income,
                         style: AppTextStyles.subheadline
                             .copyWith(fontWeight: FontWeight.w500),
                       ),
@@ -260,12 +261,12 @@ class _IncomeTile extends StatelessWidget {
                   icon: const Icon(Icons.more_horiz,
                       color: AppColors.textTertiary, size: 20),
                   itemBuilder: (_) => [
-                    const PopupMenuItem(
-                        value: 'edit', child: Text('Düzenle')),
-                    const PopupMenuItem(
+                    PopupMenuItem(
+                        value: 'edit', child: Text(AppLocalizations.of(context)!.edit)),
+                    PopupMenuItem(
                       value: 'delete',
-                      child: Text('Sil',
-                          style: TextStyle(color: AppColors.danger)),
+                      child: Text(AppLocalizations.of(context)!.delete,
+                          style: const TextStyle(color: AppColors.danger)),
                     ),
                   ],
                   onSelected: (v) {

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
+import '../../core/utils/l10n_utils.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/income_model.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_radii.dart';
@@ -48,6 +50,7 @@ class _IncomeFormViewState extends State<IncomeFormView> {
   Widget build(BuildContext context) {
     return Consumer<IncomeFormViewModel>(
       builder: (context, vm, _) {
+        final l10n = AppLocalizations.of(context)!;
         if (vm.saved) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (context.mounted) Navigator.pop(context, true);
@@ -58,7 +61,7 @@ class _IncomeFormViewState extends State<IncomeFormView> {
           backgroundColor: AppColors.background,
           appBar: AppBar(
             title: Text(
-              widget.initialIncome == null ? 'Yeni Gelir' : 'Geliri Düzenle',
+              widget.initialIncome == null ? l10n.newIncome : l10n.editIncome,
               style: AppTextStyles.navTitle,
             ),
             backgroundColor: AppColors.surface,
@@ -74,17 +77,17 @@ class _IncomeFormViewState extends State<IncomeFormView> {
                 children: [
                   // Client picker
                   _FormSection(children: [
-                    _Label('Müşteri'),
+                    _Label(l10n.customer),
                     DropdownButton<String?>(
                       value: vm.selectedClientId,
                       isExpanded: true,
                       underline: const SizedBox.shrink(),
-                      hint: Text('Müşteri seç (isteğe bağlı)',
+                      hint: Text(l10n.selectCustomerOptional,
                           style: AppTextStyles.body
                               .copyWith(color: AppColors.textTertiary)),
                       items: [
-                        const DropdownMenuItem(
-                            value: null, child: Text('— Müşterisiz —')),
+                        DropdownMenuItem(
+                            value: null, child: Text(l10n.noCustomer)),
                         ...vm.clients.map((c) => DropdownMenuItem(
                             value: c.id, child: Text(c.displayName))),
                       ],
@@ -99,15 +102,15 @@ class _IncomeFormViewState extends State<IncomeFormView> {
                       Expanded(
                         child: _AppTextField(
                           controller: _amountCtrl,
-                          label: 'Tutar',
-                          hint: '0.00',
+                          label: l10n.amount,
+                          hint: l10n.amountHint,
                           keyboardType: const TextInputType.numberWithOptions(
                               decimal: true),
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(
                                 RegExp(r'^\d*\.?\d{0,2}')),
                           ],
-                          validator: (_) => vm.validateAmount(),
+                          validator: (_) => localizeValidator(l10n, vm.validateAmount()),
                           onChanged: (v) => vm.amount = v,
                         ),
                       ),
@@ -132,17 +135,17 @@ class _IncomeFormViewState extends State<IncomeFormView> {
 
                   // Platform + date
                   _FormSection(children: [
-                    _Label('Platform'),
+                    _Label(l10n.platform),
                     DropdownButton<String?>(
                       value: vm.sourcePlatform.isEmpty ? null : vm.sourcePlatform,
                       isExpanded: true,
                       underline: const SizedBox.shrink(),
-                      hint: Text('Platform seç',
+                      hint: Text(l10n.selectPlatform,
                           style: AppTextStyles.body
                               .copyWith(color: AppColors.textTertiary)),
                       items: [
-                        const DropdownMenuItem(
-                            value: null, child: Text('— Belirtilmemiş —')),
+                        DropdownMenuItem(
+                            value: null, child: Text(l10n.notSpecified)),
                         ...AppConstants.leadSources.map((s) =>
                             DropdownMenuItem(value: s, child: Text(s))),
                       ],
@@ -153,7 +156,7 @@ class _IncomeFormViewState extends State<IncomeFormView> {
                     ),
                     _Divider(),
                     _DatePickerRow(
-                      label: 'Alınma Tarihi',
+                      label: l10n.receiptDate,
                       value: vm.date,
                       onPicked: (d) {
                         if (d != null) {
@@ -169,8 +172,8 @@ class _IncomeFormViewState extends State<IncomeFormView> {
                   _FormSection(children: [
                     _AppTextField(
                       controller: _noteCtrl,
-                      label: 'Not',
-                      hint: 'Ek notlar...',
+                      label: l10n.note,
+                      hint: l10n.additionalNotesHint,
                       maxLines: 4,
                       onChanged: (v) => vm.note = v,
                     ),
@@ -181,7 +184,7 @@ class _IncomeFormViewState extends State<IncomeFormView> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: AppSpacing.md),
                       child: Text(
-                        vm.errorMessage!,
+                        localizeKey(l10n, vm.errorMessage),
                         style: AppTextStyles.footnote
                             .copyWith(color: AppColors.danger),
                         textAlign: TextAlign.center,
@@ -189,7 +192,7 @@ class _IncomeFormViewState extends State<IncomeFormView> {
                     ),
 
                   PrimaryButton(
-                    label: widget.initialIncome == null ? 'Kaydet' : 'Güncelle',
+                    label: widget.initialIncome == null ? l10n.save : l10n.update,
                     isLoading: vm.isLoading,
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {

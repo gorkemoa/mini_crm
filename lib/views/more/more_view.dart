@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/route_names.dart';
+import '../../l10n/app_localizations.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_radii.dart';
 import '../../themes/app_spacing.dart';
@@ -10,6 +11,7 @@ class MoreView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -23,24 +25,24 @@ class MoreView extends StatelessWidget {
                 AppSpacing.screenPaddingH,
                 AppSpacing.md,
               ),
-              child: Text('Daha Fazla', style: AppTextStyles.largeTitle),
+              child: Text(l10n.moreTitle, style: AppTextStyles.largeTitle),
             ),
 
-            _SectionLabel('İŞ TAKİBİ'),
+            _SectionLabel(l10n.sectionBusiness),
             _MenuGroup(items: [
               _MenuItem(
                 icon: Icons.person_search_outlined,
                 iconColor: AppColors.purple,
-                title: 'Adaylar',
-                subtitle: 'Potansiyel müşterileri takip et',
+                title: l10n.leadsTitle,
+                subtitle: l10n.leadsMenuSubtitle,
                 onTap: () =>
                     Navigator.pushNamed(context, RouteNames.leads),
               ),
               _MenuItem(
                 icon: Icons.attach_money,
                 iconColor: AppColors.success,
-                title: 'Gelirler',
-                subtitle: 'Ödeme ve gelir kayıtları',
+                title: l10n.incomeTitle,
+                subtitle: l10n.incomeMenuSubtitle,
                 divider: false,
                 onTap: () =>
                     Navigator.pushNamed(context, RouteNames.income),
@@ -48,13 +50,13 @@ class MoreView extends StatelessWidget {
             ]),
             const SizedBox(height: AppSpacing.md),
 
-            _SectionLabel('HATIRLATICILAR'),
+            _SectionLabel(l10n.sectionRemindersNav),
             _MenuGroup(items: [
               _MenuItem(
                 icon: Icons.notifications_none_outlined,
                 iconColor: AppColors.info,
-                title: 'Hatırlatıcılar',
-                subtitle: 'Görev ve takvim hatırlatmaları',
+                title: l10n.remindersTitle,
+                subtitle: l10n.remindersMenuSubtitle,
                 divider: false,
                 onTap: () =>
                     Navigator.pushNamed(context, RouteNames.reminders),
@@ -62,13 +64,13 @@ class MoreView extends StatelessWidget {
             ]),
             const SizedBox(height: AppSpacing.md),
 
-            _SectionLabel('UYGULAMA'),
+            _SectionLabel(l10n.sectionAppNav),
             _MenuGroup(items: [
               _MenuItem(
                 icon: Icons.settings_outlined,
                 iconColor: AppColors.textSecondary,
-                title: 'Ayarlar',
-                subtitle: 'Veri yönetimi ve uygulama bilgisi',
+                title: l10n.settingsTitle,
+                subtitle: l10n.settingsMenuSubtitle,
                 divider: false,
                 onTap: () =>
                     Navigator.pushNamed(context, RouteNames.settings),

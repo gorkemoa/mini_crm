@@ -74,7 +74,10 @@ class _ClientsViewState extends State<ClientsView> {
                   ),
                   child: Column(
                     children: [
-                      SearchField(onChanged: vm.search),
+                      SearchField(
+                        placeholder: l10n.searchHint,
+                        onChanged: vm.search,
+                      ),
                       const SizedBox(height: AppSpacing.sm),
                       _StatusFilterRow(
                         selected: vm.statusFilter,
@@ -181,6 +184,7 @@ class _StatusFilterRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(

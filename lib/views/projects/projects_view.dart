@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/route_names.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/project_model.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
@@ -29,6 +30,7 @@ class _ProjectsViewState extends State<ProjectsView> {
   Widget build(BuildContext context) {
     return Consumer<ProjectsViewModel>(
       builder: (context, vm, _) {
+        final l10n = AppLocalizations.of(context)!;
         return Scaffold(
           backgroundColor: AppColors.background,
           body: SafeArea(
@@ -45,7 +47,7 @@ class _ProjectsViewState extends State<ProjectsView> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('Projeler', style: AppTextStyles.largeTitle),
+                      Text(l10n.projectsTitle, style: AppTextStyles.largeTitle),
                       const Spacer(),
                       IconButton(
                         icon: const Icon(Icons.add),
@@ -75,7 +77,7 @@ class _ProjectsViewState extends State<ProjectsView> {
                     child: Row(
                       children: [
                         _Chip(
-                          label: 'Tümü',
+                          label: l10n.all,
                           isSelected: vm.statusFilter == null,
                           onTap: () => vm.filterByStatus(null),
                         ),
@@ -84,7 +86,14 @@ class _ProjectsViewState extends State<ProjectsView> {
                               padding: const EdgeInsets.only(
                                   right: AppSpacing.xs),
                               child: _Chip(
-                                label: s.label,
+                                label: switch (s) {
+                                  ProjectStatus.planned => l10n.projectPlanned,
+                                  ProjectStatus.startingSoon => l10n.projectStartingSoon,
+                                  ProjectStatus.active => l10n.projectActive,
+                                  ProjectStatus.paused => l10n.projectPaused,
+                                  ProjectStatus.completed => l10n.projectCompleted,
+                                  ProjectStatus.cancelled => l10n.projectCancelled,
+                                },
                                 isSelected: vm.statusFilter == s,
                                 onTap: () => vm.filterByStatus(s),
                               ),
@@ -101,9 +110,9 @@ class _ProjectsViewState extends State<ProjectsView> {
                       : vm.items.isEmpty
                           ? EmptyState(
                               icon: Icons.work_outline,
-                              title: 'Henüz proje yok',
-                              subtitle: 'İlk projeyi ekleyerek başla.',
-                              actionLabel: 'Proje Ekle',
+                              title: l10n.noProjectsYet,
+                              subtitle: l10n.noProjectsSubtitle,
+                              actionLabel: l10n.addProject,
                               onAction: () async {
                                 await Navigator.pushNamed(
                                   context,
@@ -238,7 +247,7 @@ class _ProjectTile extends StatelessWidget {
                       if (project.endDate != null) ...[
                         const SizedBox(height: 2),
                         Text(
-                          'Bitiş: ${project.endDate!.day}.${project.endDate!.month}.${project.endDate!.year}',
+                          '${AppLocalizations.of(context)!.endDatePrefix}${project.endDate!.day}.${project.endDate!.month}.${project.endDate!.year}',
                           style: AppTextStyles.caption2.copyWith(
                             color: AppColors.textTertiary,
                           ),
@@ -270,11 +279,11 @@ class _ProjectTile extends StatelessWidget {
                     size: 20,
                   ),
                   itemBuilder: (_) => [
-                    const PopupMenuItem(value: 'edit', child: Text('Düzenle')),
-                    const PopupMenuItem(
+                    PopupMenuItem(value: 'edit', child: Text(AppLocalizations.of(context)!.edit)),
+                    PopupMenuItem(
                       value: 'delete',
-                      child: Text('Sil',
-                          style: TextStyle(color: AppColors.danger)),
+                      child: Text(AppLocalizations.of(context)!.delete,
+                          style: const TextStyle(color: AppColors.danger)),
                     ),
                   ],
                   onSelected: (v) {

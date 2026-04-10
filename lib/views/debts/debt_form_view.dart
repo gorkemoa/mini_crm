@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
+import '../../core/utils/l10n_utils.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/debt_model.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_radii.dart';
@@ -60,6 +62,7 @@ class _DebtFormViewState extends State<DebtFormView> {
   Widget build(BuildContext context) {
     return Consumer<DebtFormViewModel>(
       builder: (context, vm, _) {
+        final l10n = AppLocalizations.of(context)!;
         if (vm.saved) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (context.mounted) Navigator.pop(context, true);
@@ -70,7 +73,7 @@ class _DebtFormViewState extends State<DebtFormView> {
           backgroundColor: AppColors.background,
           appBar: AppBar(
             title: Text(
-              widget.initialDebt == null ? 'Yeni Alacak' : 'Alacağı Düzenle',
+              widget.initialDebt == null ? l10n.newDebt : l10n.editDebt,
               style: AppTextStyles.navTitle,
             ),
             backgroundColor: AppColors.surface,
@@ -87,20 +90,20 @@ class _DebtFormViewState extends State<DebtFormView> {
                   // Client picker
                   _FormSection(
                     children: [
-                      _Label('Müşteri'),
+                      _Label(l10n.customer),
                       DropdownButton<String?>(
                         value: vm.selectedClientId,
                         isExpanded: true,
                         underline: const SizedBox.shrink(),
                         hint: Text(
-                          'Müşteri seç (isteğe bağlı)',
+                          l10n.selectCustomerOptional,
                           style: AppTextStyles.body
                               .copyWith(color: AppColors.textTertiary),
                         ),
                         items: [
-                          const DropdownMenuItem(
+                          DropdownMenuItem(
                             value: null,
-                            child: Text('— Müşterisiz —'),
+                            child: Text(l10n.noCustomer),
                           ),
                           ...vm.clients.map(
                             (c) => DropdownMenuItem(
@@ -120,9 +123,9 @@ class _DebtFormViewState extends State<DebtFormView> {
                     children: [
                       _AppTextField(
                         controller: _titleCtrl,
-                        label: 'Başlık',
-                        hint: 'ör. Proje teslimi',
-                        validator: (_) => vm.validateTitle(),
+                        label: l10n.debtTitleLabel,
+                        hint: l10n.debtTitleHint,
+                        validator: (_) => localizeValidator(l10n, vm.validateTitle()),
                         onChanged: (v) => vm.title = v,
                       ),
                       _Divider(),
@@ -131,8 +134,8 @@ class _DebtFormViewState extends State<DebtFormView> {
                           Expanded(
                             child: _AppTextField(
                               controller: _amountCtrl,
-                              label: 'Tutar',
-                              hint: '0.00',
+                              label: l10n.amount,
+                              hint: l10n.amountHint,
                               keyboardType:
                                   const TextInputType.numberWithOptions(
                                 decimal: true,
@@ -142,7 +145,7 @@ class _DebtFormViewState extends State<DebtFormView> {
                                   RegExp(r'^\d*\.?\d{0,2}'),
                                 ),
                               ],
-                              validator: (_) => vm.validateAmount(),
+                              validator: (_) => localizeValidator(l10n, vm.validateAmount()),
                               onChanged: (v) => vm.amount = v,
                             ),
                           ),
@@ -172,12 +175,12 @@ class _DebtFormViewState extends State<DebtFormView> {
                   _FormSection(
                     children: [
                       _DatePickerRow(
-                        label: 'Vade Tarihi',
+                        label: l10n.dueDate,
                         value: vm.dueDate,
                         onPicked: (d) => vm.dueDate = d,
                       ),
                       _Divider(),
-                      _Label('Durum'),
+                      _Label(l10n.status),
                       DropdownButton<DebtStatus>(
                         value: vm.status,
                         isExpanded: true,
@@ -186,7 +189,12 @@ class _DebtFormViewState extends State<DebtFormView> {
                             .map(
                               (s) => DropdownMenuItem(
                                 value: s,
-                                child: Text(s.label),
+                                child: Text(switch (s) {
+                                  DebtStatus.pending => l10n.debtPending,
+                                  DebtStatus.overdue => l10n.debtOverdue,
+                                  DebtStatus.paid => l10n.debtPaid,
+                                  DebtStatus.partial => l10n.debtPartial,
+                                }),
                               ),
                             )
                             .toList(),
@@ -203,8 +211,8 @@ class _DebtFormViewState extends State<DebtFormView> {
                     children: [
                       _AppTextField(
                         controller: _noteCtrl,
-                        label: 'Not',
-                        hint: 'Ek notlar...',
+                        label: l10n.note,
+                        hint: l10n.additionalNotesHint,
                         maxLines: 4,
                         onChanged: (v) => vm.note = v,
                       ),
@@ -216,7 +224,7 @@ class _DebtFormViewState extends State<DebtFormView> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: AppSpacing.md),
                       child: Text(
-                        vm.errorMessage!,
+                          localizeKey(l10n, vm.errorMessage),
                         style: AppTextStyles.footnote
                             .copyWith(color: AppColors.danger),
                         textAlign: TextAlign.center,
@@ -224,7 +232,7 @@ class _DebtFormViewState extends State<DebtFormView> {
                     ),
 
                   PrimaryButton(
-                    label: widget.initialDebt == null ? 'Kaydet' : 'Güncelle',
+                    label: widget.initialDebt == null ? l10n.save : l10n.update,
                     isLoading: vm.isLoading,
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
@@ -347,6 +355,7 @@ class _DatePickerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: () async {
         final now = DateTime.now();
@@ -355,7 +364,6 @@ class _DatePickerRow extends StatelessWidget {
           initialDate: value ?? now.add(const Duration(days: 7)),
           firstDate: DateTime(2020),
           lastDate: DateTime(2030),
-          locale: const Locale('tr', 'TR'),
         );
         if (picked != null) onPicked(picked);
       },
@@ -371,7 +379,7 @@ class _DatePickerRow extends StatelessWidget {
             Text(
               value != null
                   ? '${value!.day}.${value!.month}.${value!.year}'
-                  : 'Seç',
+                  : l10n.selectDate,
               style: AppTextStyles.body.copyWith(
                 color:
                     value != null ? AppColors.primary : AppColors.textTertiary,

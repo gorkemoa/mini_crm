@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
+import '../../core/utils/l10n_utils.dart';
+import '../../l10n/app_localizations.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_radii.dart';
 import '../../themes/app_spacing.dart';
@@ -14,6 +16,7 @@ class SettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<SettingsViewModel>(
       builder: (context, vm, _) {
+        final l10n = AppLocalizations.of(context)!;
         return Scaffold(
           backgroundColor: AppColors.background,
           body: SafeArea(
@@ -29,17 +32,37 @@ class SettingsView extends StatelessWidget {
                     AppSpacing.md,
                   ),
                   child:
-                      Text('Ayarlar', style: AppTextStyles.largeTitle),
+                      Text(l10n.settingsTitle, style: AppTextStyles.largeTitle),
                 ),
 
+                // Language section
+                _SectionLabel(l10n.sectionLanguage),
+                _SettingsGroup(children: [
+                  _SettingsTile(
+                    icon: Icons.language,
+                    iconColor: AppColors.primary,
+                    title: l10n.language,
+                    trailing: Text(
+                      SettingsViewModel.supportedLanguages.firstWhere(
+                        (l) => l['code'] == vm.locale.languageCode,
+                        orElse: () => {'native': vm.locale.languageCode},
+                      )['native']!,
+                      style: AppTextStyles.callout.copyWith(
+                          color: AppColors.textSecondary),
+                    ),
+                    onTap: () => _showLanguagePicker(context, vm),
+                  ),
+                ]),
+                const SizedBox(height: AppSpacing.md),
+
                 // Data section
-                _SectionLabel('VERİ'),
+                _SectionLabel(l10n.sectionData),
                 _SettingsGroup(children: [
                   _SettingsTile(
                     icon: Icons.upload_file_outlined,
                     iconColor: AppColors.primary,
-                    title: 'Veriyi Dışa Aktar',
-                    subtitle: 'Tüm veriyi JSON olarak paylaş',
+                    title: l10n.exportData,
+                    subtitle: l10n.exportDataSubtitle,
                     onTap: () async {
                       final ok = await _confirmExport(context);
                       if (ok == true && context.mounted) {
@@ -52,8 +75,8 @@ class SettingsView extends StatelessWidget {
                   _SettingsTile(
                     icon: Icons.download_outlined,
                     iconColor: AppColors.info,
-                    title: 'Veriyi İçe Aktar',
-                    subtitle: 'JSON dosyasından yükle',
+                    title: l10n.importData,
+                    subtitle: l10n.importDataSubtitle,
                     onTap: () async {
                       await vm.pickImportFile();
                       if (vm.pendingImport != null && context.mounted) {
@@ -72,12 +95,12 @@ class SettingsView extends StatelessWidget {
                 const SizedBox(height: AppSpacing.md),
 
                 // App info section
-                _SectionLabel('UYGULAMA'),
+                _SectionLabel(l10n.sectionApp),
                 _SettingsGroup(children: [
                   _SettingsTile(
                     icon: Icons.info_outline,
                     iconColor: AppColors.textSecondary,
-                    title: 'Sürüm',
+                    title: l10n.version,
                     trailing: Text(
                       AppConstants.appVersion,
                       style: AppTextStyles.callout.copyWith(
@@ -103,7 +126,7 @@ class SettingsView extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: AppSpacing.screenPaddingH),
                     child: Text(
-                      vm.errorMessage!,
+                      localizeKey(l10n, vm.errorMessage),
                       style: AppTextStyles.footnote
                           .copyWith(color: AppColors.danger),
                       textAlign: TextAlign.center,
@@ -119,21 +142,20 @@ class SettingsView extends StatelessWidget {
   }
 
   Future<bool?> _confirmExport(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Veriyi Dışa Aktar'),
-        content: const Text(
-          'Tüm müşteri, borç, proje ve gelir verileri JSON formatında dışa aktarılacak ve paylaşım menüsü açılacak.',
-        ),
+        title: Text(l10n.exportDialogTitle),
+        content: Text(l10n.exportDialogContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('İptal'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Aktar'),
+            child: Text(l10n.exportButton),
           ),
         ],
       ),
@@ -141,17 +163,16 @@ class SettingsView extends StatelessWidget {
   }
 
   Future<bool?> _confirmImport(BuildContext context, dynamic bundle) {
+    final l10n = AppLocalizations.of(context)!;
     return showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Veriyi İçe Aktar'),
-        content: const Text(
-          'Bu işlem mevcut verilerin üzerine yazmaz; seçilen dosyadaki kayıtlar eklenir. Devam etmek istiyor musun?',
-        ),
+        title: Text(l10n.importDialogTitle),
+        content: Text(l10n.importDialogContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('İptal'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -159,9 +180,80 @@ class SettingsView extends StatelessWidget {
               foregroundColor: Colors.white,
             ),
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('İçe Aktar'),
+            child: Text(l10n.importButton),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showLanguagePicker(BuildContext context, SettingsViewModel vm) {
+    final l10n = AppLocalizations.of(context)!;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Container(
+        decoration: const BoxDecoration(
+          color: AppColors.surface,
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(AppRadii.sheet)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Drag handle
+            Center(
+              child: Container(
+                width: 36,
+                height: 4,
+                margin: const EdgeInsets.only(
+                    top: AppSpacing.md, bottom: AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: AppColors.separator,
+                  borderRadius: BorderRadius.circular(100),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child:
+                  Text(l10n.selectLanguage, style: AppTextStyles.title3),
+            ),
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: SettingsViewModel.supportedLanguages.length,
+                itemBuilder: (ctx, i) {
+                  final lang = SettingsViewModel.supportedLanguages[i];
+                  final isSelected =
+                      vm.locale.languageCode == lang['code'];
+                  return ListTile(
+                    title: Text(lang['native']!,
+                        style: AppTextStyles.body.copyWith(
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.w400,
+                        )),
+                    subtitle: Text(lang['name']!,
+                        style: AppTextStyles.caption1
+                            .copyWith(color: AppColors.textSecondary)),
+                    trailing: isSelected
+                        ? const Icon(Icons.check,
+                            color: AppColors.primary, size: 20)
+                        : null,
+                    onTap: () {
+                      vm.setLocale(Locale(lang['code']!));
+                      Navigator.pop(ctx);
+                    },
+                  );
+                },
+              ),
+            ),
+            SizedBox(
+                height: MediaQuery.of(context).padding.bottom +
+                    AppSpacing.md),
+          ],
+        ),
       ),
     );
   }

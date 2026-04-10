@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
+import '../../core/utils/l10n_utils.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/lead_model.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_radii.dart';
@@ -55,6 +57,7 @@ class _LeadFormViewState extends State<LeadFormView> {
   Widget build(BuildContext context) {
     return Consumer<LeadFormViewModel>(
       builder: (context, vm, _) {
+        final l10n = AppLocalizations.of(context)!;
         if (vm.saved) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (context.mounted) Navigator.pop(context, true);
@@ -65,7 +68,7 @@ class _LeadFormViewState extends State<LeadFormView> {
           backgroundColor: AppColors.background,
           appBar: AppBar(
             title: Text(
-              widget.initialLead == null ? 'Yeni Aday' : 'Adayı Düzenle',
+              widget.initialLead == null ? l10n.newLead : l10n.editLead,
               style: AppTextStyles.navTitle,
             ),
             backgroundColor: AppColors.surface,
@@ -83,9 +86,9 @@ class _LeadFormViewState extends State<LeadFormView> {
                   _FormSection(children: [
                     _AppTextField(
                       controller: _nameCtrl,
-                      label: 'Ad Soyad',
-                      hint: 'ör. Ahmet Yılmaz',
-                      validator: (_) => vm.validateName(),
+                      label: l10n.fullName,
+                      hint: l10n.fullNameHint,
+                      validator: (_) => localizeValidator(l10n, vm.validateName()),
                       onChanged: (v) => vm.name = v,
                     ),
                   ]),
@@ -93,14 +96,22 @@ class _LeadFormViewState extends State<LeadFormView> {
 
                   // Stage + source
                   _FormSection(children: [
-                    _Label('Aşama'),
+                    _Label(l10n.stage),
                     DropdownButton<LeadStage>(
                       value: vm.stage,
                       isExpanded: true,
                       underline: const SizedBox.shrink(),
                       items: LeadStage.values
                           .map((s) => DropdownMenuItem(
-                              value: s, child: Text(s.label)))
+                              value: s,
+                              child: Text(switch (s) {
+                                LeadStage.newLead => l10n.leadNew,
+                                LeadStage.contacted => l10n.leadContacted,
+                                LeadStage.proposalSent => l10n.leadProposalSent,
+                                LeadStage.negotiating => l10n.leadNegotiating,
+                                LeadStage.won => l10n.leadWon,
+                                LeadStage.lost => l10n.leadLost,
+                              })))
                           .toList(),
                       onChanged: (v) {
                         if (v != null) {
@@ -110,17 +121,17 @@ class _LeadFormViewState extends State<LeadFormView> {
                       },
                     ),
                     _Divider(),
-                    _Label('Kaynak'),
+                    _Label(l10n.source),
                     DropdownButton<String>(
                       value: vm.source.isEmpty ? null : vm.source,
                       isExpanded: true,
                       underline: const SizedBox.shrink(),
-                      hint: Text('Kaynak seç',
+                      hint: Text(l10n.selectSource,
                           style: AppTextStyles.body
                               .copyWith(color: AppColors.textTertiary)),
                       items: [
-                        const DropdownMenuItem(
-                            value: '', child: Text('— Belirtilmemiş —')),
+                        DropdownMenuItem(
+                            value: '', child: Text(l10n.notSpecified)),
                         ...AppConstants.leadSources.map((s) =>
                             DropdownMenuItem(value: s, child: Text(s))),
                       ],
@@ -138,8 +149,8 @@ class _LeadFormViewState extends State<LeadFormView> {
                       Expanded(
                         child: _AppTextField(
                           controller: _valueCtrl,
-                          label: 'Tahmini Bütçe',
-                          hint: '0.00',
+                          label: l10n.estimatedBudget,
+                          hint: l10n.amountHint,
                           keyboardType: const TextInputType.numberWithOptions(
                               decimal: true),
                           inputFormatters: [
@@ -167,7 +178,7 @@ class _LeadFormViewState extends State<LeadFormView> {
                     ]),
                     _Divider(),
                     _DatePickerRow(
-                      label: 'Takip Tarihi',
+                      label: l10n.followUpDate,
                       value: vm.nextFollowUpDate,
                       onPicked: (d) {
                         vm.nextFollowUpDate = d;
@@ -181,8 +192,8 @@ class _LeadFormViewState extends State<LeadFormView> {
                   _FormSection(children: [
                     _AppTextField(
                       controller: _noteCtrl,
-                      label: 'Not',
-                      hint: 'Görüşme notları...',
+                      label: l10n.note,
+                      hint: l10n.meetingNotesHint,
                       maxLines: 4,
                       onChanged: (v) => vm.note = v,
                     ),
@@ -193,7 +204,7 @@ class _LeadFormViewState extends State<LeadFormView> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: AppSpacing.md),
                       child: Text(
-                        vm.errorMessage!,
+                        localizeKey(l10n, vm.errorMessage),
                         style: AppTextStyles.footnote
                             .copyWith(color: AppColors.danger),
                         textAlign: TextAlign.center,
@@ -201,7 +212,7 @@ class _LeadFormViewState extends State<LeadFormView> {
                     ),
 
                   PrimaryButton(
-                    label: widget.initialLead == null ? 'Kaydet' : 'Güncelle',
+                    label: widget.initialLead == null ? l10n.save : l10n.update,
                     isLoading: vm.isLoading,
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
@@ -336,7 +347,7 @@ class _DatePickerRow extends StatelessWidget {
             Text(
               value != null
                   ? '${value!.day}.${value!.month}.${value!.year}'
-                  : 'Seç',
+                  : AppLocalizations.of(context)!.selectDate,
               style: AppTextStyles.body.copyWith(
                 color: value != null
                     ? AppColors.primary

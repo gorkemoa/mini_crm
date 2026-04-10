@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/utils/date_utils.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/reminder_model.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_radii.dart';
@@ -29,6 +30,7 @@ class _RemindersViewState extends State<RemindersView> {
   Widget build(BuildContext context) {
     return Consumer<RemindersViewModel>(
       builder: (context, vm, _) {
+        final l10n = AppLocalizations.of(context)!;
         return Scaffold(
           backgroundColor: AppColors.background,
           body: SafeArea(
@@ -45,7 +47,7 @@ class _RemindersViewState extends State<RemindersView> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('Hatırlatıcılar',
+                      Text(l10n.remindersTitle,
                           style: AppTextStyles.largeTitle),
                       const Spacer(),
                       IconButton(
@@ -73,7 +75,13 @@ class _RemindersViewState extends State<RemindersView> {
                                 padding: const EdgeInsets.only(
                                     right: AppSpacing.xs),
                                 child: _Chip(
-                                  label: f.label,
+                                  label: switch (f) {
+                                    ReminderFilter.all => l10n.all,
+                                    ReminderFilter.today => l10n.today,
+                                    ReminderFilter.upcoming => l10n.upcoming,
+                                    ReminderFilter.overdue => l10n.past,
+                                    ReminderFilter.completed => l10n.completed,
+                                  },
                                   isSelected: vm.filter == f,
                                   onTap: () => vm.setFilter(f),
                                 ),
@@ -90,10 +98,9 @@ class _RemindersViewState extends State<RemindersView> {
                       : vm.items.isEmpty
                           ? EmptyState(
                               icon: Icons.notifications_none_outlined,
-                              title: 'Hatırlatıcı yok',
-                              subtitle:
-                                  'Önemli tarihleri ve görevleri buraya ekle.',
-                              actionLabel: 'Ekle',
+                              title: l10n.noRemindersYet,
+                              subtitle: l10n.noRemindersSubtitle,
+                              actionLabel: l10n.add,
                               onAction: () =>
                                   _showAddSheet(context, vm),
                             )
@@ -295,13 +302,13 @@ class _ReminderTile extends StatelessWidget {
                     PopupMenuItem(
                       value: 'toggle',
                       child: Text(reminder.isCompleted
-                          ? 'Tamamlanmadı olarak işaretle'
-                          : 'Tamamlandı'),
+                          ? AppLocalizations.of(context)!.markIncomplete
+                          : AppLocalizations.of(context)!.markCompleted),
                     ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'delete',
-                      child: Text('Sil',
-                          style: TextStyle(color: AppColors.danger)),
+                      child: Text(AppLocalizations.of(context)!.delete,
+                          style: const TextStyle(color: AppColors.danger)),
                     ),
                   ],
                   onSelected: (v) {
@@ -372,7 +379,7 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
               ),
             ),
           ),
-          Text('Hatırlatıcı Ekle', style: AppTextStyles.title3),
+          Text(AppLocalizations.of(context)!.addReminderTitle, style: AppTextStyles.title3),
           const SizedBox(height: AppSpacing.md),
 
           // Title field
@@ -381,7 +388,7 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
             autofocus: true,
             style: AppTextStyles.body,
             decoration: InputDecoration(
-              hintText: 'Hatırlatıcı başlığı...',
+              hintText: AppLocalizations.of(context)!.reminderTitleHint,
               filled: true,
               fillColor: AppColors.background,
               border: OutlineInputBorder(
@@ -440,13 +447,13 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
               onPressed: () {
                 final t = _titleCtrl.text.trim();
                 if (t.isEmpty) {
-                  setState(() => _error = 'Başlık boş olamaz.');
+                  setState(() => _error = AppLocalizations.of(context)!.titleCannotBeEmpty);
                   return;
                 }
                 widget.onAdd(t, _date);
                 Navigator.pop(context);
               },
-              child: const Text('Kaydet'),
+              child: Text(AppLocalizations.of(context)!.save),
             ),
           ),
         ],
@@ -455,20 +462,4 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
   }
 }
 
-// extend ReminderFilter with label
-extension _FilterLabel on ReminderFilter {
-  String get label {
-    switch (this) {
-      case ReminderFilter.all:
-        return 'Tümü';
-      case ReminderFilter.today:
-        return 'Bugün';
-      case ReminderFilter.upcoming:
-        return 'Yaklaşan';
-      case ReminderFilter.overdue:
-        return 'Geçmiş';
-      case ReminderFilter.completed:
-        return 'Tamamlanan';
-    }
-  }
-}
+// end of file

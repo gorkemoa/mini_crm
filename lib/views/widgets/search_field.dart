@@ -11,7 +11,7 @@ class SearchField extends StatefulWidget {
 
   const SearchField({
     super.key,
-    this.placeholder = 'Ara...',
+    this.placeholder = '',
     required this.onChanged,
     this.onClear,
   });

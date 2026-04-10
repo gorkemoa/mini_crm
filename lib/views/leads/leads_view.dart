@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/route_names.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/lead_model.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
@@ -29,6 +30,7 @@ class _LeadsViewState extends State<LeadsView> {
   Widget build(BuildContext context) {
     return Consumer<LeadsViewModel>(
       builder: (context, vm, _) {
+        final l10n = AppLocalizations.of(context)!;
         return Scaffold(
           backgroundColor: AppColors.background,
           body: SafeArea(
@@ -48,10 +50,10 @@ class _LeadsViewState extends State<LeadsView> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Adaylar', style: AppTextStyles.largeTitle),
+                          Text(l10n.leadsTitle, style: AppTextStyles.largeTitle),
                           if (!vm.isLoading && vm.items.isNotEmpty)
                             Text(
-                              '${vm.items.where((l) => l.isActive).length} aktif',
+                              '${vm.items.where((l) => l.isActive).length} ${l10n.leadsActiveCount}',
                               style: AppTextStyles.footnote
                                   .copyWith(color: AppColors.primary),
                             ),
@@ -86,7 +88,7 @@ class _LeadsViewState extends State<LeadsView> {
                     child: Row(
                       children: [
                         _Chip(
-                          label: 'Tümü',
+                          label: l10n.all,
                           isSelected: vm.stageFilter == null,
                           onTap: () => vm.filterByStage(null),
                         ),
@@ -95,7 +97,14 @@ class _LeadsViewState extends State<LeadsView> {
                               padding: const EdgeInsets.only(
                                   right: AppSpacing.xs),
                               child: _Chip(
-                                label: s.label,
+                                label: switch (s) {
+                                  LeadStage.newLead => l10n.leadNew,
+                                  LeadStage.contacted => l10n.leadContacted,
+                                  LeadStage.proposalSent => l10n.leadProposalSent,
+                                  LeadStage.negotiating => l10n.leadNegotiating,
+                                  LeadStage.won => l10n.leadWon,
+                                  LeadStage.lost => l10n.leadLost,
+                                },
                                 isSelected: vm.stageFilter == s,
                                 onTap: () => vm.filterByStage(s),
                               ),
@@ -112,9 +121,9 @@ class _LeadsViewState extends State<LeadsView> {
                       : vm.items.isEmpty
                           ? EmptyState(
                               icon: Icons.person_search_outlined,
-                              title: 'Henüz aday yok',
-                              subtitle: 'Potansiyel müşterileri buraya ekle.',
-                              actionLabel: 'Aday Ekle',
+                              title: l10n.noLeadsYet,
+                              subtitle: l10n.noLeadsSubtitle,
+                              actionLabel: l10n.addLead,
                               onAction: () async {
                                 await Navigator.pushNamed(
                                   context,
@@ -273,12 +282,12 @@ class _LeadTile extends StatelessWidget {
                   icon: const Icon(Icons.more_horiz,
                       color: AppColors.textTertiary, size: 20),
                   itemBuilder: (_) => [
-                    const PopupMenuItem(
-                        value: 'edit', child: Text('Düzenle')),
-                    const PopupMenuItem(
+                    PopupMenuItem(
+                        value: 'edit', child: Text(AppLocalizations.of(context)!.edit)),
+                    PopupMenuItem(
                       value: 'delete',
-                      child: Text('Sil',
-                          style: TextStyle(color: AppColors.danger)),
+                      child: Text(AppLocalizations.of(context)!.delete,
+                          style: const TextStyle(color: AppColors.danger)),
                     ),
                   ],
                   onSelected: (v) {

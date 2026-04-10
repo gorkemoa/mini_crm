@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
+import '../../core/utils/l10n_utils.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/project_model.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_radii.dart';
@@ -59,6 +61,7 @@ class _ProjectFormViewState extends State<ProjectFormView> {
   Widget build(BuildContext context) {
     return Consumer<ProjectFormViewModel>(
       builder: (context, vm, _) {
+        final l10n = AppLocalizations.of(context)!;
         if (vm.saved) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (context.mounted) Navigator.pop(context, true);
@@ -69,7 +72,7 @@ class _ProjectFormViewState extends State<ProjectFormView> {
           backgroundColor: AppColors.background,
           appBar: AppBar(
             title: Text(
-              widget.initialProject == null ? 'Yeni Proje' : 'Projeyi Düzenle',
+              widget.initialProject == null ? l10n.newProject : l10n.editProject,
               style: AppTextStyles.navTitle,
             ),
             backgroundColor: AppColors.surface,
@@ -85,20 +88,20 @@ class _ProjectFormViewState extends State<ProjectFormView> {
                 children: [
                   // Client picker
                   _FormSection(children: [
-                    _Label('Müşteri'),
+                    _Label(l10n.customer),
                     DropdownButton<String?>(
                       value: vm.selectedClientId,
                       isExpanded: true,
                       underline: const SizedBox.shrink(),
                       hint: Text(
-                        'Müşteri seç (isteğe bağlı)',
+                        l10n.selectCustomerOptional,
                         style: AppTextStyles.body
                             .copyWith(color: AppColors.textTertiary),
                       ),
                       items: [
-                        const DropdownMenuItem(
+                        DropdownMenuItem(
                           value: null,
-                          child: Text('— Müşterisiz —'),
+                          child: Text(l10n.noCustomer),
                         ),
                         ...vm.clients.map(
                           (c) => DropdownMenuItem(
@@ -116,16 +119,16 @@ class _ProjectFormViewState extends State<ProjectFormView> {
                   _FormSection(children: [
                     _AppTextField(
                       controller: _titleCtrl,
-                      label: 'Proje Adı',
-                      hint: 'ör. Web sitesi tasarımı',
-                      validator: (_) => vm.validateTitle(),
+                      label: l10n.projectName,
+                      hint: l10n.projectNameHint,
+                      validator: (_) => localizeValidator(l10n, vm.validateTitle()),
                       onChanged: (v) => vm.title = v,
                     ),
                     _Divider(),
                     _AppTextField(
                       controller: _descCtrl,
-                      label: 'Açıklama',
-                      hint: 'Proje detayları...',
+                      label: l10n.description,
+                      hint: l10n.projectDetails,
                       maxLines: 3,
                       onChanged: (v) => vm.description = v,
                     ),
@@ -139,8 +142,8 @@ class _ProjectFormViewState extends State<ProjectFormView> {
                         Expanded(
                           child: _AppTextField(
                             controller: _budgetCtrl,
-                            label: 'Bütçe',
-                            hint: '0.00',
+                            label: l10n.budget,
+                            hint: l10n.amountHint,
                             keyboardType:
                                 const TextInputType.numberWithOptions(
                                     decimal: true),
@@ -172,18 +175,18 @@ class _ProjectFormViewState extends State<ProjectFormView> {
                   // Dates + status
                   _FormSection(children: [
                     _DatePickerRow(
-                      label: 'Başlangıç',
+                      label: l10n.startDate,
                       value: vm.startDate,
                       onPicked: (d) => vm.startDate = d,
                     ),
                     _Divider(),
                     _DatePickerRow(
-                      label: 'Bitiş',
+                      label: l10n.endDate,
                       value: vm.endDate,
                       onPicked: (d) => vm.endDate = d,
                     ),
                     _Divider(),
-                    _Label('Durum'),
+                    _Label(l10n.status),
                     DropdownButton<ProjectStatus>(
                       value: vm.status,
                       isExpanded: true,
@@ -191,7 +194,14 @@ class _ProjectFormViewState extends State<ProjectFormView> {
                       items: ProjectStatus.values
                           .map((s) => DropdownMenuItem(
                                 value: s,
-                                child: Text(s.label),
+                                child: Text(switch (s) {
+                                  ProjectStatus.planned => l10n.projectPlanned,
+                                  ProjectStatus.startingSoon => l10n.projectStartingSoon,
+                                  ProjectStatus.active => l10n.projectActive,
+                                  ProjectStatus.paused => l10n.projectPaused,
+                                  ProjectStatus.completed => l10n.projectCompleted,
+                                  ProjectStatus.cancelled => l10n.projectCancelled,
+                                }),
                               ))
                           .toList(),
                       onChanged: (v) {
@@ -205,7 +215,7 @@ class _ProjectFormViewState extends State<ProjectFormView> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: AppSpacing.md),
                       child: Text(
-                        vm.errorMessage!,
+                        localizeKey(l10n, vm.errorMessage),
                         style: AppTextStyles.footnote
                             .copyWith(color: AppColors.danger),
                         textAlign: TextAlign.center,
@@ -214,8 +224,8 @@ class _ProjectFormViewState extends State<ProjectFormView> {
 
                   PrimaryButton(
                     label: widget.initialProject == null
-                        ? 'Kaydet'
-                        : 'Güncelle',
+                        ? l10n.save
+                        : l10n.update,
                     isLoading: vm.isLoading,
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
@@ -331,6 +341,7 @@ class _DatePickerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: () async {
         final now = DateTime.now();
@@ -339,7 +350,6 @@ class _DatePickerRow extends StatelessWidget {
           initialDate: value ?? now,
           firstDate: DateTime(2020),
           lastDate: DateTime(2030),
-          locale: const Locale('tr', 'TR'),
         );
         if (d != null) onPicked(d);
       },
@@ -352,7 +362,7 @@ class _DatePickerRow extends StatelessWidget {
             Text(
               value != null
                   ? '${value!.day}.${value!.month}.${value!.year}'
-                  : 'Seç',
+                  : l10n.selectDate,
               style: AppTextStyles.body.copyWith(
                 color:
                     value != null ? AppColors.primary : AppColors.textTertiary,
