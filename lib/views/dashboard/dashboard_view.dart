@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/utils/currency_utils.dart';
 import '../../core/utils/date_utils.dart';
+import '../../core/utils/l10n_utils.dart';
+import '../../l10n/app_localizations.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -29,6 +31,7 @@ class _DashboardViewState extends State<DashboardView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Consumer<DashboardViewModel>(
       builder: (context, vm, _) {
         return Scaffold(
@@ -53,12 +56,12 @@ class _DashboardViewState extends State<DashboardView> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Mini CRM',
+                            l10n.appTitle,
                             style: AppTextStyles.largeTitle,
                           ),
                           const SizedBox(height: AppSpacing.xs),
                           Text(
-                            _greeting(),
+                            _greeting(l10n),
                             style: AppTextStyles.footnote,
                           ),
                         ],
@@ -77,9 +80,9 @@ class _DashboardViewState extends State<DashboardView> {
                     SliverFillRemaining(
                       child: EmptyState(
                         icon: Icons.error_outline,
-                        title: 'Bir hata oluştu',
-                        subtitle: vm.errorMessage,
-                        actionLabel: 'Tekrar Dene',
+                        title: l10n.errorOccurred,
+                        subtitle: localizeKey(l10n, vm.errorMessage),
+                        actionLabel: l10n.tryAgain,
                         onAction: vm.refresh,
                       ),
                     )
@@ -97,7 +100,7 @@ class _DashboardViewState extends State<DashboardView> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const _SectionLabel('ÖZET'),
+                            const _SectionLabel(),
                             const SizedBox(height: AppSpacing.sm),
                             GridView.count(
                               shrinkWrap: true,
@@ -108,7 +111,7 @@ class _DashboardViewState extends State<DashboardView> {
                               childAspectRatio: 1.25,
                               children: [
                                 StatCard(
-                                  title: 'Bekleyen Alacak',
+                                  title: l10n.pendingDebts,
                                   value: CurrencyUtils.formatCompact(
                                     vm.totalPendingDebt,
                                     vm.defaultCurrency,
@@ -121,7 +124,7 @@ class _DashboardViewState extends State<DashboardView> {
                                   ),
                                 ),
                                 StatCard(
-                                  title: 'Aktif Lead',
+                                  title: l10n.activeLead,
                                   value: vm.activeLeadCount.toString(),
                                   accentColor: AppColors.purple,
                                   icon: Icons.person_search_outlined,
@@ -131,7 +134,7 @@ class _DashboardViewState extends State<DashboardView> {
                                   ),
                                 ),
                                 StatCard(
-                                  title: 'Bu Ay Gelir',
+                                  title: l10n.thisMonthIncome,
                                   value: CurrencyUtils.formatCompact(
                                     vm.thisMonthIncome,
                                     vm.defaultCurrency,
@@ -144,7 +147,7 @@ class _DashboardViewState extends State<DashboardView> {
                                   ),
                                 ),
                                 StatCard(
-                                  title: 'Bugün Hatırlatıcı',
+                                  title: l10n.todayReminders,
                                   value: vm.todayReminders.length.toString(),
                                   accentColor: AppColors.danger,
                                   icon: Icons.notifications_outlined,
@@ -171,8 +174,8 @@ class _DashboardViewState extends State<DashboardView> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SectionHeader(
-                                title: 'Gecikmiş Alacaklar',
-                                action: 'Tümü',
+                                title: l10n.overdueDebts,
+                                action: l10n.seeAll,
                                 onAction: () => Navigator.pushNamed(
                                   context,
                                   RouteNames.debts,
@@ -213,8 +216,8 @@ class _DashboardViewState extends State<DashboardView> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SectionHeader(
-                                title: 'Aktif Projeler',
-                                action: 'Tümü',
+                                title: l10n.activeProjects,
+                                action: l10n.seeAll,
                                 onAction: () => Navigator.pushNamed(
                                   context,
                                   RouteNames.projects,
@@ -255,8 +258,8 @@ class _DashboardViewState extends State<DashboardView> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SectionHeader(
-                                title: 'Bugün',
-                                action: 'Tümü',
+                                title: l10n.today,
+                                action: l10n.seeAll,
                                 onAction: () => Navigator.pushNamed(
                                   context,
                                   RouteNames.reminders,
@@ -300,21 +303,21 @@ class _DashboardViewState extends State<DashboardView> {
     );
   }
 
-  String _greeting() {
+  String _greeting(AppLocalizations l10n) {
     final hour = DateTime.now().hour;
-    if (hour < 12) return 'Günaydın 👋';
-    if (hour < 18) return 'İyi günler 👋';
-    return 'İyi akşamlar 👋';
+    if (hour < 12) return l10n.greetingMorning;
+    if (hour < 18) return l10n.greetingAfternoon;
+    return l10n.greetingEvening;
   }
 }
 
 class _SectionLabel extends StatelessWidget {
-  final String text;
-  const _SectionLabel(this.text);
+  const _SectionLabel();
 
   @override
   Widget build(BuildContext context) {
-    return Text(text, style: AppTextStyles.sectionHeader);
+    final l10n = AppLocalizations.of(context)!;
+    return Text(l10n.dashboardSummarySection, style: AppTextStyles.sectionHeader);
   }
 }
 

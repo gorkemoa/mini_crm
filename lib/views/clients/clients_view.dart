@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/route_names.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/client_model.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
@@ -30,6 +31,7 @@ class _ClientsViewState extends State<ClientsView> {
   Widget build(BuildContext context) {
     return Consumer<ClientsViewModel>(
       builder: (context, vm, _) {
+        final l10n = AppLocalizations.of(context)!;
         return Scaffold(
           backgroundColor: AppColors.background,
           body: SafeArea(
@@ -45,7 +47,7 @@ class _ClientsViewState extends State<ClientsView> {
                   ),
                   child: Row(
                     children: [
-                      Text('Müşteriler', style: AppTextStyles.largeTitle),
+                      Text(l10n.clientsTitle, style: AppTextStyles.largeTitle),
                       const Spacer(),
                       IconButton(
                         icon: const Icon(Icons.add),
@@ -89,9 +91,9 @@ class _ClientsViewState extends State<ClientsView> {
                       : vm.items.isEmpty
                           ? EmptyState(
                               icon: Icons.people_outline,
-                              title: 'Henüz müşteri yok',
-                              subtitle: 'İlk müşterini ekleyerek başla.',
-                              actionLabel: 'Müşteri Ekle',
+                              title: l10n.noClientsYet,
+                              subtitle: l10n.noClientsSubtitle,
+                              actionLabel: l10n.addClient,
                               onAction: () async {
                                 await Navigator.pushNamed(
                                   context,
@@ -146,17 +148,16 @@ class _ClientsViewState extends State<ClientsView> {
     ClientsViewModel vm,
     ClientModel client,
   ) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Müşteriyi Sil'),
-        content: Text(
-          '${client.fullName} adlı müşteriyi silmek istediğinizden emin misiniz?',
-        ),
+        title: Text(l10n.deleteClient),
+        content: Text(client.fullName),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('İptal'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () {
@@ -164,7 +165,7 @@ class _ClientsViewState extends State<ClientsView> {
               vm.deleteClient(client.id);
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.danger),
-            child: const Text('Sil'),
+            child: Text(l10n.delete),
           ),
         ],
       ),
@@ -184,8 +185,8 @@ class _StatusFilterRow extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _FilterChip(
-            label: 'Tümü',
+        _FilterChip(
+            label: l10n.all,
             isSelected: selected == null,
             onTap: () => onSelected(null),
           ),
@@ -193,7 +194,11 @@ class _StatusFilterRow extends StatelessWidget {
           ...ClientStatus.values.map((s) => Padding(
                 padding: const EdgeInsets.only(right: AppSpacing.xs),
                 child: _FilterChip(
-                  label: s.label,
+                  label: switch (s) {
+                    ClientStatus.active => l10n.statusActive,
+                    ClientStatus.inactive => l10n.statusInactive,
+                    ClientStatus.lost => l10n.statusLost,
+                  },
                   isSelected: selected == s,
                   onTap: () => onSelected(s),
                 ),
@@ -299,15 +304,15 @@ class _ClientTile extends StatelessWidget {
                     size: 20,
                   ),
                   itemBuilder: (_) => [
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'edit',
-                      child: Text('Düzenle'),
+                      child: Text(AppLocalizations.of(context)!.edit),
                     ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'delete',
                       child: Text(
-                        'Sil',
-                        style: TextStyle(color: AppColors.danger),
+                        AppLocalizations.of(context)!.delete,
+                        style: const TextStyle(color: AppColors.danger),
                       ),
                     ),
                   ],

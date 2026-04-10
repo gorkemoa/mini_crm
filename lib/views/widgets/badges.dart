@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/client_model.dart';
 import '../../models/debt_model.dart';
 import '../../models/lead_model.dart';
@@ -16,12 +17,18 @@ class ClientStatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final label = switch (status) {
+      ClientStatus.active => l10n.statusActive,
+      ClientStatus.inactive => l10n.statusInactive,
+      ClientStatus.lost => l10n.statusLost,
+    };
     final (color, bg) = switch (status) {
       ClientStatus.active => (AppColors.clientActive, AppColors.clientActiveMuted),
       ClientStatus.inactive => (AppColors.clientInactive, AppColors.clientInactiveMuted),
       ClientStatus.lost => (AppColors.clientLost, AppColors.clientLostMuted),
     };
-    return StatusBadge(label: status.label, color: color, backgroundColor: bg);
+    return StatusBadge(label: label, color: color, backgroundColor: bg);
   }
 }
 
@@ -33,13 +40,20 @@ class DebtStatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final label = switch (status) {
+      DebtStatus.pending => l10n.debtPending,
+      DebtStatus.overdue => l10n.debtOverdue,
+      DebtStatus.paid => l10n.debtPaid,
+      DebtStatus.partial => l10n.debtPartial,
+    };
     final (color, bg) = switch (status) {
       DebtStatus.pending => (AppColors.debtPending, AppColors.debtPendingMuted),
       DebtStatus.overdue => (AppColors.debtOverdue, AppColors.debtOverdueMuted),
       DebtStatus.paid => (AppColors.debtPaid, AppColors.debtPaidMuted),
       DebtStatus.partial => (AppColors.debtPartial, AppColors.debtPartialMuted),
     };
-    return StatusBadge(label: status.label, color: color, backgroundColor: bg);
+    return StatusBadge(label: label, color: color, backgroundColor: bg);
   }
 }
 
@@ -51,6 +65,15 @@ class ProjectStatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final label = switch (status) {
+      ProjectStatus.planned => l10n.projectPlanned,
+      ProjectStatus.startingSoon => l10n.projectStartingSoon,
+      ProjectStatus.active => l10n.projectActive,
+      ProjectStatus.paused => l10n.projectPaused,
+      ProjectStatus.completed => l10n.projectCompleted,
+      ProjectStatus.cancelled => l10n.projectCancelled,
+    };
     final (color, bg) = switch (status) {
       ProjectStatus.planned => (AppColors.projectPlanned, AppColors.projectPlannedMuted),
       ProjectStatus.startingSoon => (AppColors.projectStartingSoon, AppColors.projectStartingSoonMuted),
@@ -59,7 +82,7 @@ class ProjectStatusBadge extends StatelessWidget {
       ProjectStatus.completed => (AppColors.projectCompleted, AppColors.projectCompletedMuted),
       ProjectStatus.cancelled => (AppColors.projectCancelled, AppColors.projectCancelledMuted),
     };
-    return StatusBadge(label: status.label, color: color, backgroundColor: bg);
+    return StatusBadge(label: label, color: color, backgroundColor: bg);
   }
 }
 
@@ -71,6 +94,15 @@ class LeadStageBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final label = switch (stage) {
+      LeadStage.newLead => l10n.leadNew,
+      LeadStage.contacted => l10n.leadContacted,
+      LeadStage.proposalSent => l10n.leadProposalSent,
+      LeadStage.negotiating => l10n.leadNegotiating,
+      LeadStage.won => l10n.leadWon,
+      LeadStage.lost => l10n.leadLost,
+    };
     final (color, bg) = switch (stage) {
       LeadStage.newLead => (AppColors.leadNew, AppColors.leadNewMuted),
       LeadStage.contacted => (AppColors.leadContacted, AppColors.leadContactedMuted),
@@ -79,7 +111,7 @@ class LeadStageBadge extends StatelessWidget {
       LeadStage.won => (AppColors.leadWon, AppColors.leadWonMuted),
       LeadStage.lost => (AppColors.leadLost, AppColors.leadLostMuted),
     };
-    return StatusBadge(label: stage.label, color: color, backgroundColor: bg);
+    return StatusBadge(label: label, color: color, backgroundColor: bg);
   }
 }
 

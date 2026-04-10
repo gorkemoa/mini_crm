@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../core/utils/l10n_utils.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/client_model.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
@@ -51,6 +53,7 @@ class _ClientFormViewState extends State<ClientFormView> {
   Widget build(BuildContext context) {
     return Consumer<ClientFormViewModel>(
       builder: (context, vm, _) {
+        final l10n = AppLocalizations.of(context)!;
         if (vm.saved) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) Navigator.pop(context);
@@ -60,7 +63,7 @@ class _ClientFormViewState extends State<ClientFormView> {
         return Scaffold(
           backgroundColor: AppColors.background,
           appBar: AppBar(
-            title: Text(vm.isEditMode ? 'Müşteriyi Düzenle' : 'Yeni Müşteri'),
+            title: Text(vm.isEditMode ? l10n.editClient : l10n.newClient),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new, size: 18),
               onPressed: () => Navigator.pop(context),
@@ -78,16 +81,16 @@ class _ClientFormViewState extends State<ClientFormView> {
                       children: [
                         _AppTextField(
                           controller: _fullNameCtrl,
-                          label: 'Ad Soyad',
-                          hint: 'Ahmet Yılmaz',
+                          label: l10n.fullName,
+                          hint: l10n.fullNameHint,
                           onChanged: (v) => vm.fullName = v,
-                          validator: (_) => vm.validateFullName(),
+                          validator: (_) => localizeKey(l10n, vm.validateFullName()),
                           textCapitalization: TextCapitalization.words,
                         ),
                         _AppTextField(
                           controller: _companyCtrl,
-                          label: 'Şirket (opsiyonel)',
-                          hint: 'Şirket Adı A.Ş.',
+                          label: l10n.companyOptional,
+                          hint: l10n.companyHint,
                           onChanged: (v) => vm.companyName = v,
                           textCapitalization: TextCapitalization.words,
                         ),
@@ -98,18 +101,18 @@ class _ClientFormViewState extends State<ClientFormView> {
                       children: [
                         _AppTextField(
                           controller: _emailCtrl,
-                          label: 'E-posta (opsiyonel)',
-                          hint: 'ornek@mail.com',
+                          label: l10n.emailOptional,
+                          hint: l10n.emailHint,
                           onChanged: (v) => vm.email = v,
-                          validator: (_) => vm.validateEmail(),
+                          validator: (_) => localizeKey(l10n, vm.validateEmail()),
                           keyboardType: TextInputType.emailAddress,
                         ),
                         _AppTextField(
                           controller: _phoneCtrl,
-                          label: 'Telefon (opsiyonel)',
-                          hint: '0555 555 55 55',
+                          label: l10n.phoneOptional,
+                          hint: l10n.phoneHint,
                           onChanged: (v) => vm.phone = v,
-                          validator: (_) => vm.validatePhone(),
+                          validator: (_) => localizeKey(l10n, vm.validatePhone()),
                           keyboardType: TextInputType.phone,
                         ),
                       ],
@@ -131,8 +134,8 @@ class _ClientFormViewState extends State<ClientFormView> {
                       children: [
                         _AppTextField(
                           controller: _notesCtrl,
-                          label: 'Notlar (opsiyonel)',
-                          hint: 'Müşteri hakkında notlar...',
+                          label: l10n.notesOptional,
+                          hint: l10n.notesHint,
                           onChanged: (v) => vm.notes = v,
                           maxLines: 3,
                         ),
@@ -143,14 +146,14 @@ class _ClientFormViewState extends State<ClientFormView> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                         child: Text(
-                          vm.errorMessage!,
+                          localizeKey(l10n, vm.errorMessage),
                           style: AppTextStyles.footnote.copyWith(
                             color: AppColors.danger,
                           ),
                         ),
                       ),
                     PrimaryButton(
-                      label: vm.isEditMode ? 'Güncelle' : 'Kaydet',
+                      label: vm.isEditMode ? l10n.update : l10n.save,
                       isLoading: vm.isLoading,
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
@@ -260,6 +263,7 @@ class _StatusPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.cardPadding,
@@ -267,7 +271,7 @@ class _StatusPicker extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Text('Durum', style: AppTextStyles.subheadline),
+          Text(l10n.status, style: AppTextStyles.subheadline),
           const Spacer(),
           DropdownButton<ClientStatus>(
             value: value,
@@ -276,7 +280,11 @@ class _StatusPicker extends StatelessWidget {
             items: ClientStatus.values
                 .map((s) => DropdownMenuItem(
                       value: s,
-                      child: Text(s.label),
+                      child: Text(switch (s) {
+                        ClientStatus.active => l10n.statusActive,
+                        ClientStatus.inactive => l10n.statusInactive,
+                        ClientStatus.lost => l10n.statusLost,
+                      }),
                     ))
                 .toList(),
             onChanged: (s) {

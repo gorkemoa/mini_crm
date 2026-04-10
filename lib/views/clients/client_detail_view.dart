@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../core/constants/route_names.dart';
 import '../../core/utils/currency_utils.dart';
 import '../../core/utils/date_utils.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/client_model.dart';
 import '../../models/debt_model.dart';
 import '../../models/project_model.dart';
@@ -36,6 +37,7 @@ class _ClientDetailViewState extends State<ClientDetailView> {
   Widget build(BuildContext context) {
     return Consumer<ClientDetailViewModel>(
       builder: (context, vm, _) {
+        final l10n = AppLocalizations.of(context)!;
         final client = vm.client ?? widget.client;
         return Scaffold(
           backgroundColor: AppColors.background,
@@ -79,8 +81,8 @@ class _ClientDetailViewState extends State<ClientDetailView> {
 
                       // ─── Debts
                       SectionHeader(
-                        title: 'Alacaklar',
-                        action: 'Ekle',
+                        title: l10n.debtsSection,
+                        action: l10n.add,
                         onAction: () async {
                           await Navigator.pushNamed(
                             context,
@@ -91,14 +93,14 @@ class _ClientDetailViewState extends State<ClientDetailView> {
                         },
                       ),
                       if (vm.debts.isEmpty)
-                        const _EmptyInline('Henüz alacak kaydı yok.')
+                        _EmptyInline(l10n.noDebtsInline)
                       else
                         _DebtList(debts: vm.debts),
 
                       // ─── Projects
                       SectionHeader(
-                        title: 'Projeler',
-                        action: 'Ekle',
+                        title: l10n.projectsSection,
+                        action: l10n.add,
                         onAction: () async {
                           await Navigator.pushNamed(
                             context,
@@ -109,7 +111,7 @@ class _ClientDetailViewState extends State<ClientDetailView> {
                         },
                       ),
                       if (vm.projects.isEmpty)
-                        const _EmptyInline('Henüz proje yok.')
+                        _EmptyInline(l10n.noProjectsInline)
                       else
                         _ProjectList(projects: vm.projects),
 
@@ -155,15 +157,16 @@ class _ContactCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final rows = <Widget>[];
     if (client.email != null) {
-      rows.add(InfoRow(label: 'E-posta', value: client.email!));
+      rows.add(InfoRow(label: l10n.email, value: client.email!));
     }
     if (client.phone != null) {
-      rows.add(InfoRow(label: 'Telefon', value: client.phone!));
+      rows.add(InfoRow(label: l10n.phone, value: client.phone!));
     }
     if (client.notes != null) {
-      rows.add(InfoRow(label: 'Notlar', value: client.notes!, isLast: true));
+      rows.add(InfoRow(label: l10n.notes, value: client.notes!, isLast: true));
     }
     if (rows.isEmpty) return const SizedBox.shrink();
 
@@ -187,18 +190,18 @@ class _ContactCard extends StatelessWidget {
           children: [
             if (client.email != null)
               InfoRow(
-                label: 'E-posta',
+                label: l10n.email,
                 value: client.email!,
                 isLast: client.phone == null && client.notes == null,
               ),
             if (client.phone != null)
               InfoRow(
-                label: 'Telefon',
+                label: l10n.phone,
                 value: client.phone!,
                 isLast: client.notes == null,
               ),
             if (client.notes != null)
-              InfoRow(label: 'Notlar', value: client.notes!, isLast: true),
+              InfoRow(label: l10n.notes, value: client.notes!, isLast: true),
           ],
         ),
       ),
