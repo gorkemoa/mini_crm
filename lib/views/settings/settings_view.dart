@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -30,53 +31,53 @@ class _SettingsViewState extends State<SettingsView> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: Text(context.l10n.settingsTitle)),
       body: Consumer<SettingsViewModel>(
         builder: (context, vm, _) {
           return ListView(
             padding: AppSpacing.screenPaddingAll,
             children: [
-              _SectionHeader(title: 'Appearance'),
+              _SectionHeader(title: context.l10n.settingsAppearance),
               _SettingsCard(
                 children: [
                   _ThemeTile(vm: vm),
                 ],
               ),
               const SizedBox(height: AppSpacing.md),
-              _SectionHeader(title: 'Language'),
+              _SectionHeader(title: context.l10n.settingsLanguage),
               _SettingsCard(
                 children: [
                   _LanguageTile(vm: vm),
                 ],
               ),
               const SizedBox(height: AppSpacing.md),
-              _SectionHeader(title: 'Data'),
+              _SectionHeader(title: context.l10n.settingsData),
               _SettingsCard(
                 children: [
                   ListTile(
                     leading: const Icon(Icons.upload_rounded, color: AppColors.primary),
-                    title: const Text('Export Data'),
-                    subtitle: const Text('Export all records as JSON'),
+                    title: Text(context.l10n.settingsExport),
+                    subtitle: Text(context.l10n.settingsExportDesc),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => Navigator.pushNamed(context, '/settings/export'),
                   ),
                   const Divider(height: 1, indent: 56),
                   ListTile(
                     leading: const Icon(Icons.download_rounded, color: AppColors.info),
-                    title: const Text('Import Data'),
-                    subtitle: const Text('Restore from a JSON backup'),
+                    title: Text(context.l10n.settingsImport),
+                    subtitle: Text(context.l10n.settingsImportDesc),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => Navigator.pushNamed(context, '/settings/import'),
                   ),
                 ],
               ),
               const SizedBox(height: AppSpacing.md),
-              _SectionHeader(title: 'About'),
+              _SectionHeader(title: context.l10n.settingsAbout),
               _SettingsCard(
                 children: [
                   ListTile(
                     leading: const Icon(Icons.info_outline_rounded, color: AppColors.textSecondaryLight),
-                    title: const Text('Version'),
+                    title: Text(context.l10n.settingsVersion),
                     trailing: Text(
                       AppConstants.appVersion,
                       style: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondaryLight),
@@ -153,14 +154,14 @@ class _ThemeTile extends StatelessWidget {
                 : Icons.brightness_auto_rounded,
         color: AppColors.primary,
       ),
-      title: const Text('Theme'),
+      title: Text(context.l10n.settingsTheme),
       trailing: DropdownButton<AppThemeMode>(
         value: vm.themeMode,
         underline: const SizedBox(),
-        items: const [
-          DropdownMenuItem(value: AppThemeMode.system, child: Text('System')),
-          DropdownMenuItem(value: AppThemeMode.light, child: Text('Light')),
-          DropdownMenuItem(value: AppThemeMode.dark, child: Text('Dark')),
+        items: [
+          DropdownMenuItem(value: AppThemeMode.system, child: Text(context.l10n.themeSystem)),
+          DropdownMenuItem(value: AppThemeMode.light, child: Text(context.l10n.themeLight)),
+          DropdownMenuItem(value: AppThemeMode.dark, child: Text(context.l10n.themeDark)),
         ],
         onChanged: (m) {
           if (m != null) vm.setThemeMode(m);
@@ -201,7 +202,7 @@ class _LanguageTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: const Icon(Icons.language_rounded, color: AppColors.primary),
-      title: const Text('Language'),
+      title: Text(context.l10n.settingsLanguage),
       trailing: DropdownButton<String>(
         value: vm.locale?.languageCode ?? 'en',
         underline: const SizedBox(),

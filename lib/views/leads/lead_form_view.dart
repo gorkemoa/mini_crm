@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -76,7 +77,7 @@ class _LeadFormViewState extends State<LeadFormView> {
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       appBar: AppBar(
-        title: Text(widget.editLead != null ? 'Edit Lead' : 'Add Lead'),
+        title: Text(widget.editLead != null ? context.l10n.leadsEditTitle : context.l10n.leadsAddTitle),
       ),
       body: Consumer<LeadFormViewModel>(
         builder: (context, vm, _) {
@@ -89,24 +90,24 @@ class _LeadFormViewState extends State<LeadFormView> {
                 children: [
                   TextFormField(
                     controller: _nameCtrl,
-                    decoration: const InputDecoration(labelText: 'Name *'),
+                    decoration: InputDecoration(labelText: '${context.l10n.labelName} *'),
                     validator: Validators.required,
                   ),
                   const SizedBox(height: AppSpacing.formFieldSpacing),
                   TextFormField(
                     controller: _sourceCtrl,
-                    decoration: const InputDecoration(
-                      labelText: 'Source',
+                    decoration: InputDecoration(
+                      labelText: context.l10n.labelSource,
                       hintText: 'e.g. LinkedIn, Website, Referral',
                     ),
                   ),
                   const SizedBox(height: AppSpacing.formFieldSpacing),
                   DropdownButtonFormField<LeadStage>(
                     value: vm.stage,
-                    decoration: const InputDecoration(labelText: 'Stage'),
+                    decoration: InputDecoration(labelText: context.l10n.labelStage),
                     items: LeadStage.values.map((s) => DropdownMenuItem(
                       value: s,
-                      child: Text(_stageLabel(s)),
+                      child: Text(_stageLabel(s, context)),
                     )).toList(),
                     onChanged: (s) => setState(() => vm.stage = s ?? LeadStage.newLead),
                   ),
@@ -117,7 +118,7 @@ class _LeadFormViewState extends State<LeadFormView> {
                         flex: 2,
                         child: TextFormField(
                           controller: _budgetCtrl,
-                          decoration: const InputDecoration(labelText: 'Estimated Budget'),
+                          decoration: InputDecoration(labelText: context.l10n.labelEstimatedBudget),
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
                           validator: Validators.positiveNumber,
                         ),
@@ -126,7 +127,7 @@ class _LeadFormViewState extends State<LeadFormView> {
                       Expanded(
                         child: DropdownButtonFormField<String>(
                           value: vm.currency,
-                          decoration: const InputDecoration(labelText: 'Currency'),
+                          decoration: InputDecoration(labelText: context.l10n.labelCurrency),
                           items: CurrencyUtils.supportedCurrencies
                               .map((c) => DropdownMenuItem(value: c, child: Text(c)))
                               .toList(),
@@ -139,7 +140,7 @@ class _LeadFormViewState extends State<LeadFormView> {
                   InkWell(
                     onTap: _pickDate,
                     child: InputDecorator(
-                      decoration: const InputDecoration(labelText: 'Next Follow-up Date'),
+                      decoration: InputDecoration(labelText: context.l10n.labelFollowUpDate),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -155,7 +156,7 @@ class _LeadFormViewState extends State<LeadFormView> {
                   const SizedBox(height: AppSpacing.formFieldSpacing),
                   TextFormField(
                     controller: _noteCtrl,
-                    decoration: const InputDecoration(labelText: 'Note'),
+                    decoration: InputDecoration(labelText: context.l10n.labelNote),
                     maxLines: 3,
                   ),
                   const SizedBox(height: AppSpacing.xl),
@@ -168,7 +169,7 @@ class _LeadFormViewState extends State<LeadFormView> {
                     onPressed: vm.isLoading ? null : _submit,
                     child: vm.isLoading
                         ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                        : Text(widget.editLead != null ? 'Save Changes' : 'Add Lead'),
+                        : Text(widget.editLead != null ? context.l10n.actionSave : context.l10n.leadsAddTitle),
                   ),
                 ],
               ),
@@ -179,12 +180,12 @@ class _LeadFormViewState extends State<LeadFormView> {
     );
   }
 
-  String _stageLabel(LeadStage s) => switch (s) {
-        LeadStage.newLead => 'New',
-        LeadStage.contacted => 'Contacted',
-        LeadStage.proposalSent => 'Proposal',
-        LeadStage.negotiating => 'Negotiation',
-        LeadStage.won => 'Won',
-        LeadStage.lost => 'Lost',
+  String _stageLabel(LeadStage s, BuildContext context) => switch (s) {
+        LeadStage.newLead => context.l10n.leadStageNew,
+        LeadStage.contacted => context.l10n.leadStageContacted,
+        LeadStage.proposalSent => context.l10n.leadStageProposalSent,
+        LeadStage.negotiating => context.l10n.leadStageNegotiating,
+        LeadStage.won => context.l10n.leadStageWon,
+        LeadStage.lost => context.l10n.leadStageLost,
       };
 }

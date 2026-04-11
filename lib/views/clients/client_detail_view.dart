@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -39,7 +40,7 @@ class _ClientDetailViewState extends State<ClientDetailView> {
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       appBar: AppBar(
-        title: const Text('Client Details'),
+        title: Text(context.l10n.clientDetailTitle),
         actions: [
           Consumer<ClientDetailViewModel>(
             builder: (_, vm, __) => vm.client == null
@@ -59,7 +60,7 @@ class _ClientDetailViewState extends State<ClientDetailView> {
                         onPressed: () async {
                           final confirmed = await showConfirmDialog(
                             context,
-                            title: 'Delete Client',
+                            title: context.l10n.deleteConfirmTitle,
                             message: 'Delete "${vm.client!.fullName}"?',
                           );
                           if (confirmed && context.mounted) {
@@ -124,9 +125,9 @@ class _ClientDetailViewState extends State<ClientDetailView> {
           AppCard(
             child: Column(
               children: [
-                InfoRow(label: 'Email', value: client.email),
-                InfoRow(label: 'Phone', value: client.phone),
-                InfoRow(label: 'Created', value: AppDateUtils.formatDate(client.createdAt), showDivider: false),
+                InfoRow(label: context.l10n.labelEmail, value: client.email),
+                InfoRow(label: context.l10n.labelPhone, value: client.phone),
+                InfoRow(label: context.l10n.labelCreatedAt, value: AppDateUtils.formatDate(client.createdAt), showDivider: false),
               ],
             ),
           ),
@@ -137,7 +138,7 @@ class _ClientDetailViewState extends State<ClientDetailView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Notes', style: AppTextStyles.labelLarge),
+                    Text(context.l10n.labelNotes, style: AppTextStyles.labelLarge),
                   const SizedBox(height: AppSpacing.sm),
                   Text(client.notes!, style: AppTextStyles.bodyMedium),
                 ],
@@ -148,8 +149,8 @@ class _ClientDetailViewState extends State<ClientDetailView> {
 
           // Debts section
           SectionHeader(
-            title: 'Debts (${vm.debts.length})',
-            actionLabel: 'Add',
+            title: '${context.l10n.clientDebts} (${vm.debts.length})',
+            actionLabel: context.l10n.actionAdd,
             onAction: () async {
               await Navigator.pushNamed(context, '/debts/form', arguments: {'clientId': client.id});
               if (context.mounted) vm.refresh();
@@ -163,8 +164,8 @@ class _ClientDetailViewState extends State<ClientDetailView> {
 
           // Projects section
           SectionHeader(
-            title: 'Projects (${vm.projects.length})',
-            actionLabel: 'Add',
+            title: '${context.l10n.clientProjects} (${vm.projects.length})',
+            actionLabel: context.l10n.actionAdd,
             onAction: () async {
               await Navigator.pushNamed(context, '/projects/form', arguments: {'clientId': client.id});
               if (context.mounted) vm.refresh();
@@ -207,7 +208,7 @@ class _DebtItem extends StatelessWidget {
                 CurrencyUtils.format(debt.amount, debt.currency),
                 style: AppTextStyles.amountSmall,
               ),
-              StatusBadge.fromDebtStatus(debt.status),
+              StatusBadge.fromDebtStatus(debt.status, context),
             ],
           ),
         ],
@@ -238,7 +239,7 @@ class _ProjectItem extends StatelessWidget {
               ],
             ),
           ),
-          StatusBadge.fromProjectStatus(project.status),
+          StatusBadge.fromProjectStatus(project.status, context),
         ],
       ),
     );

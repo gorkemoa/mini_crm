@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -23,7 +24,7 @@ class LeadDetailView extends StatelessWidget {
         final lead = vm.leads.firstWhere((l) => l.id == leadId, orElse: () => vm.leads.first);
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Lead Details'),
+            title: Text(context.l10n.leadDetailTitle),
             actions: [
               IconButton(
                 icon: const Icon(Icons.edit_rounded),
@@ -38,7 +39,7 @@ class LeadDetailView extends StatelessWidget {
                 onPressed: () async {
                   final confirmed = await showConfirmDialog(
                     context,
-                    title: 'Delete Lead',
+                    title: context.l10n.deleteConfirmTitle,
                     message: 'Delete "${lead.name}"?',
                   );
                   if (confirmed && context.mounted) {
@@ -68,7 +69,7 @@ class LeadDetailView extends StatelessWidget {
                           )
                         else
                           Text('No budget estimate', style: AppTextStyles.bodyMedium),
-                        StatusBadge.fromLeadStage(lead.stage),
+                        StatusBadge.fromLeadStage(lead.stage, context),
                       ],
                     ),
                   ],
@@ -78,14 +79,14 @@ class LeadDetailView extends StatelessWidget {
               AppCard(
                 child: Column(
                   children: [
-                    InfoRow(label: 'Source', value: lead.source ?? '—'),
-                    InfoRow(label: 'Currency', value: lead.currency ?? 'USD'),
+                    InfoRow(label: context.l10n.labelSource, value: lead.source ?? '—'),
+                    InfoRow(label: context.l10n.labelCurrency, value: lead.currency ?? 'USD'),
                     InfoRow(
-                      label: 'Follow-up',
+                      label: context.l10n.labelFollowUpDate,
                       value: AppDateUtils.formatDate(lead.nextFollowUpDate),
                       valueColor: lead.isFollowUpOverdue ? AppColors.warning : null,
                     ),
-                    InfoRow(label: 'Created', value: AppDateUtils.formatDate(lead.createdAt), showDivider: false),
+                    InfoRow(label: context.l10n.labelCreatedAt, value: AppDateUtils.formatDate(lead.createdAt), showDivider: false),
                   ],
                 ),
               ),
@@ -95,7 +96,7 @@ class LeadDetailView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Note', style: AppTextStyles.labelLarge),
+                      Text(context.l10n.labelNote, style: AppTextStyles.labelLarge),
                       const SizedBox(height: AppSpacing.sm),
                       Text(lead.note!, style: AppTextStyles.bodyMedium),
                     ],

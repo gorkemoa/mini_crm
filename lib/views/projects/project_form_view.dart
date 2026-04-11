@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -93,7 +94,7 @@ class _ProjectFormViewState extends State<ProjectFormView> {
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       appBar: AppBar(
-        title: Text(widget.editProject != null ? 'Edit Project' : 'Add Project'),
+        title: Text(widget.editProject != null ? context.l10n.projectsEditTitle : context.l10n.projectsAddTitle),
       ),
       body: Consumer<ProjectFormViewModel>(
         builder: (context, vm, _) {
@@ -106,9 +107,9 @@ class _ProjectFormViewState extends State<ProjectFormView> {
                 children: [
                   DropdownButtonFormField<String>(
                     value: vm.selectedClientId,
-                    decoration: const InputDecoration(labelText: 'Client (optional)'),
+                    decoration: InputDecoration(labelText: context.l10n.labelOptional.isEmpty ? 'Client' : '${context.l10n.labelClient} (${context.l10n.labelOptional})'),
                     items: [
-                      const DropdownMenuItem<String>(value: null, child: Text('None')),
+                      DropdownMenuItem<String>(value: null, child: Text(context.l10n.labelNoClient)),
                       ...vm.clients.map((c) => DropdownMenuItem(value: c.id, child: Text(c.fullName))),
                     ],
                     onChanged: (v) => setState(() => vm.selectedClientId = v),
@@ -116,13 +117,13 @@ class _ProjectFormViewState extends State<ProjectFormView> {
                   const SizedBox(height: AppSpacing.formFieldSpacing),
                   TextFormField(
                     controller: _titleCtrl,
-                    decoration: const InputDecoration(labelText: 'Project Title *'),
+                    decoration: InputDecoration(labelText: '${context.l10n.labelTitle} *'),
                     validator: Validators.required,
                   ),
                   const SizedBox(height: AppSpacing.formFieldSpacing),
                   TextFormField(
                     controller: _descCtrl,
-                    decoration: const InputDecoration(labelText: 'Description'),
+                    decoration: InputDecoration(labelText: context.l10n.labelDescription),
                     maxLines: 3,
                   ),
                   const SizedBox(height: AppSpacing.formFieldSpacing),
@@ -132,7 +133,7 @@ class _ProjectFormViewState extends State<ProjectFormView> {
                         child: InkWell(
                           onTap: () => _pickDate(true),
                           child: InputDecorator(
-                            decoration: const InputDecoration(labelText: 'Start Date'),
+                            decoration: InputDecoration(labelText: context.l10n.labelStartDate),
                             child: Text(
                               AppDateUtils.formatDate(vm.startDate),
                               style: AppTextStyles.bodyMedium,
@@ -145,7 +146,7 @@ class _ProjectFormViewState extends State<ProjectFormView> {
                         child: InkWell(
                           onTap: () => _pickDate(false),
                           child: InputDecorator(
-                            decoration: const InputDecoration(labelText: 'End Date'),
+                            decoration: InputDecoration(labelText: context.l10n.labelEndDate),
                             child: Text(
                               AppDateUtils.formatDate(vm.endDate),
                               style: AppTextStyles.bodyMedium,
@@ -162,7 +163,7 @@ class _ProjectFormViewState extends State<ProjectFormView> {
                         flex: 2,
                         child: TextFormField(
                           controller: _budgetCtrl,
-                          decoration: const InputDecoration(labelText: 'Budget'),
+                          decoration: InputDecoration(labelText: context.l10n.labelBudget),
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
                           validator: Validators.positiveNumber,
                         ),
@@ -171,7 +172,7 @@ class _ProjectFormViewState extends State<ProjectFormView> {
                       Expanded(
                         child: DropdownButtonFormField<String>(
                           value: vm.currency,
-                          decoration: const InputDecoration(labelText: 'Currency'),
+                          decoration: InputDecoration(labelText: context.l10n.labelCurrency),
                           items: CurrencyUtils.supportedCurrencies
                               .map((c) => DropdownMenuItem(value: c, child: Text(c)))
                               .toList(),
@@ -183,17 +184,17 @@ class _ProjectFormViewState extends State<ProjectFormView> {
                   const SizedBox(height: AppSpacing.formFieldSpacing),
                   DropdownButtonFormField<ProjectStatus>(
                     value: vm.status,
-                    decoration: const InputDecoration(labelText: 'Status'),
+                    decoration: InputDecoration(labelText: context.l10n.labelStatus),
                     items: ProjectStatus.values.map((s) => DropdownMenuItem(
                       value: s,
-                      child: Text(_statusLabel(s)),
+                      child: Text(_statusLabel(s, context)),
                     )).toList(),
                     onChanged: (s) => setState(() => vm.status = s ?? ProjectStatus.active),
                   ),
                   const SizedBox(height: AppSpacing.formFieldSpacing),
                   TextFormField(
                     controller: _noteCtrl,
-                    decoration: const InputDecoration(labelText: 'Note'),
+                    decoration: InputDecoration(labelText: context.l10n.labelNote),
                     maxLines: 3,
                   ),
                   const SizedBox(height: AppSpacing.xl),
@@ -206,7 +207,7 @@ class _ProjectFormViewState extends State<ProjectFormView> {
                     onPressed: vm.isLoading ? null : _submit,
                     child: vm.isLoading
                         ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                        : Text(widget.editProject != null ? 'Save Changes' : 'Add Project'),
+                        : Text(widget.editProject != null ? context.l10n.actionSave : context.l10n.projectsAddTitle),
                   ),
                 ],
               ),
@@ -217,12 +218,12 @@ class _ProjectFormViewState extends State<ProjectFormView> {
     );
   }
 
-  String _statusLabel(ProjectStatus s) => switch (s) {
-        ProjectStatus.planned => 'Planned',
-        ProjectStatus.startingSoon => 'Starting Soon',
-        ProjectStatus.active => 'Active',
-        ProjectStatus.paused => 'Paused',
-        ProjectStatus.completed => 'Completed',
-        ProjectStatus.cancelled => 'Cancelled',
+  String _statusLabel(ProjectStatus s, BuildContext context) => switch (s) {
+        ProjectStatus.planned => context.l10n.projectStatusPlanned,
+        ProjectStatus.startingSoon => context.l10n.projectStatusStartingSoon,
+        ProjectStatus.active => context.l10n.projectStatusActive,
+        ProjectStatus.paused => context.l10n.projectStatusPaused,
+        ProjectStatus.completed => context.l10n.projectStatusCompleted,
+        ProjectStatus.cancelled => context.l10n.projectStatusCancelled,
       };
 }

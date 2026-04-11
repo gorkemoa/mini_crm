@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -24,7 +25,7 @@ class ProjectDetailView extends StatelessWidget {
         final client = vm.clientFor(project.clientId);
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Project Details'),
+            title: Text(context.l10n.projectDetailTitle),
             actions: [
               IconButton(
                 icon: const Icon(Icons.edit_rounded),
@@ -39,7 +40,7 @@ class ProjectDetailView extends StatelessWidget {
                 onPressed: () async {
                   final confirmed = await showConfirmDialog(
                     context,
-                    title: 'Delete Project',
+                    title: context.l10n.deleteConfirmTitle,
                     message: 'Delete "${project.title}"?',
                   );
                   if (confirmed && context.mounted) {
@@ -69,7 +70,7 @@ class ProjectDetailView extends StatelessWidget {
                           )
                         else
                           const Text('No budget set'),
-                        StatusBadge.fromProjectStatus(project.status),
+                        StatusBadge.fromProjectStatus(project.status, context),
                       ],
                     ),
                     if (project.description != null) ...[
@@ -83,11 +84,11 @@ class ProjectDetailView extends StatelessWidget {
               AppCard(
                 child: Column(
                   children: [
-                    InfoRow(label: 'Client', value: client?.fullName ?? 'None'),
-                    InfoRow(label: 'Start Date', value: AppDateUtils.formatDate(project.startDate)),
-                    InfoRow(label: 'End Date', value: AppDateUtils.formatDate(project.endDate)),
-                    InfoRow(label: 'Currency', value: project.currency),
-                    InfoRow(label: 'Created', value: AppDateUtils.formatDate(project.createdAt), showDivider: false),
+                    InfoRow(label: context.l10n.labelClient, value: client?.fullName ?? 'None'),
+                    InfoRow(label: context.l10n.labelStartDate, value: AppDateUtils.formatDate(project.startDate)),
+                    InfoRow(label: context.l10n.labelEndDate, value: AppDateUtils.formatDate(project.endDate)),
+                    InfoRow(label: context.l10n.labelCurrency, value: project.currency),
+                    InfoRow(label: context.l10n.labelCreatedAt, value: AppDateUtils.formatDate(project.createdAt), showDivider: false),
                   ],
                 ),
               ),
@@ -97,7 +98,7 @@ class ProjectDetailView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Note', style: AppTextStyles.labelLarge),
+                      Text(context.l10n.labelNote, style: AppTextStyles.labelLarge),
                       const SizedBox(height: AppSpacing.sm),
                       Text(project.note!, style: AppTextStyles.bodyMedium),
                     ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -45,7 +46,7 @@ class _DebtsViewState extends State<DebtsView> {
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       appBar: AppBar(
-        title: const Text('Debts'),
+        title: Text(context.l10n.debtsTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_rounded),
@@ -72,7 +73,7 @@ class _DebtsViewState extends State<DebtsView> {
                     children: [
                       SearchField(
                         controller: _searchCtrl,
-                        hint: 'Search debts...',
+                        hint: context.l10n.debtsSearchHint,
                         onChanged: vm.setSearch,
                       ),
                       const SizedBox(height: AppSpacing.sm),
@@ -86,9 +87,9 @@ class _DebtsViewState extends State<DebtsView> {
                       : vm.isEmpty
                           ? EmptyState(
                               icon: Icons.account_balance_wallet_outlined,
-                              title: 'No debts yet',
-                              description: 'Add your first debt record',
-                              actionLabel: 'Add Debt',
+                              title: context.l10n.debtsEmpty,
+                              description: context.l10n.debtsEmptyDesc,
+                              actionLabel: context.l10n.debtsAddTitle,
                               onAction: () async {
                                 await Navigator.pushNamed(context, '/debts/form');
                                 if (context.mounted) vm.refresh();
@@ -125,7 +126,7 @@ class _DebtsViewState extends State<DebtsView> {
         children: [
           Expanded(
             child: _SummaryItem(
-              label: 'Pending',
+              label: context.l10n.debtsPending,
               value: CurrencyUtils.formatCompact(vm.pendingTotal, 'USD'),
               color: AppColors.warning,
             ),
@@ -133,7 +134,7 @@ class _DebtsViewState extends State<DebtsView> {
           Container(width: 1, height: 40, color: isDark ? AppColors.borderDark : AppColors.borderLight),
           Expanded(
             child: _SummaryItem(
-              label: 'Overdue',
+              label: context.l10n.debtsOverdue,
               value: CurrencyUtils.formatCompact(vm.overdueTotal, 'USD'),
               color: AppColors.error,
             ),
@@ -148,13 +149,13 @@ class _DebtsViewState extends State<DebtsView> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _Chip(label: 'All', selected: vm.statusFilter == null, onTap: () => vm.setStatusFilter(null)),
+          _Chip(label: context.l10n.debtsFilterAll, selected: vm.statusFilter == null, onTap: () => vm.setStatusFilter(null)),
           const SizedBox(width: AppSpacing.xs),
-          _Chip(label: 'Pending', selected: vm.statusFilter == DebtStatus.pending, onTap: () => vm.setStatusFilter(DebtStatus.pending)),
+          _Chip(label: context.l10n.debtsFilterPending, selected: vm.statusFilter == DebtStatus.pending, onTap: () => vm.setStatusFilter(DebtStatus.pending)),
           const SizedBox(width: AppSpacing.xs),
-          _Chip(label: 'Overdue', selected: vm.statusFilter == DebtStatus.overdue, onTap: () => vm.setStatusFilter(DebtStatus.overdue)),
+          _Chip(label: context.l10n.debtsFilterOverdue, selected: vm.statusFilter == DebtStatus.overdue, onTap: () => vm.setStatusFilter(DebtStatus.overdue)),
           const SizedBox(width: AppSpacing.xs),
-          _Chip(label: 'Paid', selected: vm.statusFilter == DebtStatus.paid, onTap: () => vm.setStatusFilter(DebtStatus.paid)),
+          _Chip(label: context.l10n.debtsFilterPaid, selected: vm.statusFilter == DebtStatus.paid, onTap: () => vm.setStatusFilter(DebtStatus.paid)),
         ],
       ),
     );
@@ -178,7 +179,7 @@ class _DebtsViewState extends State<DebtsView> {
           onDelete: () async {
             final confirmed = await showConfirmDialog(
               context,
-              title: 'Delete Debt',
+              title: context.l10n.deleteConfirmTitle,
               message: 'Delete "${debt.title}"?',
             );
             if (confirmed && context.mounted) vm.delete(debt.id);
@@ -260,7 +261,7 @@ class _DebtTile extends StatelessWidget {
                     style: AppTextStyles.amountSmall,
                   ),
                   const SizedBox(height: 4),
-                  StatusBadge.fromDebtStatus(debt.status),
+                  StatusBadge.fromDebtStatus(debt.status, context),
                 ],
               ),
               const SizedBox(width: AppSpacing.sm),

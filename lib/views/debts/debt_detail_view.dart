@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
 import '../../viewmodels/debts_viewmodel.dart';
-import '../../models/debt_model.dart';
 import '../../core/utils/currency_utils.dart';
 import '../../core/utils/app_date_utils.dart';
 import '../widgets/app_card.dart';
@@ -25,7 +25,7 @@ class DebtDetailView extends StatelessWidget {
         final client = vm.clientFor(debt.clientId);
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Debt Details'),
+            title: Text(context.l10n.debtDetailTitle),
             actions: [
               IconButton(
                 icon: const Icon(Icons.edit_rounded),
@@ -40,7 +40,7 @@ class DebtDetailView extends StatelessWidget {
                 onPressed: () async {
                   final confirmed = await showConfirmDialog(
                     context,
-                    title: 'Delete Debt',
+                    title: context.l10n.deleteConfirmTitle,
                     message: 'Delete "${debt.title}"?',
                   );
                   if (confirmed && context.mounted) {
@@ -67,7 +67,7 @@ class DebtDetailView extends StatelessWidget {
                           CurrencyUtils.format(debt.amount, debt.currency),
                           style: AppTextStyles.amount.copyWith(color: AppColors.primary),
                         ),
-                        StatusBadge.fromDebtStatus(debt.status),
+                        StatusBadge.fromDebtStatus(debt.status, context),
                       ],
                     ),
                   ],
@@ -77,10 +77,10 @@ class DebtDetailView extends StatelessWidget {
               AppCard(
                 child: Column(
                   children: [
-                    InfoRow(label: 'Client', value: client?.fullName ?? 'Unknown'),
-                    InfoRow(label: 'Due Date', value: AppDateUtils.formatDate(debt.dueDate)),
-                    InfoRow(label: 'Currency', value: debt.currency),
-                    InfoRow(label: 'Created', value: AppDateUtils.formatDate(debt.createdAt), showDivider: false),
+                    InfoRow(label: context.l10n.labelClient, value: client?.fullName ?? 'Unknown'),
+                    InfoRow(label: context.l10n.labelDueDate, value: AppDateUtils.formatDate(debt.dueDate)),
+                    InfoRow(label: context.l10n.labelCurrency, value: debt.currency),
+                    InfoRow(label: context.l10n.labelCreatedAt, value: AppDateUtils.formatDate(debt.createdAt), showDivider: false),
                   ],
                 ),
               ),
@@ -90,7 +90,7 @@ class DebtDetailView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Note', style: AppTextStyles.labelLarge),
+                      Text(context.l10n.labelNote, style: AppTextStyles.labelLarge),
                       const SizedBox(height: AppSpacing.sm),
                       Text(debt.note!, style: AppTextStyles.bodyMedium),
                     ],

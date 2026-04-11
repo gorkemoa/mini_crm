@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -75,7 +76,7 @@ class _ReminderFormViewState extends State<ReminderFormView> {
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       appBar: AppBar(
-        title: Text(widget.editReminder != null ? 'Edit Reminder' : 'Add Reminder'),
+        title: Text(widget.editReminder != null ? context.l10n.remindersEditTitle : context.l10n.remindersAddTitle),
       ),
       body: Consumer<ReminderFormViewModel>(
         builder: (context, vm, _) {
@@ -88,7 +89,7 @@ class _ReminderFormViewState extends State<ReminderFormView> {
                 children: [
                   TextFormField(
                     controller: _titleCtrl,
-                    decoration: const InputDecoration(labelText: 'Title *'),
+                    decoration: InputDecoration(labelText: '${context.l10n.labelTitle} *'),
                     validator: Validators.required,
                   ),
                   const SizedBox(height: AppSpacing.formFieldSpacing),
@@ -98,7 +99,7 @@ class _ReminderFormViewState extends State<ReminderFormView> {
                         child: InkWell(
                           onTap: _pickDate,
                           child: InputDecorator(
-                            decoration: const InputDecoration(labelText: 'Date'),
+                            decoration: InputDecoration(labelText: context.l10n.labelDate),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -130,12 +131,12 @@ class _ReminderFormViewState extends State<ReminderFormView> {
                   const SizedBox(height: AppSpacing.formFieldSpacing),
                   DropdownButtonFormField<ReminderRelatedType?>(
                     value: vm.relatedType,
-                    decoration: const InputDecoration(labelText: 'Related To (optional)'),
+                    decoration: InputDecoration(labelText: '${context.l10n.labelRelatedTo} (${context.l10n.labelOptional})'),
                     items: [
-                      const DropdownMenuItem<ReminderRelatedType?>(value: null, child: Text('None')),
+                      DropdownMenuItem<ReminderRelatedType?>(value: null, child: Text(context.l10n.labelNoClient)),
                       ...ReminderRelatedType.values.map((t) => DropdownMenuItem(
                         value: t,
-                        child: Text(_relatedTypeLabel(t)),
+                        child: Text(_relatedTypeLabel(t, context)),
                       )),
                     ],
                     onChanged: (t) => setState(() => vm.relatedType = t),
@@ -143,7 +144,7 @@ class _ReminderFormViewState extends State<ReminderFormView> {
                   const SizedBox(height: AppSpacing.formFieldSpacing),
                   TextFormField(
                     controller: _noteCtrl,
-                    decoration: const InputDecoration(labelText: 'Note'),
+                    decoration: InputDecoration(labelText: context.l10n.labelNote),
                     maxLines: 3,
                   ),
                   const SizedBox(height: AppSpacing.xl),
@@ -156,7 +157,7 @@ class _ReminderFormViewState extends State<ReminderFormView> {
                     onPressed: vm.isLoading ? null : _submit,
                     child: vm.isLoading
                         ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                        : Text(widget.editReminder != null ? 'Save Changes' : 'Add Reminder'),
+                        : Text(widget.editReminder != null ? context.l10n.actionSave : context.l10n.remindersAddTitle),
                   ),
                 ],
               ),
@@ -167,12 +168,12 @@ class _ReminderFormViewState extends State<ReminderFormView> {
     );
   }
 
-  String _relatedTypeLabel(ReminderRelatedType t) => switch (t) {
-        ReminderRelatedType.client => 'Client',
-        ReminderRelatedType.debt => 'Debt',
-        ReminderRelatedType.project => 'Project',
-        ReminderRelatedType.lead => 'Lead',
-        ReminderRelatedType.income => 'Income',
-        ReminderRelatedType.general => 'General',
+  String _relatedTypeLabel(ReminderRelatedType t, BuildContext context) => switch (t) {
+        ReminderRelatedType.client => context.l10n.reminderRelatedClient,
+        ReminderRelatedType.debt => context.l10n.reminderRelatedDebt,
+        ReminderRelatedType.project => context.l10n.reminderRelatedProject,
+        ReminderRelatedType.lead => context.l10n.reminderRelatedLead,
+        ReminderRelatedType.income => context.l10n.reminderRelatedIncome,
+        ReminderRelatedType.general => context.l10n.reminderRelatedGeneral,
       };
 }

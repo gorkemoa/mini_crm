@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -15,7 +16,7 @@ class ImportDataView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Import Data')),
+      appBar: AppBar(title: Text(context.l10n.importTitle)),
       body: Consumer<DataViewModel>(
         builder: (context, vm, _) {
           return Padding(
@@ -25,10 +26,10 @@ class ImportDataView extends StatelessWidget {
               children: [
                 const Icon(Icons.download_rounded, size: 64, color: AppColors.info),
                 const SizedBox(height: AppSpacing.lg),
-                Text('Import Data', style: AppTextStyles.h2, textAlign: TextAlign.center),
+                Text(context.l10n.importTitle, style: AppTextStyles.h2, textAlign: TextAlign.center),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  'Select a Mini CRM backup JSON file to restore your data. This will REPLACE all existing data.',
+                  context.l10n.importDesc,
                   style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondaryLight),
                   textAlign: TextAlign.center,
                 ),
@@ -52,7 +53,7 @@ class ImportDataView extends StatelessWidget {
                   ElevatedButton.icon(
                     onPressed: vm.isLoading ? null : () => vm.pickImportFile(),
                     icon: const Icon(Icons.folder_open_rounded),
-                    label: const Text('Select File'),
+                    label: Text(context.l10n.importButton),
                   ),
                 if (vm.previewBundle != null) ...[
                   FilledButton(
@@ -62,17 +63,17 @@ class ImportDataView extends StatelessWidget {
                         : () async {
                             final confirmed = await showConfirmDialog(
                               context,
-                              title: 'Replace All Data',
-                              message: 'This will permanently delete all existing data and replace it with the imported data. Continue?',
-                              confirmLabel: 'Import',
+                              title: context.l10n.importTitle,
+                              message: context.l10n.importWarning,
+                              confirmLabel: context.l10n.actionImport,
                               isDangerous: true,
                             );
                             if (confirmed && context.mounted) {
                               final success = await vm.confirmImport();
                               if (success && context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Data imported successfully'),
+                                  SnackBar(
+                                    content: Text(context.l10n.importSuccess),
                                     backgroundColor: AppColors.success,
                                   ),
                                 );
@@ -82,12 +83,12 @@ class ImportDataView extends StatelessWidget {
                           },
                     child: vm.isLoading
                         ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                        : const Text('Confirm Import'),
+                        : Text(context.l10n.actionConfirm),
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   OutlinedButton(
                     onPressed: vm.clearPreview,
-                    child: const Text('Cancel'),
+                    child: Text(context.l10n.actionCancel),
                   ),
                 ],
               ],

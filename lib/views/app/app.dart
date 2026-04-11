@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../dashboard/dashboard_view.dart';
 import '../clients/clients_view.dart';
@@ -34,31 +35,31 @@ class _AppShellState extends State<AppShell> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: (i) => setState(() => _selectedIndex = i),
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.dashboard_outlined),
-            selectedIcon: Icon(Icons.dashboard_rounded),
-            label: 'Dashboard',
+            icon: const Icon(Icons.dashboard_outlined),
+            selectedIcon: const Icon(Icons.dashboard_rounded),
+            label: context.l10n.navDashboard,
           ),
           NavigationDestination(
-            icon: Icon(Icons.people_outline_rounded),
-            selectedIcon: Icon(Icons.people_rounded),
-            label: 'Clients',
+            icon: const Icon(Icons.people_outline_rounded),
+            selectedIcon: const Icon(Icons.people_rounded),
+            label: context.l10n.navClients,
           ),
           NavigationDestination(
-            icon: Icon(Icons.person_search_outlined),
-            selectedIcon: Icon(Icons.person_search_rounded),
-            label: 'Leads',
+            icon: const Icon(Icons.person_search_outlined),
+            selectedIcon: const Icon(Icons.person_search_rounded),
+            label: context.l10n.navLeads,
           ),
           NavigationDestination(
-            icon: Icon(Icons.account_balance_wallet_outlined),
-            selectedIcon: Icon(Icons.account_balance_wallet_rounded),
-            label: 'Debts',
+            icon: const Icon(Icons.account_balance_wallet_outlined),
+            selectedIcon: const Icon(Icons.account_balance_wallet_rounded),
+            label: context.l10n.navDebts,
           ),
           NavigationDestination(
-            icon: Icon(Icons.grid_view_outlined),
-            selectedIcon: Icon(Icons.grid_view_rounded),
-            label: 'More',
+            icon: const Icon(Icons.grid_view_outlined),
+            selectedIcon: const Icon(Icons.grid_view_rounded),
+            label: context.l10n.navMore,
           ),
         ],
       ),
@@ -74,14 +75,14 @@ class _MoreView extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
-      appBar: AppBar(title: const Text('More')),
+      appBar: AppBar(title: Text(context.l10n.navMore)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           _MoreTile(
             icon: Icons.work_outline_rounded,
             color: AppColors.info,
-            title: 'Projects',
+            title: context.l10n.navProjects,
             subtitle: 'Manage your projects',
             onTap: () => Navigator.pushNamed(context, '/projects'),
           ),
@@ -89,7 +90,7 @@ class _MoreView extends StatelessWidget {
           _MoreTile(
             icon: Icons.attach_money_rounded,
             color: AppColors.success,
-            title: 'Income',
+            title: context.l10n.navIncome,
             subtitle: 'Track income records',
             onTap: () => Navigator.pushNamed(context, '/income'),
           ),
@@ -97,7 +98,7 @@ class _MoreView extends StatelessWidget {
           _MoreTile(
             icon: Icons.alarm_rounded,
             color: AppColors.warning,
-            title: 'Reminders',
+            title: context.l10n.navReminders,
             subtitle: 'Follow-ups & tasks',
             onTap: () => Navigator.pushNamed(context, '/reminders'),
           ),
@@ -105,7 +106,7 @@ class _MoreView extends StatelessWidget {
           _MoreTile(
             icon: Icons.settings_outlined,
             color: AppColors.textSecondaryLight,
-            title: 'Settings',
+            title: context.l10n.navSettings,
             subtitle: 'Theme, language, data',
             onTap: () => Navigator.pushNamed(context, '/settings'),
           ),

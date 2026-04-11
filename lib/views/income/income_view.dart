@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -43,7 +44,7 @@ class _IncomeViewState extends State<IncomeView> {
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       appBar: AppBar(
-        title: const Text('Income'),
+        title: Text(context.l10n.incomeTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_rounded),
@@ -65,7 +66,7 @@ class _IncomeViewState extends State<IncomeView> {
                   padding: AppSpacing.screenPaddingH.copyWith(top: AppSpacing.sm, bottom: AppSpacing.sm),
                   child: SearchField(
                     controller: _searchCtrl,
-                    hint: 'Search income records...',
+                    hint: context.l10n.incomeSearchHint,
                     onChanged: vm.setSearch,
                   ),
                 ),
@@ -75,9 +76,9 @@ class _IncomeViewState extends State<IncomeView> {
                       : vm.isEmpty
                           ? EmptyState(
                               icon: Icons.attach_money_rounded,
-                              title: 'No income records yet',
-                              description: 'Track your freelance income here',
-                              actionLabel: 'Add Income',
+                              title: context.l10n.incomeEmpty,
+                              description: context.l10n.incomeEmptyDesc,
+                              actionLabel: context.l10n.incomeAddTitle,
                               onAction: () async {
                                 await Navigator.pushNamed(context, '/income/form');
                                 if (context.mounted) vm.refresh();
@@ -115,7 +116,7 @@ class _IncomeViewState extends State<IncomeView> {
           Expanded(
             child: Column(
               children: [
-                Text('This Month', style: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondaryLight)),
+                Text(context.l10n.incomeThisMonth, style: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondaryLight)),
                 const SizedBox(height: 4),
                 Text(CurrencyUtils.formatCompact(vm.monthlyTotal, 'USD'), style: AppTextStyles.amount.copyWith(color: AppColors.success)),
               ],
@@ -125,7 +126,7 @@ class _IncomeViewState extends State<IncomeView> {
           Expanded(
             child: Column(
               children: [
-                Text('All Time', style: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondaryLight)),
+                Text(context.l10n.incomeTotal, style: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondaryLight)),
                 const SizedBox(height: 4),
                 Text(CurrencyUtils.formatCompact(vm.total, 'USD'), style: AppTextStyles.amount.copyWith(color: AppColors.primary)),
               ],
@@ -154,7 +155,7 @@ class _IncomeViewState extends State<IncomeView> {
           onDelete: () async {
             final confirmed = await showConfirmDialog(
               context,
-              title: 'Delete Record',
+              title: context.l10n.deleteConfirmTitle,
               message: 'Delete this income record?',
             );
             if (confirmed && context.mounted) vm.delete(income.id);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/utils/app_localizations_ext.dart';
 import '../../models/enums.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_radii.dart';
@@ -18,40 +19,40 @@ class StatusBadge extends StatelessWidget {
 
   factory StatusBadge.fromClientStatus(ClientStatus status, BuildContext context) {
     return switch (status) {
-      ClientStatus.active => StatusBadge(label: 'Active', color: AppColors.success, bgColor: AppColors.successBg),
-      ClientStatus.inactive => StatusBadge(label: 'Inactive', color: AppColors.warning, bgColor: AppColors.warningBg),
-      ClientStatus.archived => StatusBadge(label: 'Archived', color: AppColors.textTertiaryLight, bgColor: AppColors.surfaceVariantLight),
+      ClientStatus.active => StatusBadge(label: context.l10n.clientStatusActive, color: AppColors.success, bgColor: AppColors.successBg),
+      ClientStatus.inactive => StatusBadge(label: context.l10n.clientStatusInactive, color: AppColors.warning, bgColor: AppColors.warningBg),
+      ClientStatus.archived => StatusBadge(label: context.l10n.clientStatusArchived, color: AppColors.textTertiaryLight, bgColor: AppColors.surfaceVariantLight),
     };
   }
 
-  factory StatusBadge.fromDebtStatus(DebtStatus status) {
+  factory StatusBadge.fromDebtStatus(DebtStatus status, BuildContext context) {
     return switch (status) {
-      DebtStatus.pending => StatusBadge(label: 'Pending', color: AppColors.warning, bgColor: AppColors.warningBg),
-      DebtStatus.overdue => StatusBadge(label: 'Overdue', color: AppColors.error, bgColor: AppColors.errorBg),
-      DebtStatus.paid => StatusBadge(label: 'Paid', color: AppColors.success, bgColor: AppColors.successBg),
-      DebtStatus.partial => StatusBadge(label: 'Partial', color: AppColors.info, bgColor: AppColors.infoBg),
+      DebtStatus.pending => StatusBadge(label: context.l10n.debtStatusPending, color: AppColors.warning, bgColor: AppColors.warningBg),
+      DebtStatus.overdue => StatusBadge(label: context.l10n.debtStatusOverdue, color: AppColors.error, bgColor: AppColors.errorBg),
+      DebtStatus.paid => StatusBadge(label: context.l10n.debtStatusPaid, color: AppColors.success, bgColor: AppColors.successBg),
+      DebtStatus.partial => StatusBadge(label: context.l10n.debtStatusPartial, color: AppColors.info, bgColor: AppColors.infoBg),
     };
   }
 
-  factory StatusBadge.fromProjectStatus(ProjectStatus status) {
+  factory StatusBadge.fromProjectStatus(ProjectStatus status, BuildContext context) {
     return switch (status) {
-      ProjectStatus.planned => StatusBadge(label: 'Planned', color: AppColors.primary, bgColor: AppColors.primaryContainer),
-      ProjectStatus.startingSoon => StatusBadge(label: 'Starting Soon', color: AppColors.info, bgColor: AppColors.infoBg),
-      ProjectStatus.active => StatusBadge(label: 'Active', color: AppColors.success, bgColor: AppColors.successBg),
-      ProjectStatus.paused => StatusBadge(label: 'Paused', color: AppColors.warning, bgColor: AppColors.warningBg),
-      ProjectStatus.completed => StatusBadge(label: 'Completed', color: AppColors.success, bgColor: AppColors.successBg),
-      ProjectStatus.cancelled => StatusBadge(label: 'Cancelled', color: AppColors.error, bgColor: AppColors.errorBg),
+      ProjectStatus.planned => StatusBadge(label: context.l10n.projectStatusPlanned, color: AppColors.primary, bgColor: AppColors.primaryContainer),
+      ProjectStatus.startingSoon => StatusBadge(label: context.l10n.projectStatusStartingSoon, color: AppColors.info, bgColor: AppColors.infoBg),
+      ProjectStatus.active => StatusBadge(label: context.l10n.projectStatusActive, color: AppColors.success, bgColor: AppColors.successBg),
+      ProjectStatus.paused => StatusBadge(label: context.l10n.projectStatusPaused, color: AppColors.warning, bgColor: AppColors.warningBg),
+      ProjectStatus.completed => StatusBadge(label: context.l10n.projectStatusCompleted, color: AppColors.success, bgColor: AppColors.successBg),
+      ProjectStatus.cancelled => StatusBadge(label: context.l10n.projectStatusCancelled, color: AppColors.error, bgColor: AppColors.errorBg),
     };
   }
 
-  factory StatusBadge.fromLeadStage(LeadStage stage) {
+  factory StatusBadge.fromLeadStage(LeadStage stage, BuildContext context) {
     return switch (stage) {
-      LeadStage.newLead => StatusBadge(label: 'New Lead', color: AppColors.leadNew, bgColor: AppColors.primaryContainer),
-      LeadStage.contacted => StatusBadge(label: 'Contacted', color: AppColors.leadContacted, bgColor: AppColors.infoBg),
-      LeadStage.proposalSent => StatusBadge(label: 'Proposal Sent', color: AppColors.leadProposal, bgColor: AppColors.warningBg),
-      LeadStage.negotiating => StatusBadge(label: 'Negotiating', color: AppColors.leadNegotiating, bgColor: AppColors.errorBg),
-      LeadStage.won => StatusBadge(label: 'Won', color: AppColors.leadWon, bgColor: AppColors.successBg),
-      LeadStage.lost => StatusBadge(label: 'Lost', color: AppColors.leadLost, bgColor: AppColors.surfaceVariantLight),
+      LeadStage.newLead => StatusBadge(label: context.l10n.leadStageNew, color: AppColors.leadNew, bgColor: AppColors.primaryContainer),
+      LeadStage.contacted => StatusBadge(label: context.l10n.leadStageContacted, color: AppColors.leadContacted, bgColor: AppColors.infoBg),
+      LeadStage.proposalSent => StatusBadge(label: context.l10n.leadStageProposalSent, color: AppColors.leadProposal, bgColor: AppColors.warningBg),
+      LeadStage.negotiating => StatusBadge(label: context.l10n.leadStageNegotiating, color: AppColors.leadNegotiating, bgColor: AppColors.errorBg),
+      LeadStage.won => StatusBadge(label: context.l10n.leadStageWon, color: AppColors.leadWon, bgColor: AppColors.successBg),
+      LeadStage.lost => StatusBadge(label: context.l10n.leadStageLost, color: AppColors.leadLost, bgColor: AppColors.surfaceVariantLight),
     };
   }
 

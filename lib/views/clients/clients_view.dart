@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -43,7 +44,7 @@ class _ClientsViewState extends State<ClientsView> {
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       appBar: AppBar(
-        title: const Text('Clients'),
+        title: Text(context.l10n.navClients),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_rounded),
@@ -66,7 +67,7 @@ class _ClientsViewState extends State<ClientsView> {
                     children: [
                       SearchField(
                         controller: _searchController,
-                        hint: 'Search clients...',
+                        hint: context.l10n.clientsSearchHint,
                         onChanged: vm.setSearch,
                       ),
                       const SizedBox(height: AppSpacing.sm),
@@ -80,9 +81,9 @@ class _ClientsViewState extends State<ClientsView> {
                       : vm.isEmpty
                           ? EmptyState(
                               icon: Icons.people_outline_rounded,
-                              title: 'No clients yet',
-                              description: 'Add your first client to get started',
-                              actionLabel: 'Add Client',
+                              title: context.l10n.clientsEmpty,
+                              description: context.l10n.clientsEmptyDesc,
+                              actionLabel: context.l10n.clientAddTitle,
                               onAction: () async {
                                 await Navigator.pushNamed(context, '/clients/form');
                                 if (context.mounted) vm.refresh();
@@ -113,25 +114,25 @@ class _ClientsViewState extends State<ClientsView> {
       child: Row(
         children: [
           _FilterChip(
-            label: 'All',
+            label: context.l10n.labelAll,
             selected: vm.statusFilter == null,
             onSelected: () => vm.setStatusFilter(null),
           ),
           const SizedBox(width: AppSpacing.xs),
           _FilterChip(
-            label: 'Active',
+            label: context.l10n.clientStatusActive,
             selected: vm.statusFilter == ClientStatus.active,
             onSelected: () => vm.setStatusFilter(ClientStatus.active),
           ),
           const SizedBox(width: AppSpacing.xs),
           _FilterChip(
-            label: 'Inactive',
+            label: context.l10n.clientStatusInactive,
             selected: vm.statusFilter == ClientStatus.inactive,
             onSelected: () => vm.setStatusFilter(ClientStatus.inactive),
           ),
           const SizedBox(width: AppSpacing.xs),
           _FilterChip(
-            label: 'Archived',
+            label: context.l10n.clientStatusArchived,
             selected: vm.statusFilter == ClientStatus.archived,
             onSelected: () => vm.setStatusFilter(ClientStatus.archived),
           ),
@@ -154,7 +155,7 @@ class _ClientsViewState extends State<ClientsView> {
         onDelete: () async {
           final confirmed = await showConfirmDialog(
             context,
-            title: 'Delete Client',
+            title: context.l10n.deleteConfirmTitle,
             message: 'Delete "${vm.clients[i].fullName}"? This will also delete related debts.',
           );
           if (confirmed && context.mounted) {

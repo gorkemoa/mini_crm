@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../viewmodels/client_form_viewmodel.dart';
@@ -67,7 +68,7 @@ class _ClientFormViewState extends State<ClientFormView> {
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       appBar: AppBar(
-        title: Text(widget.editClient != null ? 'Edit Client' : 'Add Client'),
+        title: Text(widget.editClient != null ? context.l10n.clientEditTitle : context.l10n.clientAddTitle),
       ),
       body: Consumer<ClientFormViewModel>(
         builder: (context, vm, _) {
@@ -80,27 +81,27 @@ class _ClientFormViewState extends State<ClientFormView> {
                 children: [
                   TextFormField(
                     controller: _nameCtrl,
-                    decoration: const InputDecoration(labelText: 'Full Name *'),
+                    decoration: InputDecoration(labelText: '${context.l10n.clientFullName} *'),
                     validator: Validators.required,
                     textCapitalization: TextCapitalization.words,
                   ),
                   const SizedBox(height: AppSpacing.formFieldSpacing),
                   TextFormField(
                     controller: _companyCtrl,
-                    decoration: const InputDecoration(labelText: 'Company Name'),
+                    decoration: InputDecoration(labelText: context.l10n.clientCompanyName),
                     textCapitalization: TextCapitalization.words,
                   ),
                   const SizedBox(height: AppSpacing.formFieldSpacing),
                   TextFormField(
                     controller: _emailCtrl,
-                    decoration: const InputDecoration(labelText: 'Email'),
+                    decoration: InputDecoration(labelText: context.l10n.labelEmail),
                     keyboardType: TextInputType.emailAddress,
                     validator: Validators.email,
                   ),
                   const SizedBox(height: AppSpacing.formFieldSpacing),
                   TextFormField(
                     controller: _phoneCtrl,
-                    decoration: const InputDecoration(labelText: 'Phone'),
+                    decoration: InputDecoration(labelText: context.l10n.labelPhone),
                     keyboardType: TextInputType.phone,
                     validator: Validators.phone,
                   ),
@@ -108,17 +109,17 @@ class _ClientFormViewState extends State<ClientFormView> {
                   // Status selector
                   DropdownButtonFormField<ClientStatus>(
                     value: vm.status,
-                    decoration: const InputDecoration(labelText: 'Status'),
+                    decoration: InputDecoration(labelText: context.l10n.labelStatus),
                     items: ClientStatus.values.map((s) => DropdownMenuItem(
                       value: s,
-                      child: Text(_statusLabel(s)),
+                      child: Text(_statusLabel(s, context)),
                     )).toList(),
                     onChanged: (s) => vm.status = s ?? ClientStatus.active,
                   ),
                   const SizedBox(height: AppSpacing.formFieldSpacing),
                   TextFormField(
                     controller: _notesCtrl,
-                    decoration: const InputDecoration(labelText: 'Notes'),
+                    decoration: InputDecoration(labelText: context.l10n.labelNotes),
                     maxLines: 3,
                   ),
                   const SizedBox(height: AppSpacing.xl),
@@ -139,7 +140,7 @@ class _ClientFormViewState extends State<ClientFormView> {
                             width: 20,
                             child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                           )
-                        : Text(widget.editClient != null ? 'Save Changes' : 'Add Client'),
+                        : Text(widget.editClient != null ? context.l10n.actionSave : context.l10n.clientAddTitle),
                   ),
                 ],
               ),
@@ -150,9 +151,9 @@ class _ClientFormViewState extends State<ClientFormView> {
     );
   }
 
-  String _statusLabel(ClientStatus s) => switch (s) {
-        ClientStatus.active => 'Active',
-        ClientStatus.inactive => 'Inactive',
-        ClientStatus.archived => 'Archived',
+  String _statusLabel(ClientStatus s, BuildContext context) => switch (s) {
+        ClientStatus.active => context.l10n.clientStatusActive,
+        ClientStatus.inactive => context.l10n.clientStatusInactive,
+        ClientStatus.archived => context.l10n.clientStatusArchived,
       };
 }

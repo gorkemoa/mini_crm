@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -80,7 +81,7 @@ class _DebtFormViewState extends State<DebtFormView> {
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       appBar: AppBar(
-        title: Text(widget.editDebt != null ? 'Edit Debt' : 'Add Debt'),
+        title: Text(widget.editDebt != null ? context.l10n.debtsEditTitle : context.l10n.debtsAddTitle),
       ),
       body: Consumer<DebtFormViewModel>(
         builder: (context, vm, _) {
@@ -94,8 +95,8 @@ class _DebtFormViewState extends State<DebtFormView> {
                   // Client selector
                   DropdownButtonFormField<String>(
                     value: vm.selectedClientId,
-                    decoration: const InputDecoration(labelText: 'Client *'),
-                    validator: (v) => v == null ? 'Please select a client' : null,
+                    decoration: InputDecoration(labelText: '${context.l10n.labelClient} *'),
+                    validator: (v) => v == null ? context.l10n.validationRequired : null,
                     items: vm.clients
                         .map((c) => DropdownMenuItem(value: c.id, child: Text(c.fullName)))
                         .toList(),
@@ -104,7 +105,7 @@ class _DebtFormViewState extends State<DebtFormView> {
                   const SizedBox(height: AppSpacing.formFieldSpacing),
                   TextFormField(
                     controller: _titleCtrl,
-                    decoration: const InputDecoration(labelText: 'Title *'),
+                    decoration: InputDecoration(labelText: '${context.l10n.labelTitle} *'),
                     validator: Validators.required,
                   ),
                   const SizedBox(height: AppSpacing.formFieldSpacing),
@@ -114,7 +115,7 @@ class _DebtFormViewState extends State<DebtFormView> {
                         flex: 2,
                         child: TextFormField(
                           controller: _amountCtrl,
-                          decoration: const InputDecoration(labelText: 'Amount *'),
+                          decoration: InputDecoration(labelText: '${context.l10n.labelAmount} *'),
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
                           validator: Validators.amount,
                         ),
@@ -123,7 +124,7 @@ class _DebtFormViewState extends State<DebtFormView> {
                       Expanded(
                         child: DropdownButtonFormField<String>(
                           value: vm.currency,
-                          decoration: const InputDecoration(labelText: 'Currency'),
+                          decoration: InputDecoration(labelText: context.l10n.labelCurrency),
                           items: CurrencyUtils.supportedCurrencies
                               .map((c) => DropdownMenuItem(value: c, child: Text(c)))
                               .toList(),
@@ -137,7 +138,7 @@ class _DebtFormViewState extends State<DebtFormView> {
                   InkWell(
                     onTap: _pickDate,
                     child: InputDecorator(
-                      decoration: const InputDecoration(labelText: 'Due Date'),
+                      decoration: InputDecoration(labelText: context.l10n.labelDueDate),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -153,17 +154,17 @@ class _DebtFormViewState extends State<DebtFormView> {
                   const SizedBox(height: AppSpacing.formFieldSpacing),
                   DropdownButtonFormField<DebtStatus>(
                     value: vm.status,
-                    decoration: const InputDecoration(labelText: 'Status'),
+                    decoration: InputDecoration(labelText: context.l10n.labelStatus),
                     items: DebtStatus.values.map((s) => DropdownMenuItem(
                       value: s,
-                      child: Text(_statusLabel(s)),
+                      child: Text(_statusLabel(s, context)),
                     )).toList(),
                     onChanged: (s) => setState(() => vm.status = s ?? DebtStatus.pending),
                   ),
                   const SizedBox(height: AppSpacing.formFieldSpacing),
                   TextFormField(
                     controller: _noteCtrl,
-                    decoration: const InputDecoration(labelText: 'Note'),
+                    decoration: InputDecoration(labelText: context.l10n.labelNote),
                     maxLines: 3,
                   ),
                   const SizedBox(height: AppSpacing.xl),
@@ -176,7 +177,7 @@ class _DebtFormViewState extends State<DebtFormView> {
                     onPressed: vm.isLoading ? null : _submit,
                     child: vm.isLoading
                         ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                        : Text(widget.editDebt != null ? 'Save Changes' : 'Add Debt'),
+                        : Text(widget.editDebt != null ? context.l10n.actionSave : context.l10n.debtsAddTitle),
                   ),
                 ],
               ),
@@ -187,10 +188,10 @@ class _DebtFormViewState extends State<DebtFormView> {
     );
   }
 
-  String _statusLabel(DebtStatus s) => switch (s) {
-        DebtStatus.pending => 'Pending',
-        DebtStatus.overdue => 'Overdue',
-        DebtStatus.paid => 'Paid',
-        DebtStatus.partial => 'Partial',
+  String _statusLabel(DebtStatus s, BuildContext context) => switch (s) {
+        DebtStatus.pending => context.l10n.debtStatusPending,
+        DebtStatus.overdue => context.l10n.debtStatusOverdue,
+        DebtStatus.paid => context.l10n.debtStatusPaid,
+        DebtStatus.partial => context.l10n.debtStatusPartial,
       };
 }

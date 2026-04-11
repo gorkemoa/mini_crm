@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -45,7 +46,7 @@ class _LeadsViewState extends State<LeadsView> {
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       appBar: AppBar(
-        title: const Text('Leads'),
+        title: Text(context.l10n.leadsTitle),
       ),
       body: Consumer<LeadsViewModel>(
         builder: (context, vm, _) {
@@ -60,7 +61,7 @@ class _LeadsViewState extends State<LeadsView> {
                     children: [
                       SearchField(
                         controller: _searchCtrl,
-                        hint: 'Search leads...',
+                        hint: context.l10n.leadsSearchHint,
                         onChanged: vm.setSearch,
                       ),
                       const SizedBox(height: AppSpacing.sm),
@@ -74,9 +75,9 @@ class _LeadsViewState extends State<LeadsView> {
                       : vm.isEmpty
                           ? EmptyState(
                               icon: Icons.person_search_outlined,
-                              title: 'No leads yet',
-                              description: 'Track potential clients with leads',
-                              actionLabel: 'Add Lead',
+                              title: context.l10n.leadsEmpty,
+                              description: context.l10n.leadsEmptyDesc,
+                              actionLabel: context.l10n.leadsAddTitle,
                               onAction: () async {
                                 await Navigator.pushNamed(context, '/leads/form');
                                 if (context.mounted) vm.refresh();
@@ -114,7 +115,7 @@ class _LeadsViewState extends State<LeadsView> {
           Expanded(
             child: Column(
               children: [
-                Text('Total', style: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondaryLight)),
+                Text(context.l10n.leadsTotal, style: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondaryLight)),
                 const SizedBox(height: 4),
                 Text('${vm.leads.length}', style: AppTextStyles.amount),
               ],
@@ -124,7 +125,7 @@ class _LeadsViewState extends State<LeadsView> {
           Expanded(
             child: Column(
               children: [
-                Text('Won', style: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondaryLight)),
+                Text(context.l10n.leadStageWon, style: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondaryLight)),
                 const SizedBox(height: 4),
                 Text('${vm.wonCount}', style: AppTextStyles.amount.copyWith(color: AppColors.success)),
               ],
@@ -134,7 +135,7 @@ class _LeadsViewState extends State<LeadsView> {
           Expanded(
             child: Column(
               children: [
-                Text('Win Rate', style: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondaryLight)),
+                Text(context.l10n.leadsConversionRate, style: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondaryLight)),
                 const SizedBox(height: 4),
                 Text('${vm.winRate.toStringAsFixed(0)}%', style: AppTextStyles.amount.copyWith(color: AppColors.info)),
               ],
@@ -150,13 +151,13 @@ class _LeadsViewState extends State<LeadsView> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _Chip(label: 'All', selected: vm.stageFilter == null, onTap: () => vm.setStageFilter(null)),
+          _Chip(label: context.l10n.labelAll, selected: vm.stageFilter == null, onTap: () => vm.setStageFilter(null)),
           const SizedBox(width: AppSpacing.xs),
           ...[LeadStage.newLead, LeadStage.contacted, LeadStage.proposalSent, LeadStage.negotiating, LeadStage.won, LeadStage.lost]
               .map((s) => Padding(
                     padding: const EdgeInsets.only(right: AppSpacing.xs),
                     child: _Chip(
-                      label: _stageLabel(s),
+                      label: _stageLabel(s, context),
                       selected: vm.stageFilter == s,
                       onTap: () => vm.setStageFilter(s),
                     ),
@@ -182,7 +183,7 @@ class _LeadsViewState extends State<LeadsView> {
           onDelete: () async {
             final confirmed = await showConfirmDialog(
               context,
-              title: 'Delete Lead',
+              title: context.l10n.deleteConfirmTitle,
               message: 'Delete "${lead.name}"?',
             );
             if (confirmed && context.mounted) vm.delete(lead.id);
@@ -192,13 +193,13 @@ class _LeadsViewState extends State<LeadsView> {
     );
   }
 
-  String _stageLabel(LeadStage s) => switch (s) {
-        LeadStage.newLead => 'New',
-        LeadStage.contacted => 'Contacted',
-        LeadStage.proposalSent => 'Proposal',
-        LeadStage.negotiating => 'Negotiation',
-        LeadStage.won => 'Won',
-        LeadStage.lost => 'Lost',
+  String _stageLabel(LeadStage s, BuildContext context) => switch (s) {
+        LeadStage.newLead => context.l10n.leadStageNew,
+        LeadStage.contacted => context.l10n.leadStageContacted,
+        LeadStage.proposalSent => context.l10n.leadStageProposalSent,
+        LeadStage.negotiating => context.l10n.leadStageNegotiating,
+        LeadStage.won => context.l10n.leadStageWon,
+        LeadStage.lost => context.l10n.leadStageLost,
       };
 }
 
@@ -258,7 +259,7 @@ class _LeadTile extends StatelessWidget {
                       style: AppTextStyles.amountSmall,
                     ),
                   const SizedBox(height: 4),
-                  StatusBadge.fromLeadStage(lead.stage),
+                  StatusBadge.fromLeadStage(lead.stage, context),
                 ],
               ),
               const SizedBox(width: AppSpacing.sm),

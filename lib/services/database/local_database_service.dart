@@ -131,7 +131,31 @@ class LocalDatabaseService {
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // Handle migrations here in future versions
+    if (oldVersion < 2) {
+      // Recreate projects table to make client_id nullable
+      await db.execute('ALTER TABLE projects RENAME TO projects_v1');
+      await db.execute('''
+        CREATE TABLE projects (
+          id TEXT PRIMARY KEY,
+          client_id TEXT,
+          title TEXT NOT NULL,
+          description TEXT,
+          start_date TEXT,
+          end_date TEXT,
+          budget REAL,
+          currency TEXT NOT NULL DEFAULT 'USD',
+          status TEXT NOT NULL DEFAULT 'planned',
+          note TEXT,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL,
+          FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE SET NULL
+        )
+      ''');
+      await db.execute('INSERT INTO projects SELECT * FROM projects_v1');
+      await db.execute('DROP TABLE projects_v1');
+      await db.execute('CREATE INDEX IF NOT EXISTS idx_projects_client ON projects(client_id)');
+      await db.execute('CREATE INDEX IF NOT EXISTS idx_projects_status ON projects(status)');
+    }
   }
 
   Future<void> deleteDatabase() async {

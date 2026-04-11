@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -12,7 +13,7 @@ class ExportDataView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Export Data')),
+      appBar: AppBar(title: Text(context.l10n.exportTitle)),
       body: Consumer<DataViewModel>(
         builder: (context, vm, _) {
           return Padding(
@@ -23,13 +24,13 @@ class ExportDataView extends StatelessWidget {
                 const Icon(Icons.upload_rounded, size: 64, color: AppColors.primary),
                 const SizedBox(height: AppSpacing.lg),
                 Text(
-                  'Export All Data',
+                  context.l10n.exportTitle,
                   style: AppTextStyles.h2,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  'Export all your CRM records (clients, debts, projects, leads, income, reminders) as a JSON file. You can use this as a backup or transfer data to another device.',
+                  context.l10n.exportDesc,
                   style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondaryLight),
                   textAlign: TextAlign.center,
                 ),
@@ -55,8 +56,8 @@ class ExportDataView extends StatelessWidget {
                           final success = await vm.export();
                           if (success && context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Data exported successfully'),
+                              SnackBar(
+                                content: Text(context.l10n.exportSuccess),
                                 backgroundColor: AppColors.success,
                               ),
                             );
@@ -65,7 +66,7 @@ class ExportDataView extends StatelessWidget {
                   icon: vm.isLoading
                       ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                       : const Icon(Icons.share_rounded),
-                  label: const Text('Export & Share'),
+                  label: Text(context.l10n.exportButton),
                 ),
               ],
             ),

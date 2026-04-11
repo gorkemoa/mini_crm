@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -74,7 +75,7 @@ class _IncomeFormViewState extends State<IncomeFormView> {
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       appBar: AppBar(
-        title: Text(widget.editIncome != null ? 'Edit Income' : 'Add Income'),
+        title: Text(widget.editIncome != null ? context.l10n.incomeEditTitle : context.l10n.incomeAddTitle),
       ),
       body: Consumer<IncomeFormViewModel>(
         builder: (context, vm, _) {
@@ -87,17 +88,17 @@ class _IncomeFormViewState extends State<IncomeFormView> {
                 children: [
                   TextFormField(
                     controller: _platformCtrl,
-                    decoration: const InputDecoration(
-                      labelText: 'Platform / Source',
+                    decoration: InputDecoration(
+                      labelText: context.l10n.labelPlatform,
                       hintText: 'e.g. Upwork, Fiverr, Direct',
                     ),
                   ),
                   const SizedBox(height: AppSpacing.formFieldSpacing),
                   DropdownButtonFormField<String>(
                     value: vm.selectedClientId,
-                    decoration: const InputDecoration(labelText: 'Client (optional)'),
+                    decoration: InputDecoration(labelText: '${context.l10n.labelClient} (${context.l10n.labelOptional})'),
                     items: [
-                      const DropdownMenuItem<String>(value: null, child: Text('None')),
+                      DropdownMenuItem<String>(value: null, child: Text(context.l10n.labelNoClient)),
                       ...vm.clients.map((c) => DropdownMenuItem(value: c.id, child: Text(c.fullName))),
                     ],
                     onChanged: (v) => setState(() => vm.selectedClientId = v),
@@ -109,7 +110,7 @@ class _IncomeFormViewState extends State<IncomeFormView> {
                         flex: 2,
                         child: TextFormField(
                           controller: _amountCtrl,
-                          decoration: const InputDecoration(labelText: 'Amount *'),
+                          decoration: InputDecoration(labelText: '${context.l10n.labelAmount} *'),
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
                           validator: Validators.amount,
                         ),
@@ -118,7 +119,7 @@ class _IncomeFormViewState extends State<IncomeFormView> {
                       Expanded(
                         child: DropdownButtonFormField<String>(
                           value: vm.currency,
-                          decoration: const InputDecoration(labelText: 'Currency'),
+                          decoration: InputDecoration(labelText: context.l10n.labelCurrency),
                           items: CurrencyUtils.supportedCurrencies
                               .map((c) => DropdownMenuItem(value: c, child: Text(c)))
                               .toList(),
@@ -131,7 +132,7 @@ class _IncomeFormViewState extends State<IncomeFormView> {
                   InkWell(
                     onTap: _pickDate,
                     child: InputDecorator(
-                      decoration: const InputDecoration(labelText: 'Date *'),
+                      decoration: InputDecoration(labelText: '${context.l10n.labelDate} *'),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -144,7 +145,7 @@ class _IncomeFormViewState extends State<IncomeFormView> {
                   const SizedBox(height: AppSpacing.formFieldSpacing),
                   TextFormField(
                     controller: _noteCtrl,
-                    decoration: const InputDecoration(labelText: 'Note'),
+                    decoration: InputDecoration(labelText: context.l10n.labelNote),
                     maxLines: 3,
                   ),
                   const SizedBox(height: AppSpacing.xl),
@@ -157,7 +158,7 @@ class _IncomeFormViewState extends State<IncomeFormView> {
                     onPressed: vm.isLoading ? null : _submit,
                     child: vm.isLoading
                         ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                        : Text(widget.editIncome != null ? 'Save Changes' : 'Add Income'),
+                        : Text(widget.editIncome != null ? context.l10n.actionSave : context.l10n.incomeAddTitle),
                   ),
                 ],
               ),

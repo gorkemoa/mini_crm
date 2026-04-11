@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../core/utils/currency_utils.dart';
 import '../../core/utils/app_date_utils.dart';
 import '../../themes/app_colors.dart';
@@ -51,13 +52,13 @@ class _DashboardViewState extends State<DashboardView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Mini CRM',
+                          context.l10n.appTitle,
                           style: AppTextStyles.h1.copyWith(
                             color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
                           ),
                         ),
                         Text(
-                          'Overview',
+                          context.l10n.dashboardOverview,
                           style: AppTextStyles.bodySmall.copyWith(
                             color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
                           ),
@@ -78,8 +79,8 @@ class _DashboardViewState extends State<DashboardView> {
                         _buildStatsGrid(context, vm),
                         const SizedBox(height: AppSpacing.lg),
                         SectionHeader(
-                          title: "Today's Reminders",
-                          actionLabel: vm.todayReminders.isNotEmpty ? 'View All' : null,
+                          title: context.l10n.dashboardTodayReminders,
+                          actionLabel: vm.todayReminders.isNotEmpty ? context.l10n.actionViewAll : null,
                           onAction: () => Navigator.pushNamed(context, '/reminders'),
                         ),
                         const SizedBox(height: AppSpacing.sm),
@@ -103,7 +104,7 @@ class _DashboardViewState extends State<DashboardView> {
           children: [
             Expanded(
               child: _StatCard(
-                label: 'Pending Debts',
+                label: context.l10n.dashboardPendingDebts,
                 value: CurrencyUtils.formatCompact(vm.pendingDebtTotal, 'USD'),
                 icon: Icons.account_balance_wallet_rounded,
                 color: AppColors.warning,
@@ -114,7 +115,7 @@ class _DashboardViewState extends State<DashboardView> {
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: _StatCard(
-                label: 'Active Clients',
+                label: context.l10n.dashboardActiveClients,
                 value: vm.activeClients.toString(),
                 icon: Icons.people_rounded,
                 color: AppColors.primary,
@@ -129,7 +130,7 @@ class _DashboardViewState extends State<DashboardView> {
           children: [
             Expanded(
               child: _StatCard(
-                label: 'Active Projects',
+                label: context.l10n.dashboardActiveProjects,
                 value: vm.activeProjects.toString(),
                 icon: Icons.folder_rounded,
                 color: AppColors.info,
@@ -140,7 +141,7 @@ class _DashboardViewState extends State<DashboardView> {
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: _StatCard(
-                label: 'Leads to Follow',
+                label: context.l10n.dashboardLeadsToFollow,
                 value: vm.leadsToFollow.toString(),
                 icon: Icons.trending_up_rounded,
                 color: AppColors.success,
@@ -152,7 +153,7 @@ class _DashboardViewState extends State<DashboardView> {
         ),
         const SizedBox(height: AppSpacing.sm),
         _StatCard(
-          label: 'This Month Income',
+          label: context.l10n.dashboardMonthlyIncome,
           value: CurrencyUtils.formatCompact(vm.monthlyIncome, 'USD'),
           icon: Icons.bar_chart_rounded,
           color: AppColors.success,
@@ -172,7 +173,7 @@ class _DashboardViewState extends State<DashboardView> {
           child: EmptyState(
             icon: Icons.check_circle_outline_rounded,
             title: "All clear!",
-            description: "No reminders for today",
+            description: context.l10n.dashboardNoRemindersToday,
           ),
         ),
       );

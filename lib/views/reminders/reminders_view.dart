@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -33,7 +34,7 @@ class _RemindersViewState extends State<RemindersView> {
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       appBar: AppBar(
-        title: const Text('Reminders'),
+        title: Text(context.l10n.remindersTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_rounded),
@@ -57,9 +58,9 @@ class _RemindersViewState extends State<RemindersView> {
                       : vm.isEmpty
                           ? EmptyState(
                               icon: Icons.alarm_outlined,
-                              title: 'No reminders',
-                              description: 'Add reminders for follow-ups and tasks',
-                              actionLabel: 'Add Reminder',
+                              title: context.l10n.remindersEmpty,
+                              description: context.l10n.remindersEmptyDesc,
+                              actionLabel: context.l10n.remindersAddTitle,
                               onAction: () async {
                                 await Navigator.pushNamed(context, '/reminders/form');
                                 if (context.mounted) vm.refresh();
@@ -102,7 +103,7 @@ class _RemindersViewState extends State<RemindersView> {
                     border: Border.all(color: selected ? AppColors.primary : AppColors.borderLight),
                   ),
                   child: Text(
-                    _filterLabel(f),
+                    _filterLabel(f, context),
                     style: AppTextStyles.labelSmall.copyWith(
                       color: selected ? Colors.white : AppColors.textSecondaryLight,
                     ),
@@ -133,7 +134,7 @@ class _RemindersViewState extends State<RemindersView> {
           onDelete: () async {
             final confirmed = await showConfirmDialog(
               context,
-              title: 'Delete Reminder',
+              title: context.l10n.deleteConfirmTitle,
               message: 'Delete "${reminder.title}"?',
             );
             if (confirmed && context.mounted) vm.delete(reminder.id);
@@ -143,12 +144,12 @@ class _RemindersViewState extends State<RemindersView> {
     );
   }
 
-  String _filterLabel(ReminderFilter f) => switch (f) {
-        ReminderFilter.all => 'All',
-        ReminderFilter.today => 'Today',
-        ReminderFilter.upcoming => 'Upcoming',
-        ReminderFilter.overdue => 'Overdue',
-        ReminderFilter.completed => 'Completed',
+  String _filterLabel(ReminderFilter f, BuildContext context) => switch (f) {
+        ReminderFilter.all => context.l10n.remindersAll,
+        ReminderFilter.today => context.l10n.remindersToday,
+        ReminderFilter.upcoming => context.l10n.remindersUpcoming,
+        ReminderFilter.overdue => context.l10n.remindersOverdue,
+        ReminderFilter.completed => context.l10n.remindersCompleted,
       };
 }
 

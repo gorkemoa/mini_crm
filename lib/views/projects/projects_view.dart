@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/app_localizations_ext.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
@@ -45,7 +46,7 @@ class _ProjectsViewState extends State<ProjectsView> {
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       appBar: AppBar(
-        title: const Text('Projects'),
+        title: Text(context.l10n.projectsTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_rounded),
@@ -71,7 +72,7 @@ class _ProjectsViewState extends State<ProjectsView> {
                     children: [
                       SearchField(
                         controller: _searchCtrl,
-                        hint: 'Search projects...',
+                        hint: context.l10n.projectsSearchHint,
                         onChanged: vm.setSearch,
                       ),
                       const SizedBox(height: AppSpacing.sm),
@@ -85,9 +86,9 @@ class _ProjectsViewState extends State<ProjectsView> {
                       : vm.isEmpty
                           ? EmptyState(
                               icon: Icons.work_outline_rounded,
-                              title: 'No projects yet',
-                              description: 'Add your first project',
-                              actionLabel: 'Add Project',
+                              title: context.l10n.projectsEmpty,
+                              description: context.l10n.projectsEmptyDesc,
+                              actionLabel: context.l10n.projectsAddTitle,
                               onAction: () async {
                                 await Navigator.pushNamed(context, '/projects/form');
                                 if (context.mounted) vm.refresh();
@@ -115,15 +116,15 @@ class _ProjectsViewState extends State<ProjectsView> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _Chip(label: 'All', selected: vm.statusFilter == null, onTap: () => vm.setStatusFilter(null)),
+          _Chip(label: context.l10n.labelAll, selected: vm.statusFilter == null, onTap: () => vm.setStatusFilter(null)),
           const SizedBox(width: AppSpacing.xs),
-          _Chip(label: 'Active', selected: vm.statusFilter == ProjectStatus.active, onTap: () => vm.setStatusFilter(ProjectStatus.active)),
+          _Chip(label: context.l10n.projectStatusActive, selected: vm.statusFilter == ProjectStatus.active, onTap: () => vm.setStatusFilter(ProjectStatus.active)),
           const SizedBox(width: AppSpacing.xs),
-          _Chip(label: 'Paused', selected: vm.statusFilter == ProjectStatus.paused, onTap: () => vm.setStatusFilter(ProjectStatus.paused)),
+          _Chip(label: context.l10n.projectStatusPaused, selected: vm.statusFilter == ProjectStatus.paused, onTap: () => vm.setStatusFilter(ProjectStatus.paused)),
           const SizedBox(width: AppSpacing.xs),
-          _Chip(label: 'Completed', selected: vm.statusFilter == ProjectStatus.completed, onTap: () => vm.setStatusFilter(ProjectStatus.completed)),
+          _Chip(label: context.l10n.projectStatusCompleted, selected: vm.statusFilter == ProjectStatus.completed, onTap: () => vm.setStatusFilter(ProjectStatus.completed)),
           const SizedBox(width: AppSpacing.xs),
-          _Chip(label: 'Cancelled', selected: vm.statusFilter == ProjectStatus.cancelled, onTap: () => vm.setStatusFilter(ProjectStatus.cancelled)),
+          _Chip(label: context.l10n.projectStatusCancelled, selected: vm.statusFilter == ProjectStatus.cancelled, onTap: () => vm.setStatusFilter(ProjectStatus.cancelled)),
         ],
       ),
     );
@@ -147,7 +148,7 @@ class _ProjectsViewState extends State<ProjectsView> {
           onDelete: () async {
             final confirmed = await showConfirmDialog(
               context,
-              title: 'Delete Project',
+              title: context.l10n.deleteConfirmTitle,
               message: 'Delete "${project.title}"?',
             );
             if (confirmed && context.mounted) vm.delete(project.id);
@@ -207,7 +208,7 @@ class _ProjectTile extends StatelessWidget {
                   if (project.budget != null)
                     Text(CurrencyUtils.format(project.budget!, project.currency), style: AppTextStyles.amountSmall),
                   const SizedBox(height: 4),
-                  StatusBadge.fromProjectStatus(project.status),
+                  StatusBadge.fromProjectStatus(project.status, context),
                 ],
               ),
               const SizedBox(width: AppSpacing.sm),

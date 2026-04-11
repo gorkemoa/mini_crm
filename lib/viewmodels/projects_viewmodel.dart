@@ -40,8 +40,8 @@ class ProjectsViewModel extends BaseViewModel {
     final projectsResult = await _projectRepo.getAll();
     final clientsResult = await _clientRepo.getAll();
 
-    if (projectsResult.isSuccess) _allProjects = projectsResult.data!;
-    else setError(projectsResult.error);
+    if (projectsResult.isSuccess) { _allProjects = projectsResult.data!; }
+    else { setError(projectsResult.error); }
 
     if (clientsResult.isSuccess) {
       _clientsMap = {for (final c in clientsResult.data!) c.id: c};

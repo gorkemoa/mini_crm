@@ -41,8 +41,8 @@ class IncomeViewModel extends BaseViewModel {
     setLoading(true);
     clearError();
     final results = await Future.wait([_incomeRepo.getAll(), _clientRepo.getAll()]);
-    if (results[0].isSuccess) _allIncomes = results[0].data as List<IncomeModel>;
-    else setError(results[0].error);
+    if (results[0].isSuccess) { _allIncomes = results[0].data as List<IncomeModel>; }
+    else { setError(results[0].error); }
     if (results[1].isSuccess) {
       _clientsMap = {for (final c in results[1].data as List<ClientModel>) c.id: c};
     }
