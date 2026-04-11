@@ -1,29 +1,12 @@
-// Remote API service skeleton — reserved for future backend integration.
-// Replace the stub method bodies with real HTTP client calls
-// (e.g. using dio or http package) when the backend is ready.
+/// Stub for future remote API integration.
+/// Implement with HTTP client (dio/http) when backend is available.
+abstract class RemoteApiService {
+  Future<void> initialize(String baseUrl, String apiKey);
+}
 
-class RemoteApiService {
-  bool get isConfigured => false;
-
-  Future<Map<String, dynamic>> get(String endpoint) async {
-    throw UnimplementedError('Remote API not configured yet.');
-  }
-
-  Future<Map<String, dynamic>> post(
-    String endpoint,
-    Map<String, dynamic> body,
-  ) async {
-    throw UnimplementedError('Remote API not configured yet.');
-  }
-
-  Future<Map<String, dynamic>> put(
-    String endpoint,
-    Map<String, dynamic> body,
-  ) async {
-    throw UnimplementedError('Remote API not configured yet.');
-  }
-
-  Future<void> delete(String endpoint) async {
-    throw UnimplementedError('Remote API not configured yet.');
+class RemoteApiServiceStub implements RemoteApiService {
+  @override
+  Future<void> initialize(String baseUrl, String apiKey) async {
+    // No-op for local-first MVP
   }
 }

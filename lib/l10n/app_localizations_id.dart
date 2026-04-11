@@ -1,5 +1,3 @@
-// ignore: unused_import
-import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -12,593 +10,653 @@ class AppLocalizationsId extends AppLocalizations {
   String get appTitle => 'Mini CRM';
 
   @override
+  String appVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
   String get navDashboard => 'Dasbor';
 
   @override
   String get navClients => 'Klien';
 
   @override
-  String get navDebts => 'Tagihan';
+  String get navLeads => 'Prospek';
+
+  @override
+  String get navDebts => 'Utang';
 
   @override
   String get navProjects => 'Proyek';
 
   @override
+  String get navIncome => 'Pendapatan';
+
+  @override
+  String get navReminders => 'Pengingat';
+
+  @override
+  String get navSettings => 'Pengaturan';
+
+  @override
   String get navMore => 'Lainnya';
 
   @override
-  String get all => 'Semua';
+  String get navFinance => 'Finance';
 
   @override
-  String get edit => 'Edit';
+  String get actionAdd => 'Tambah';
 
   @override
-  String get delete => 'Hapus';
+  String get actionEdit => 'Edit';
 
   @override
-  String get save => 'Simpan';
+  String get actionDelete => 'Hapus';
 
   @override
-  String get update => 'Perbarui';
+  String get actionSave => 'Simpan';
 
   @override
-  String get cancel => 'Batal';
+  String get actionCancel => 'Batal';
 
   @override
-  String get add => 'Tambah';
+  String get actionBack => 'Back';
 
   @override
-  String get selectDate => 'Pilih';
+  String get actionSearch => 'Search';
 
   @override
-  String get status => 'Status';
+  String get actionFilter => 'Filter';
 
   @override
-  String get note => 'Catatan';
+  String get actionExport => 'Export';
 
   @override
-  String get additionalNotesHint => 'Catatan tambahan...';
+  String get actionImport => 'Import';
 
   @override
-  String get amount => 'Jumlah';
+  String get actionClose => 'Close';
 
   @override
-  String get amountHint => '0.00';
+  String get actionConfirm => 'Confirm';
 
   @override
-  String get notes => 'Catatan';
+  String get actionDone => 'Done';
 
   @override
-  String get email => 'Email';
+  String get actionMarkComplete => 'Mark as Complete';
 
   @override
-  String get phone => 'Telepon';
+  String get actionMarkIncomplete => 'Mark as Incomplete';
 
   @override
-  String get customer => 'Klien';
+  String get actionViewAll => 'View All';
 
   @override
-  String get selectCustomerOptional => 'Pilih klien (opsional)';
+  String get actionRefresh => 'Refresh';
 
   @override
-  String get noCustomer => '— Tanpa klien —';
+  String get labelName => 'Name';
 
   @override
-  String get budget => 'Anggaran';
+  String get labelTitle => 'Title';
 
   @override
-  String get description => 'Deskripsi';
+  String get labelStatus => 'Status';
 
   @override
-  String get startDate => 'Mulai';
+  String get labelDate => 'Date';
 
   @override
-  String get endDate => 'Selesai';
+  String get labelAmount => 'Amount';
 
   @override
-  String get endDatePrefix => 'Selesai: ';
+  String get labelCurrency => 'Currency';
 
   @override
-  String get fullName => 'Nama lengkap';
+  String get labelNote => 'Note';
 
   @override
-  String get notesOptional => 'Catatan (opsional)';
+  String get labelNotes => 'Notes';
 
   @override
-  String get notesHint => 'Catatan tentang klien...';
+  String get labelEmail => 'Email';
 
   @override
-  String get errorOccurred => 'Terjadi kesalahan';
+  String get labelPhone => 'Phone';
 
   @override
-  String get tryAgain => 'Coba lagi';
+  String get labelCompany => 'Company';
 
   @override
-  String get seeAll => 'Semua';
+  String get labelSource => 'Source';
 
   @override
-  String get today => 'Hari ini';
+  String get labelBudget => 'Budget';
 
   @override
-  String get upcoming => 'Mendatang';
+  String get labelStartDate => 'Start Date';
 
   @override
-  String get past => 'Lewat';
+  String get labelEndDate => 'End Date';
 
   @override
-  String get completed => 'Selesai';
+  String get labelDueDate => 'Due Date';
 
   @override
-  String get notSpecified => '— Tidak ditentukan —';
+  String get labelCreatedAt => 'Created';
 
   @override
-  String get dashboardSummarySection => 'RINGKASAN';
+  String get labelDescription => 'Description';
 
   @override
-  String get pendingDebts => 'Tagihan menunggu';
+  String get labelPlatform => 'Platform';
 
   @override
-  String get activeLead => 'Prospek aktif';
+  String get labelClient => 'Client';
 
   @override
-  String get thisMonthIncome => 'Pendapatan bulan ini';
+  String get labelSelectClient => 'Select Client';
 
   @override
-  String get todayReminders => 'Pengingat hari ini';
+  String get labelNoClient => 'No Client';
 
   @override
-  String get overdueDebts => 'Tagihan jatuh tempo';
+  String get labelOptional => 'Optional';
 
   @override
-  String get activeProjects => 'Proyek aktif';
+  String get labelStage => 'Stage';
 
   @override
-  String get greetingMorning => 'Selamat pagi 👋';
+  String get labelFollowUpDate => 'Follow-up Date';
 
   @override
-  String get greetingAfternoon => 'Selamat siang 👋';
+  String get labelEstimatedBudget => 'Estimated Budget';
 
   @override
-  String get greetingEvening => 'Selamat malam 👋';
+  String get labelReminderDate => 'Reminder Date';
 
   @override
-  String get clientsTitle => 'Klien';
+  String get labelRelatedTo => 'Related To';
 
   @override
-  String get noClientsYet => 'Belum ada klien';
+  String get labelAll => 'All';
 
   @override
-  String get noClientsSubtitle => 'Mulai dengan menambahkan klien pertama.';
+  String get clientStatusActive => 'Active';
 
   @override
-  String get addClient => 'Tambah klien';
+  String get clientStatusInactive => 'Inactive';
 
   @override
-  String get deleteClient => 'Hapus klien';
+  String get clientStatusArchived => 'Archived';
 
   @override
-  String get editClient => 'Edit klien';
+  String get debtStatusPending => 'Pending';
 
   @override
-  String get newClient => 'Klien baru';
+  String get debtStatusOverdue => 'Overdue';
 
   @override
-  String get debtsSection => 'Tagihan';
+  String get debtStatusPaid => 'Paid';
 
   @override
-  String get projectsSection => 'Proyek';
+  String get debtStatusPartial => 'Partial';
 
   @override
-  String get noDebtsInline => 'Belum ada tagihan.';
+  String get projectStatusPlanned => 'Planned';
 
   @override
-  String get noProjectsInline => 'Belum ada proyek.';
+  String get projectStatusStartingSoon => 'Starting Soon';
 
   @override
-  String get companyOptional => 'Perusahaan (opsional)';
+  String get projectStatusActive => 'Active';
 
   @override
-  String get companyHint => 'Nama Perusahaan PT';
+  String get projectStatusPaused => 'Paused';
 
   @override
-  String get emailOptional => 'Email (opsional)';
+  String get projectStatusCompleted => 'Completed';
 
   @override
-  String get emailHint => 'contoh@email.com';
+  String get projectStatusCancelled => 'Cancelled';
 
   @override
-  String get phoneOptional => 'Telepon (opsional)';
+  String get leadStageNew => 'New Lead';
 
   @override
-  String get phoneHint => '+62 812 3456 7890';
+  String get leadStageContacted => 'Contacted';
 
   @override
-  String get fullNameHint => 'Budi Santoso';
+  String get leadStageProposalSent => 'Proposal Sent';
 
   @override
-  String get debtsTitle => 'Tagihan';
+  String get leadStageNegotiating => 'Negotiating';
 
   @override
-  String get debtWaiting => 'menunggu';
+  String get leadStageWon => 'Won';
 
   @override
-  String get noDebtsYet => 'Belum ada tagihan';
+  String get leadStageLost => 'Lost';
 
   @override
-  String get noDebtsSubtitle => 'Mulai dengan menambahkan tagihan pertama.';
+  String get dashboardTitle => 'Dashboard';
 
   @override
-  String get addDebt => 'Tambah tagihan';
+  String get dashboardPendingDebts => 'Pending Debts';
 
   @override
-  String get newDebt => 'Tagihan baru';
+  String get dashboardOverdueDebts => 'Overdue';
 
   @override
-  String get editDebt => 'Edit tagihan';
+  String get dashboardProjectsThisWeek => 'This Week';
 
   @override
-  String get debtTitleLabel => 'Judul';
+  String get dashboardLeadsToFollow => 'Leads to Follow';
 
   @override
-  String get debtTitleHint => 'mis. Pengiriman proyek';
+  String get dashboardMonthlyIncome => 'This Month';
 
   @override
-  String get dueDate => 'Tanggal jatuh tempo';
+  String get dashboardTodayReminders => 'Today\'s Reminders';
 
   @override
-  String get projectsTitle => 'Proyek';
+  String get dashboardActiveClients => 'Active Clients';
 
   @override
-  String get noProjectsYet => 'Belum ada proyek';
+  String get dashboardActiveProjects => 'Active Projects';
 
   @override
-  String get noProjectsSubtitle => 'Mulai dengan menambahkan proyek pertama.';
+  String get dashboardNoRemindersToday => 'No reminders for today';
 
   @override
-  String get addProject => 'Tambah proyek';
+  String get dashboardGoodMorning => 'Good morning';
 
   @override
-  String get newProject => 'Proyek baru';
+  String get dashboardOverview => 'Here\'s your overview';
 
   @override
-  String get editProject => 'Edit proyek';
+  String get clientsTitle => 'Clients';
 
   @override
-  String get projectName => 'Nama proyek';
+  String get clientsEmpty => 'No clients yet';
 
   @override
-  String get projectNameHint => 'mis. Desain website';
+  String get clientsEmptyDesc => 'Add your first client to get started';
 
   @override
-  String get projectDetails => 'Detail proyek...';
+  String get clientsSearchHint => 'Search clients...';
 
   @override
-  String get leadsTitle => 'Prospek';
+  String get clientAddTitle => 'Add Client';
 
   @override
-  String get leadsActiveCount => 'aktif';
+  String get clientEditTitle => 'Edit Client';
 
   @override
-  String get noLeadsYet => 'Belum ada prospek';
+  String get clientDetailTitle => 'Client Details';
 
   @override
-  String get noLeadsSubtitle => 'Tambahkan klien potensial di sini.';
+  String get clientFullName => 'Full Name';
 
   @override
-  String get addLead => 'Tambah prospek';
+  String get clientCompanyName => 'Company Name';
 
   @override
-  String get newLead => 'Prospek baru';
+  String get clientDebts => 'Debts';
 
   @override
-  String get editLead => 'Edit prospek';
+  String get clientProjects => 'Projects';
 
   @override
-  String get stage => 'Tahap';
+  String get clientTotalDebt => 'Total Debt';
 
   @override
-  String get source => 'Sumber';
+  String get clientActiveProjects => 'Active Projects';
 
   @override
-  String get selectSource => 'Pilih sumber';
+  String get debtsTitle => 'Debts';
 
   @override
-  String get estimatedBudget => 'Estimasi anggaran';
+  String get debtsEmpty => 'No debts yet';
 
   @override
-  String get followUpDate => 'Tanggal tindak lanjut';
+  String get debtsEmptyDesc => 'Add your first debt record';
 
   @override
-  String get meetingNotesHint => 'Catatan pertemuan...';
+  String get debtsSearchHint => 'Search debts...';
 
   @override
-  String get incomeTitle => 'Pendapatan';
+  String get debtsTotal => 'Total';
 
   @override
-  String get thisMonthPrefix => 'Bulan ini: ';
+  String get debtsOverdue => 'Overdue';
 
   @override
-  String get noIncomeYet => 'Belum ada pendapatan';
+  String get debtsPending => 'Pending';
 
   @override
-  String get noIncomeSubtitle => 'Tambahkan pembayaran di sini.';
+  String get debtsPaid => 'Paid';
 
   @override
-  String get addIncome => 'Tambah pendapatan';
+  String get debtsAddTitle => 'Add Debt';
 
   @override
-  String get newIncome => 'Pendapatan baru';
+  String get debtsEditTitle => 'Edit Debt';
 
   @override
-  String get editIncome => 'Edit pendapatan';
+  String get debtDetailTitle => 'Debt Details';
 
   @override
-  String get platform => 'Platform';
+  String get debtsClient => 'Client';
 
   @override
-  String get selectPlatform => 'Pilih platform';
+  String get debtsTotalAmount => 'Total Amount';
 
   @override
-  String get receiptDate => 'Tanggal terima';
+  String get debtsFilterAll => 'All';
 
   @override
-  String get income => 'Pendapatan';
+  String get debtsFilterPending => 'Pending';
 
   @override
-  String get remindersTitle => 'Pengingat';
+  String get debtsFilterOverdue => 'Overdue';
 
   @override
-  String get noRemindersYet => 'Tidak ada pengingat';
+  String get debtsFilterPaid => 'Paid';
 
   @override
-  String get noRemindersSubtitle =>
-      'Tambahkan tanggal dan tugas penting di sini.';
+  String get projectsTitle => 'Projects';
 
   @override
-  String get addReminderTitle => 'Tambah pengingat';
+  String get projectsEmpty => 'No projects yet';
 
   @override
-  String get reminderTitleHint => 'Judul pengingat...';
+  String get projectsEmptyDesc => 'Add your first project';
 
   @override
-  String get titleCannotBeEmpty => 'Judul tidak boleh kosong.';
+  String get projectsSearchHint => 'Search projects...';
 
   @override
-  String get markCompleted => 'Selesai';
+  String get projectsAddTitle => 'Add Project';
 
   @override
-  String get markIncomplete => 'Tandai belum selesai';
+  String get projectsEditTitle => 'Edit Project';
 
   @override
-  String get settingsTitle => 'Pengaturan';
+  String get projectDetailTitle => 'Project Details';
 
   @override
-  String get sectionData => 'DATA';
+  String get projectClient => 'Client';
 
   @override
-  String get sectionApp => 'APLIKASI';
+  String get projectBudget => 'Budget';
 
   @override
-  String get sectionLanguage => 'BAHASA';
+  String get projectDuration => 'Duration';
 
   @override
-  String get exportData => 'Ekspor data';
+  String get leadsTitle => 'Leads';
 
   @override
-  String get exportDataSubtitle => 'Bagikan semua data sebagai JSON';
+  String get leadsEmpty => 'No leads yet';
 
   @override
-  String get importData => 'Impor data';
+  String get leadsEmptyDesc => 'Start tracking potential clients';
 
   @override
-  String get importDataSubtitle => 'Muat dari file JSON';
+  String get leadsSearchHint => 'Search leads...';
 
   @override
-  String get version => 'Versi';
+  String get leadsAddTitle => 'Add Lead';
 
   @override
-  String get exportDialogTitle => 'Ekspor data';
+  String get leadsEditTitle => 'Edit Lead';
 
   @override
-  String get exportDialogContent =>
-      'Semua data klien, tagihan, proyek, dan pendapatan akan diekspor dalam format JSON dan menu berbagi akan terbuka.';
+  String get leadDetailTitle => 'Lead Details';
 
   @override
-  String get importDialogTitle => 'Impor data';
+  String get leadsConversionRate => 'Won Rate';
 
   @override
-  String get importDialogContent =>
-      'Tindakan ini tidak akan menimpa data yang ada; catatan dari file yang dipilih akan ditambahkan. Lanjutkan?';
+  String get leadsTotal => 'Total Leads';
 
   @override
-  String get exportButton => 'Ekspor';
+  String get incomeTitle => 'Income';
 
   @override
-  String get importButton => 'Impor';
+  String get incomeEmpty => 'No income records yet';
 
   @override
-  String get language => 'Bahasa';
+  String get incomeEmptyDesc => 'Start recording your income';
 
   @override
-  String get selectLanguage => 'Pilih bahasa';
+  String get incomeSearchHint => 'Search income...';
 
   @override
-  String get moreTitle => 'Lainnya';
+  String get incomeAddTitle => 'Add Income';
 
   @override
-  String get sectionBusiness => 'MANAJEMEN BISNIS';
+  String get incomeEditTitle => 'Edit Income';
 
   @override
-  String get sectionRemindersNav => 'PENGINGAT';
+  String get incomeTotal => 'Total Income';
 
   @override
-  String get sectionAppNav => 'APLIKASI';
+  String get incomeThisMonth => 'This Month';
 
   @override
-  String get leadsMenuSubtitle => 'Lacak klien potensial';
+  String get incomeDate => 'Income Date';
 
   @override
-  String get incomeMenuSubtitle => 'Catatan pembayaran dan pendapatan';
+  String get remindersTitle => 'Reminders';
 
   @override
-  String get remindersMenuSubtitle => 'Pengingat tugas dan kalender';
+  String get remindersEmpty => 'No reminders';
 
   @override
-  String get settingsMenuSubtitle => 'Manajemen data dan info aplikasi';
+  String get remindersEmptyDesc => 'Set reminders for important tasks';
 
   @override
-  String get searchHint => 'Cari...';
+  String get remindersAddTitle => 'Add Reminder';
 
   @override
-  String get statusActive => 'Aktif';
+  String get remindersEditTitle => 'Edit Reminder';
 
   @override
-  String get statusInactive => 'Tidak aktif';
+  String get remindersToday => 'Today';
 
   @override
-  String get statusLost => 'Hilang';
+  String get remindersUpcoming => 'Upcoming';
 
   @override
-  String get debtPending => 'Menunggu';
+  String get remindersOverdue => 'Overdue';
 
   @override
-  String get debtOverdue => 'Jatuh tempo';
+  String get remindersCompleted => 'Completed';
 
   @override
-  String get debtPaid => 'Dibayar';
+  String get remindersAll => 'All';
 
   @override
-  String get debtPartial => 'Bayar sebagian';
+  String get settingsTitle => 'Settings';
 
   @override
-  String get projectPlanned => 'Direncanakan';
+  String get settingsAppearance => 'Appearance';
 
   @override
-  String get projectStartingSoon => 'Segera dimulai';
+  String get settingsTheme => 'Theme';
 
   @override
-  String get projectActive => 'Aktif';
+  String get settingsLanguage => 'Language';
 
   @override
-  String get projectPaused => 'Dijeda';
+  String get settingsData => 'Data Management';
 
   @override
-  String get projectCompleted => 'Selesai';
+  String get settingsExport => 'Export Data';
 
   @override
-  String get projectCancelled => 'Dibatalkan';
+  String get settingsImport => 'Import Data';
 
   @override
-  String get leadNew => 'Prospek baru';
+  String get settingsAbout => 'About';
 
   @override
-  String get leadContacted => 'Dihubungi';
+  String get settingsVersion => 'App Version';
 
   @override
-  String get leadProposalSent => 'Proposal dikirim';
+  String get settingsExportDesc => 'Export all data as JSON file';
 
   @override
-  String get leadNegotiating => 'Negosiasi';
+  String get settingsImportDesc => 'Import data from a JSON file';
 
   @override
-  String get leadWon => 'Berhasil';
+  String get themeLight => 'Light';
 
   @override
-  String get leadLost => 'Gagal';
+  String get themeDark => 'Dark';
 
   @override
-  String get errorDataLoad => 'Data tidak dapat dimuat.';
+  String get themeSystem => 'System Default';
 
   @override
-  String get errorClientsLoad => 'Klien tidak dapat dimuat.';
+  String get exportTitle => 'Export Data';
 
   @override
-  String get errorClientDelete => 'Klien tidak dapat dihapus.';
+  String get exportDesc => 'Your data will be exported as a JSON file. You can use this file to backup or restore your data.';
 
   @override
-  String get errorClientDetailLoad => 'Detail klien tidak dapat dimuat.';
+  String get exportSuccess => 'Data exported successfully';
 
   @override
-  String get errorClientSave => 'Klien tidak dapat disimpan.';
+  String get exportError => 'Export failed. Please try again.';
 
   @override
-  String get errorDebtsLoad => 'Tagihan tidak dapat dimuat.';
+  String get exportButton => 'Export JSON';
 
   @override
-  String get errorDebtDelete => 'Tagihan tidak dapat dihapus.';
+  String get importTitle => 'Import Data';
 
   @override
-  String get errorDebtSave => 'Tagihan tidak dapat disimpan.';
+  String get importDesc => 'Select a Mini CRM JSON file to import your data.';
 
   @override
-  String get errorFormDataLoad => 'Data formulir tidak dapat dimuat.';
+  String get importSuccess => 'Data imported successfully';
 
   @override
-  String get errorProjectsLoad => 'Proyek tidak dapat dimuat.';
+  String get importError => 'Import failed. Invalid or corrupted file.';
 
   @override
-  String get errorProjectDelete => 'Proyek tidak dapat dihapus.';
+  String get importWarning => 'Importing will replace ALL existing data. This action cannot be undone.';
 
   @override
-  String get errorProjectSave => 'Proyek tidak dapat disimpan.';
+  String get importButton => 'Select File';
 
   @override
-  String get errorLeadsLoad => 'Prospek tidak dapat dimuat.';
+  String get importReplace => 'Replace all existing data';
 
   @override
-  String get errorLeadDelete => 'Prospek tidak dapat dihapus.';
+  String get deleteConfirmTitle => 'Delete';
 
   @override
-  String get errorLeadSave => 'Prospek tidak dapat disimpan.';
+  String get deleteConfirmMessage => 'Are you sure you want to delete this? This action cannot be undone.';
 
   @override
-  String get errorIncomeLoad => 'Pendapatan tidak dapat dimuat.';
+  String get deleteConfirmButton => 'Delete';
 
   @override
-  String get errorIncomeDelete => 'Catatan pendapatan tidak dapat dihapus.';
+  String get validationRequired => 'This field is required';
 
   @override
-  String get errorIncomeSave => 'Catatan pendapatan tidak dapat disimpan.';
+  String get validationEmail => 'Please enter a valid email address';
 
   @override
-  String get errorRemindersLoad => 'Pengingat tidak dapat dimuat.';
+  String get validationAmount => 'Please enter a valid amount';
 
   @override
-  String get errorStatusUpdate => 'Status tidak dapat diperbarui.';
+  String get validationPositiveAmount => 'Amount must be greater than zero';
 
   @override
-  String get errorReminderDelete => 'Pengingat tidak dapat dihapus.';
+  String get validationDateInvalid => 'Please select a valid date';
 
   @override
-  String get errorReminderAdd => 'Pengingat tidak dapat ditambahkan.';
+  String get errorGeneric => 'Something went wrong. Please try again.';
 
   @override
-  String get errorExportFailed => 'Ekspor gagal.';
+  String get errorDatabase => 'Database error. Please restart the app.';
 
   @override
-  String get errorFileRead => 'File tidak dapat dibaca.';
+  String get errorLoadFailed => 'Failed to load data';
 
   @override
-  String get errorImportFailed => 'Impor gagal.';
+  String get errorSaveFailed => 'Failed to save';
 
   @override
-  String get validationRequired => 'Kolom ini wajib diisi.';
+  String get errorDeleteFailed => 'Failed to delete';
 
   @override
-  String get validationEmail => 'Masukkan alamat email yang valid.';
+  String get currencyUSD => 'USD — US Dollar';
 
   @override
-  String get validationPhone => 'Masukkan nomor telepon yang valid.';
+  String get currencyEUR => 'EUR — Euro';
 
   @override
-  String get validationAmountRequired => 'Jumlah wajib diisi.';
+  String get currencyTRY => 'TRY — Turkish Lira';
 
   @override
-  String get validationAmountInvalid => 'Masukkan jumlah yang valid.';
+  String get currencyGBP => 'GBP — British Pound';
 
   @override
-  String get validationAmountPositive => 'Jumlah harus lebih dari 0.';
+  String get currencyJPY => 'JPY — Japanese Yen';
 
   @override
-  String get validationSelectClient => 'Silakan pilih klien.';
+  String get currencyCNY => 'CNY — Chinese Yuan';
+
+  @override
+  String get currencyINR => 'INR — Indian Rupee';
+
+  @override
+  String get currencyBRL => 'BRL — Brazilian Real';
+
+  @override
+  String get currencyAUD => 'AUD — Australian Dollar';
+
+  @override
+  String get currencyCAD => 'CAD — Canadian Dollar';
+
+  @override
+  String get reminderRelatedClient => 'Client';
+
+  @override
+  String get reminderRelatedDebt => 'Debt';
+
+  @override
+  String get reminderRelatedProject => 'Project';
+
+  @override
+  String get reminderRelatedLead => 'Lead';
+
+  @override
+  String get reminderRelatedIncome => 'Income';
+
+  @override
+  String get reminderRelatedGeneral => 'General';
+
+  @override
+  String daysOverdue(int days) {
+    return '$days day(s) overdue';
+  }
+
+  @override
+  String daysRemaining(int days) {
+    return '$days day(s) remaining';
+  }
+
+  @override
+  String get dueToday => 'Due today';
+
+  @override
+  String get dueTomorrow => 'Due tomorrow';
 }

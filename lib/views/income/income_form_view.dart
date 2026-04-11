@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../../core/constants/app_constants.dart';
-import '../../core/utils/l10n_utils.dart';
-import '../../l10n/app_localizations.dart';
-import '../../models/income_model.dart';
+
 import '../../themes/app_colors.dart';
-import '../../themes/app_radii.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
 import '../../viewmodels/income_form_viewmodel.dart';
-import '../widgets/primary_button.dart';
+import '../../models/income_model.dart';
+import '../../core/utils/currency_utils.dart';
+import '../../core/utils/app_date_utils.dart';
+import '../../core/utils/validators.dart';
 
 class IncomeFormView extends StatefulWidget {
-  final IncomeModel? initialIncome;
-
-  const IncomeFormView({super.key, this.initialIncome});
+  final IncomeModel? editIncome;
+  const IncomeFormView({super.key, this.editIncome});
 
   @override
   State<IncomeFormView> createState() => _IncomeFormViewState();
@@ -23,313 +20,150 @@ class IncomeFormView extends StatefulWidget {
 
 class _IncomeFormViewState extends State<IncomeFormView> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _amountCtrl;
-  late final TextEditingController _noteCtrl;
+  late final IncomeFormViewModel _vm;
+
+  final _platformCtrl = TextEditingController();
+  final _amountCtrl = TextEditingController();
+  final _noteCtrl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    final inc = widget.initialIncome;
-    _amountCtrl = TextEditingController(
-        text: inc != null ? inc.amount.toStringAsFixed(2) : '');
-    _noteCtrl = TextEditingController(text: inc?.note ?? '');
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<IncomeFormViewModel>().init(editIncome: inc);
+    _vm = context.read<IncomeFormViewModel>();
+    _vm.loadClients().then((_) {
+      if (widget.editIncome != null) {
+        _vm.loadForEdit(widget.editIncome!);
+        _platformCtrl.text = _vm.sourcePlatform;
+        _amountCtrl.text = _vm.amount;
+        _noteCtrl.text = _vm.note;
+      }
+      if (mounted) setState(() {});
     });
   }
 
   @override
   void dispose() {
+    _platformCtrl.dispose();
     _amountCtrl.dispose();
     _noteCtrl.dispose();
     super.dispose();
   }
 
+  Future<void> _pickDate() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: _vm.date,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now().add(const Duration(days: 1)),
+    );
+    if (date != null) setState(() => _vm.date = date);
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+    _vm.sourcePlatform = _platformCtrl.text;
+    _vm.amount = _amountCtrl.text;
+    _vm.note = _noteCtrl.text;
+    final success = await _vm.submit();
+    if (success && mounted) Navigator.pop(context, true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<IncomeFormViewModel>(
-      builder: (context, vm, _) {
-        final l10n = AppLocalizations.of(context)!;
-        if (vm.saved) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (context.mounted) Navigator.pop(context, true);
-          });
-        }
-
-        return Scaffold(
-          backgroundColor: AppColors.background,
-          appBar: AppBar(
-            title: Text(
-              widget.initialIncome == null ? l10n.newIncome : l10n.editIncome,
-              style: AppTextStyles.navTitle,
-            ),
-            backgroundColor: AppColors.surface,
-          ),
-          body: SafeArea(
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
+      appBar: AppBar(
+        title: Text(widget.editIncome != null ? 'Edit Income' : 'Add Income'),
+      ),
+      body: Consumer<IncomeFormViewModel>(
+        builder: (context, vm, _) {
+          return SingleChildScrollView(
+            padding: AppSpacing.screenPaddingAll,
             child: Form(
               key: _formKey,
-              child: ListView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.screenPaddingH,
-                  vertical: AppSpacing.md,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Client picker
-                  _FormSection(children: [
-                    _Label(l10n.customer),
-                    DropdownButton<String?>(
-                      value: vm.selectedClientId,
-                      isExpanded: true,
-                      underline: const SizedBox.shrink(),
-                      hint: Text(l10n.selectCustomerOptional,
-                          style: AppTextStyles.body
-                              .copyWith(color: AppColors.textTertiary)),
-                      items: [
-                        DropdownMenuItem(
-                            value: null, child: Text(l10n.noCustomer)),
-                        ...vm.clients.map((c) => DropdownMenuItem(
-                            value: c.id, child: Text(c.displayName))),
-                      ],
-                      onChanged: (v) => vm.selectedClientId = v,
+                  TextFormField(
+                    controller: _platformCtrl,
+                    decoration: const InputDecoration(
+                      labelText: 'Platform / Source',
+                      hintText: 'e.g. Upwork, Fiverr, Direct',
                     ),
-                  ]),
-                  const SizedBox(height: AppSpacing.md),
-
-                  // Amount + currency
-                  _FormSection(children: [
-                    Row(children: [
+                  ),
+                  const SizedBox(height: AppSpacing.formFieldSpacing),
+                  DropdownButtonFormField<String>(
+                    value: vm.selectedClientId,
+                    decoration: const InputDecoration(labelText: 'Client (optional)'),
+                    items: [
+                      const DropdownMenuItem<String>(value: null, child: Text('None')),
+                      ...vm.clients.map((c) => DropdownMenuItem(value: c.id, child: Text(c.fullName))),
+                    ],
+                    onChanged: (v) => setState(() => vm.selectedClientId = v),
+                  ),
+                  const SizedBox(height: AppSpacing.formFieldSpacing),
+                  Row(
+                    children: [
                       Expanded(
-                        child: _AppTextField(
+                        flex: 2,
+                        child: TextFormField(
                           controller: _amountCtrl,
-                          label: l10n.amount,
-                          hint: l10n.amountHint,
-                          keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                                RegExp(r'^\d*\.?\d{0,2}')),
-                          ],
-                          validator: (_) => localizeValidator(l10n, vm.validateAmount()),
-                          onChanged: (v) => vm.amount = v,
+                          decoration: const InputDecoration(labelText: 'Amount *'),
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          validator: Validators.amount,
                         ),
                       ),
                       const SizedBox(width: AppSpacing.sm),
-                      DropdownButton<String>(
-                        value: vm.currency,
-                        underline: const SizedBox.shrink(),
-                        items: AppConstants.currencies
-                            .map((c) =>
-                                DropdownMenuItem(value: c, child: Text(c)))
-                            .toList(),
-                        onChanged: (v) {
-                          if (v != null) {
-                            vm.currency = v;
-                            setState(() {});
-                          }
-                        },
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          value: vm.currency,
+                          decoration: const InputDecoration(labelText: 'Currency'),
+                          items: CurrencyUtils.supportedCurrencies
+                              .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                              .toList(),
+                          onChanged: (v) => setState(() => vm.currency = v ?? 'USD'),
+                        ),
                       ),
-                    ]),
-                  ]),
-                  const SizedBox(height: AppSpacing.md),
-
-                  // Platform + date
-                  _FormSection(children: [
-                    _Label(l10n.platform),
-                    DropdownButton<String?>(
-                      value: vm.sourcePlatform.isEmpty ? null : vm.sourcePlatform,
-                      isExpanded: true,
-                      underline: const SizedBox.shrink(),
-                      hint: Text(l10n.selectPlatform,
-                          style: AppTextStyles.body
-                              .copyWith(color: AppColors.textTertiary)),
-                      items: [
-                        DropdownMenuItem(
-                            value: null, child: Text(l10n.notSpecified)),
-                        ...AppConstants.leadSources.map((s) =>
-                            DropdownMenuItem(value: s, child: Text(s))),
-                      ],
-                      onChanged: (v) {
-                        vm.sourcePlatform = v ?? '';
-                        setState(() {});
-                      },
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.formFieldSpacing),
+                  InkWell(
+                    onTap: _pickDate,
+                    child: InputDecorator(
+                      decoration: const InputDecoration(labelText: 'Date *'),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(AppDateUtils.formatDate(vm.date), style: AppTextStyles.bodyMedium),
+                          const Icon(Icons.calendar_today_rounded, size: 18),
+                        ],
+                      ),
                     ),
-                    _Divider(),
-                    _DatePickerRow(
-                      label: l10n.receiptDate,
-                      value: vm.date,
-                      onPicked: (d) {
-                        if (d != null) {
-                          vm.date = d;
-                          setState(() {});
-                        }
-                      },
-                    ),
-                  ]),
-                  const SizedBox(height: AppSpacing.md),
-
-                  // Notes
-                  _FormSection(children: [
-                    _AppTextField(
-                      controller: _noteCtrl,
-                      label: l10n.note,
-                      hint: l10n.additionalNotesHint,
-                      maxLines: 4,
-                      onChanged: (v) => vm.note = v,
-                    ),
-                  ]),
-                  const SizedBox(height: AppSpacing.lg),
-
-                  if (vm.hasError)
+                  ),
+                  const SizedBox(height: AppSpacing.formFieldSpacing),
+                  TextFormField(
+                    controller: _noteCtrl,
+                    decoration: const InputDecoration(labelText: 'Note'),
+                    maxLines: 3,
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
+                  if (vm.errorMessage != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                      child: Text(
-                        localizeKey(l10n, vm.errorMessage),
-                        style: AppTextStyles.footnote
-                            .copyWith(color: AppColors.danger),
-                        textAlign: TextAlign.center,
-                      ),
+                      child: Text(vm.errorMessage!, style: const TextStyle(color: AppColors.error), textAlign: TextAlign.center),
                     ),
-
-                  PrimaryButton(
-                    label: widget.initialIncome == null ? l10n.save : l10n.update,
-                    isLoading: vm.isLoading,
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        vm.submit();
-                      }
-                    },
+                  ElevatedButton(
+                    onPressed: vm.isLoading ? null : _submit,
+                    child: vm.isLoading
+                        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                        : Text(widget.editIncome != null ? 'Save Changes' : 'Add Income'),
                   ),
                 ],
               ),
             ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-// ── helpers ──
-
-class _FormSection extends StatelessWidget {
-  final List<Widget> children;
-  const _FormSection({required this.children});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadii.card),
-      ),
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.cardPadding, vertical: 4),
-      child:
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
-    );
-  }
-}
-
-class _Label extends StatelessWidget {
-  final String text;
-  const _Label(this.text);
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10, bottom: 2),
-      child: Text(text,
-          style: AppTextStyles.caption1
-              .copyWith(color: AppColors.textSecondary)),
-    );
-  }
-}
-
-class _Divider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) =>
-      const Divider(height: 1, thickness: 0.5);
-}
-
-class _AppTextField extends StatelessWidget {
-  final TextEditingController controller;
-  final String label;
-  final String hint;
-  final int maxLines;
-  final TextInputType? keyboardType;
-  final List<TextInputFormatter>? inputFormatters;
-  final String? Function(String?)? validator;
-  final ValueChanged<String> onChanged;
-
-  const _AppTextField({
-    required this.controller,
-    required this.label,
-    required this.hint,
-    this.maxLines = 1,
-    this.keyboardType,
-    this.inputFormatters,
-    this.validator,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      maxLines: maxLines,
-      keyboardType: keyboardType,
-      inputFormatters: inputFormatters,
-      validator: validator,
-      onChanged: onChanged,
-      style: AppTextStyles.body,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        border: InputBorder.none,
-        enabledBorder: InputBorder.none,
-        focusedBorder: InputBorder.none,
-        errorBorder: InputBorder.none,
-        focusedErrorBorder: InputBorder.none,
-      ),
-    );
-  }
-}
-
-class _DatePickerRow extends StatelessWidget {
-  final String label;
-  final DateTime value;
-  final ValueChanged<DateTime?> onPicked;
-
-  const _DatePickerRow({
-    required this.label,
-    required this.value,
-    required this.onPicked,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        final d = await showDatePicker(
-          context: context,
-          initialDate: value,
-          firstDate: DateTime(2020),
-          lastDate: DateTime(2030),
-          locale: const Locale('tr', 'TR'),
-        );
-        if (d != null) onPicked(d);
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(label, style: AppTextStyles.body),
-            Text(
-              '${value.day}.${value.month}.${value.year}',
-              style: AppTextStyles.body.copyWith(color: AppColors.primary),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

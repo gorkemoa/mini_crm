@@ -1,72 +1,64 @@
 import '../core/base/base_viewmodel.dart';
 import '../models/client_model.dart';
+import '../models/enums.dart';
 import '../services/repositories/client_repository.dart';
 
 class ClientsViewModel extends BaseViewModel {
-  final ClientRepository _repo;
+  final ClientRepository _repository;
+  ClientsViewModel(this._repository);
 
-  ClientsViewModel({required ClientRepository clientRepository})
-      : _repo = clientRepository;
-
-  List<ClientModel> _all = [];
-  List<ClientModel> _filtered = [];
+  List<ClientModel> _allClients = [];
   String _searchQuery = '';
   ClientStatus? _statusFilter;
 
-  List<ClientModel> get items => _filtered;
+  List<ClientModel> get clients {
+    return _allClients.where((c) {
+      final matchesSearch = _searchQuery.isEmpty ||
+          c.fullName.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          (c.companyName?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false) ||
+          (c.email?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false);
+      final matchesStatus = _statusFilter == null || c.status == _statusFilter;
+      return matchesSearch && matchesStatus;
+    }).toList();
+  }
+
   String get searchQuery => _searchQuery;
   ClientStatus? get statusFilter => _statusFilter;
+  bool get isEmpty => _allClients.isEmpty;
+  bool get isFilteredEmpty => clients.isEmpty;
+  int get totalCount => _allClients.length;
 
   Future<void> load() async {
     setLoading(true);
     clearError();
-    try {
-      _all = await _repo.getAll();
-      _applyFilter();
-    } catch (e) {
-      setError('errorClientsLoad');
-    } finally {
-      setLoading(false);
-    }
+    final result = await _repository.getAll();
+    result.fold(
+      onSuccess: (data) => _allClients = data,
+      onFailure: (e) => setError(e),
+    );
+    setLoading(false);
   }
 
   Future<void> refresh() => load();
 
-  void search(String query) {
+  void setSearch(String query) {
     _searchQuery = query;
-    _applyFilter();
+    safeNotify();
   }
 
-  void filterByStatus(ClientStatus? status) {
+  void setStatusFilter(ClientStatus? status) {
     _statusFilter = status;
-    _applyFilter();
+    safeNotify();
   }
 
-  void _applyFilter() {
-    var result = _all;
-    if (_statusFilter != null) {
-      result = result.where((c) => c.status == _statusFilter).toList();
+  Future<bool> delete(String id) async {
+    final result = await _repository.delete(id);
+    if (result.isSuccess) {
+      _allClients.removeWhere((c) => c.id == id);
+      safeNotify();
+      return true;
     }
-    if (_searchQuery.isNotEmpty) {
-      final q = _searchQuery.toLowerCase();
-      result = result
-          .where((c) =>
-              c.fullName.toLowerCase().contains(q) ||
-              (c.companyName?.toLowerCase().contains(q) ?? false) ||
-              (c.email?.toLowerCase().contains(q) ?? false))
-          .toList();
-    }
-    _filtered = result;
-    notifyListeners();
-  }
-
-  Future<void> deleteClient(String id) async {
-    try {
-      await _repo.delete(id);
-      _all.removeWhere((c) => c.id == id);
-      _applyFilter();
-    } catch (e) {
-      setError('errorClientDelete');
-    }
+    setError(result.error);
+    return false;
   }
 }

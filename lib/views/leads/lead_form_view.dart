@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../../core/constants/app_constants.dart';
-import '../../core/utils/l10n_utils.dart';
-import '../../l10n/app_localizations.dart';
-import '../../models/lead_model.dart';
+
 import '../../themes/app_colors.dart';
-import '../../themes/app_radii.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
 import '../../viewmodels/lead_form_viewmodel.dart';
-import '../widgets/primary_button.dart';
+import '../../models/lead_model.dart';
+import '../../models/enums.dart';
+import '../../core/utils/currency_utils.dart';
+import '../../core/utils/app_date_utils.dart';
+import '../../core/utils/validators.dart';
 
 class LeadFormView extends StatefulWidget {
-  final LeadModel? initialLead;
-
-  const LeadFormView({super.key, this.initialLead});
+  final LeadModel? editLead;
+  const LeadFormView({super.key, this.editLead});
 
   @override
   State<LeadFormView> createState() => _LeadFormViewState();
@@ -23,340 +21,170 @@ class LeadFormView extends StatefulWidget {
 
 class _LeadFormViewState extends State<LeadFormView> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _nameCtrl;
-  late final TextEditingController _valueCtrl;
-  late final TextEditingController _noteCtrl;
+  late final LeadFormViewModel _vm;
+
+  final _nameCtrl = TextEditingController();
+  final _sourceCtrl = TextEditingController();
+  final _budgetCtrl = TextEditingController();
+  final _noteCtrl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    final l = widget.initialLead;
-    _nameCtrl = TextEditingController(text: l?.name ?? '');
-    _valueCtrl = TextEditingController(
-        text: l?.estimatedBudget != null
-            ? l!.estimatedBudget!.toStringAsFixed(2)
-            : '');
-    _noteCtrl = TextEditingController(text: l?.note ?? '');
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.initialLead != null) {
-        context.read<LeadFormViewModel>().loadForEdit(widget.initialLead!);
-      }
-    });
+    _vm = context.read<LeadFormViewModel>();
+    if (widget.editLead != null) {
+      _vm.loadForEdit(widget.editLead!);
+      _nameCtrl.text = _vm.name;
+      _sourceCtrl.text = _vm.source;
+      _budgetCtrl.text = _vm.estimatedBudget;
+      _noteCtrl.text = _vm.note;
+    }
   }
 
   @override
   void dispose() {
     _nameCtrl.dispose();
-    _valueCtrl.dispose();
+    _sourceCtrl.dispose();
+    _budgetCtrl.dispose();
     _noteCtrl.dispose();
     super.dispose();
   }
 
+  Future<void> _pickDate() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: _vm.nextFollowUpDate ?? DateTime.now().add(const Duration(days: 7)),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2030),
+    );
+    if (date != null) setState(() => _vm.nextFollowUpDate = date);
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+    _vm.name = _nameCtrl.text;
+    _vm.source = _sourceCtrl.text;
+    _vm.estimatedBudget = _budgetCtrl.text;
+    _vm.note = _noteCtrl.text;
+    final success = await _vm.submit();
+    if (success && mounted) Navigator.pop(context, true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<LeadFormViewModel>(
-      builder: (context, vm, _) {
-        final l10n = AppLocalizations.of(context)!;
-        if (vm.saved) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (context.mounted) Navigator.pop(context, true);
-          });
-        }
-
-        return Scaffold(
-          backgroundColor: AppColors.background,
-          appBar: AppBar(
-            title: Text(
-              widget.initialLead == null ? l10n.newLead : l10n.editLead,
-              style: AppTextStyles.navTitle,
-            ),
-            backgroundColor: AppColors.surface,
-          ),
-          body: SafeArea(
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
+      appBar: AppBar(
+        title: Text(widget.editLead != null ? 'Edit Lead' : 'Add Lead'),
+      ),
+      body: Consumer<LeadFormViewModel>(
+        builder: (context, vm, _) {
+          return SingleChildScrollView(
+            padding: AppSpacing.screenPaddingAll,
             child: Form(
               key: _formKey,
-              child: ListView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.screenPaddingH,
-                  vertical: AppSpacing.md,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Name
-                  _FormSection(children: [
-                    _AppTextField(
-                      controller: _nameCtrl,
-                      label: l10n.fullName,
-                      hint: l10n.fullNameHint,
-                      validator: (_) => localizeValidator(l10n, vm.validateName()),
-                      onChanged: (v) => vm.name = v,
+                  TextFormField(
+                    controller: _nameCtrl,
+                    decoration: const InputDecoration(labelText: 'Name *'),
+                    validator: Validators.required,
+                  ),
+                  const SizedBox(height: AppSpacing.formFieldSpacing),
+                  TextFormField(
+                    controller: _sourceCtrl,
+                    decoration: const InputDecoration(
+                      labelText: 'Source',
+                      hintText: 'e.g. LinkedIn, Website, Referral',
                     ),
-                  ]),
-                  const SizedBox(height: AppSpacing.md),
-
-                  // Stage + source
-                  _FormSection(children: [
-                    _Label(l10n.stage),
-                    DropdownButton<LeadStage>(
-                      value: vm.stage,
-                      isExpanded: true,
-                      underline: const SizedBox.shrink(),
-                      items: LeadStage.values
-                          .map((s) => DropdownMenuItem(
-                              value: s,
-                              child: Text(switch (s) {
-                                LeadStage.newLead => l10n.leadNew,
-                                LeadStage.contacted => l10n.leadContacted,
-                                LeadStage.proposalSent => l10n.leadProposalSent,
-                                LeadStage.negotiating => l10n.leadNegotiating,
-                                LeadStage.won => l10n.leadWon,
-                                LeadStage.lost => l10n.leadLost,
-                              })))
-                          .toList(),
-                      onChanged: (v) {
-                        if (v != null) {
-                          vm.stage = v;
-                          setState(() {});
-                        }
-                      },
-                    ),
-                    _Divider(),
-                    _Label(l10n.source),
-                    DropdownButton<String>(
-                      value: vm.source.isEmpty ? null : vm.source,
-                      isExpanded: true,
-                      underline: const SizedBox.shrink(),
-                      hint: Text(l10n.selectSource,
-                          style: AppTextStyles.body
-                              .copyWith(color: AppColors.textTertiary)),
-                      items: [
-                        DropdownMenuItem(
-                            value: '', child: Text(l10n.notSpecified)),
-                        ...AppConstants.leadSources.map((s) =>
-                            DropdownMenuItem(value: s, child: Text(s))),
-                      ],
-                      onChanged: (v) {
-                        vm.source = v ?? '';
-                        setState(() {});
-                      },
-                    ),
-                  ]),
-                  const SizedBox(height: AppSpacing.md),
-
-                  // Estimated budget
-                  _FormSection(children: [
-                    Row(children: [
+                  ),
+                  const SizedBox(height: AppSpacing.formFieldSpacing),
+                  DropdownButtonFormField<LeadStage>(
+                    value: vm.stage,
+                    decoration: const InputDecoration(labelText: 'Stage'),
+                    items: LeadStage.values.map((s) => DropdownMenuItem(
+                      value: s,
+                      child: Text(_stageLabel(s)),
+                    )).toList(),
+                    onChanged: (s) => setState(() => vm.stage = s ?? LeadStage.newLead),
+                  ),
+                  const SizedBox(height: AppSpacing.formFieldSpacing),
+                  Row(
+                    children: [
                       Expanded(
-                        child: _AppTextField(
-                          controller: _valueCtrl,
-                          label: l10n.estimatedBudget,
-                          hint: l10n.amountHint,
-                          keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                                RegExp(r'^\d*\.?\d{0,2}')),
-                          ],
-                          onChanged: (v) => vm.estimatedBudget = v,
+                        flex: 2,
+                        child: TextFormField(
+                          controller: _budgetCtrl,
+                          decoration: const InputDecoration(labelText: 'Estimated Budget'),
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          validator: Validators.positiveNumber,
                         ),
                       ),
                       const SizedBox(width: AppSpacing.sm),
-                      DropdownButton<String>(
-                        value: vm.currency,
-                        underline: const SizedBox.shrink(),
-                        items: AppConstants.currencies
-                            .map((c) =>
-                                DropdownMenuItem(value: c, child: Text(c)))
-                            .toList(),
-                        onChanged: (v) {
-                          if (v != null) {
-                            vm.currency = v;
-                            setState(() {});
-                          }
-                        },
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          value: vm.currency,
+                          decoration: const InputDecoration(labelText: 'Currency'),
+                          items: CurrencyUtils.supportedCurrencies
+                              .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                              .toList(),
+                          onChanged: (v) => setState(() => vm.currency = v ?? 'USD'),
+                        ),
                       ),
-                    ]),
-                    _Divider(),
-                    _DatePickerRow(
-                      label: l10n.followUpDate,
-                      value: vm.nextFollowUpDate,
-                      onPicked: (d) {
-                        vm.nextFollowUpDate = d;
-                        setState(() {});
-                      },
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.formFieldSpacing),
+                  InkWell(
+                    onTap: _pickDate,
+                    child: InputDecorator(
+                      decoration: const InputDecoration(labelText: 'Next Follow-up Date'),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            vm.nextFollowUpDate != null ? AppDateUtils.formatDate(vm.nextFollowUpDate) : 'Select date',
+                            style: AppTextStyles.bodyMedium,
+                          ),
+                          const Icon(Icons.calendar_today_rounded, size: 18),
+                        ],
+                      ),
                     ),
-                  ]),
-                  const SizedBox(height: AppSpacing.md),
-
-                  // Notes
-                  _FormSection(children: [
-                    _AppTextField(
-                      controller: _noteCtrl,
-                      label: l10n.note,
-                      hint: l10n.meetingNotesHint,
-                      maxLines: 4,
-                      onChanged: (v) => vm.note = v,
-                    ),
-                  ]),
-                  const SizedBox(height: AppSpacing.lg),
-
-                  if (vm.hasError)
+                  ),
+                  const SizedBox(height: AppSpacing.formFieldSpacing),
+                  TextFormField(
+                    controller: _noteCtrl,
+                    decoration: const InputDecoration(labelText: 'Note'),
+                    maxLines: 3,
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
+                  if (vm.errorMessage != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                      child: Text(
-                        localizeKey(l10n, vm.errorMessage),
-                        style: AppTextStyles.footnote
-                            .copyWith(color: AppColors.danger),
-                        textAlign: TextAlign.center,
-                      ),
+                      child: Text(vm.errorMessage!, style: const TextStyle(color: AppColors.error), textAlign: TextAlign.center),
                     ),
-
-                  PrimaryButton(
-                    label: widget.initialLead == null ? l10n.save : l10n.update,
-                    isLoading: vm.isLoading,
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        vm.submit();
-                      }
-                    },
+                  ElevatedButton(
+                    onPressed: vm.isLoading ? null : _submit,
+                    child: vm.isLoading
+                        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                        : Text(widget.editLead != null ? 'Save Changes' : 'Add Lead'),
                   ),
                 ],
               ),
             ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-// ── helpers ──
-
-class _FormSection extends StatelessWidget {
-  final List<Widget> children;
-  const _FormSection({required this.children});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadii.card),
-      ),
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.cardPadding, vertical: 4),
-      child:
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
-    );
-  }
-}
-
-class _Label extends StatelessWidget {
-  final String text;
-  const _Label(this.text);
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10, bottom: 2),
-      child: Text(text,
-          style: AppTextStyles.caption1
-              .copyWith(color: AppColors.textSecondary)),
-    );
-  }
-}
-
-class _Divider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) =>
-      const Divider(height: 1, thickness: 0.5);
-}
-
-class _AppTextField extends StatelessWidget {
-  final TextEditingController controller;
-  final String label;
-  final String hint;
-  final int maxLines;
-  final TextInputType? keyboardType;
-  final List<TextInputFormatter>? inputFormatters;
-  final String? Function(String?)? validator;
-  final ValueChanged<String> onChanged;
-
-  const _AppTextField({
-    required this.controller,
-    required this.label,
-    required this.hint,
-    this.maxLines = 1,
-    this.keyboardType,
-    this.inputFormatters,
-    this.validator,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      maxLines: maxLines,
-      keyboardType: keyboardType,
-      inputFormatters: inputFormatters,
-      validator: validator,
-      onChanged: onChanged,
-      style: AppTextStyles.body,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        border: InputBorder.none,
-        enabledBorder: InputBorder.none,
-        focusedBorder: InputBorder.none,
-        errorBorder: InputBorder.none,
-        focusedErrorBorder: InputBorder.none,
+          );
+        },
       ),
     );
   }
-}
 
-class _DatePickerRow extends StatelessWidget {
-  final String label;
-  final DateTime? value;
-  final ValueChanged<DateTime?> onPicked;
-
-  const _DatePickerRow({
-    required this.label,
-    required this.value,
-    required this.onPicked,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        final now = DateTime.now();
-        final d = await showDatePicker(
-          context: context,
-          initialDate: value ?? now.add(const Duration(days: 7)),
-          firstDate: DateTime(2020),
-          lastDate: DateTime(2030),
-        );
-        if (d != null) onPicked(d);
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(label, style: AppTextStyles.body),
-            Text(
-              value != null
-                  ? '${value!.day}.${value!.month}.${value!.year}'
-                  : AppLocalizations.of(context)!.selectDate,
-              style: AppTextStyles.body.copyWith(
-                color: value != null
-                    ? AppColors.primary
-                    : AppColors.textTertiary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  String _stageLabel(LeadStage s) => switch (s) {
+        LeadStage.newLead => 'New',
+        LeadStage.contacted => 'Contacted',
+        LeadStage.proposalSent => 'Proposal',
+        LeadStage.negotiating => 'Negotiation',
+        LeadStage.won => 'Won',
+        LeadStage.lost => 'Lost',
+      };
 }

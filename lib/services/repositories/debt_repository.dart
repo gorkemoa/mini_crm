@@ -1,90 +1,129 @@
 import 'package:sqflite/sqflite.dart';
+
+import '../../core/base/result.dart';
 import '../../models/debt_model.dart';
-import '../../core/utils/id_utils.dart';
+import '../../models/enums.dart';
 import '../database/local_database_service.dart';
 
 class DebtRepository {
-  final LocalDatabaseService _dbService;
+  final LocalDatabaseService _db;
+  DebtRepository(this._db);
 
-  DebtRepository(this._dbService);
-
-  Database get _db => _dbService.db;
-
-  static const String _joinQuery = '''
-    SELECT debts.*, clients.full_name as client_name
-    FROM debts
-    LEFT JOIN clients ON debts.client_id = clients.id
-  ''';
-
-  Future<List<DebtModel>> getAll() async {
-    final rows = await _db.rawQuery(
-      '$_joinQuery ORDER BY debts.created_at DESC',
-    );
-    return rows.map((r) => DebtModel.fromMap(r, clientName: r['client_name'] as String?)).toList();
+  Future<Result<List<DebtModel>>> getAll({DebtStatus? status, String? clientId}) async {
+    try {
+      final db = await _db.database;
+      final conditions = <String>[];
+      final args = <dynamic>[];
+      if (status != null) {
+        conditions.add('status = ?');
+        args.add(status.name);
+      }
+      if (clientId != null) {
+        conditions.add('client_id = ?');
+        args.add(clientId);
+      }
+      final maps = await db.query(
+        'debts',
+        where: conditions.isEmpty ? null : conditions.join(' AND '),
+        whereArgs: args.isEmpty ? null : args,
+        orderBy: 'due_date ASC, created_at DESC',
+      );
+      return Result.success(maps.map(DebtModel.fromMap).toList());
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<DebtModel?> getById(String id) async {
-    final rows = await _db.rawQuery(
-      '$_joinQuery WHERE debts.id = ?',
-      [id],
-    );
-    if (rows.isEmpty) return null;
-    return DebtModel.fromMap(rows.first, clientName: rows.first['client_name'] as String?);
+  Future<Result<DebtModel?>> getById(String id) async {
+    try {
+      final db = await _db.database;
+      final maps = await db.query('debts', where: 'id = ?', whereArgs: [id]);
+      if (maps.isEmpty) return Result.success(null);
+      return Result.success(DebtModel.fromMap(maps.first));
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<List<DebtModel>> getByClientId(String clientId) async {
-    final rows = await _db.rawQuery(
-      '$_joinQuery WHERE debts.client_id = ? ORDER BY debts.created_at DESC',
-      [clientId],
-    );
-    return rows.map((r) => DebtModel.fromMap(r, clientName: r['client_name'] as String?)).toList();
+  Future<Result<DebtModel>> create(DebtModel debt) async {
+    try {
+      final db = await _db.database;
+      await db.insert('debts', debt.toMap(), conflictAlgorithm: ConflictAlgorithm.fail);
+      return Result.success(debt);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<List<DebtModel>> getByStatus(DebtStatus status) async {
-    final rows = await _db.rawQuery(
-      '$_joinQuery WHERE debts.status = ? ORDER BY debts.due_date ASC',
-      [status.name],
-    );
-    return rows.map((r) => DebtModel.fromMap(r, clientName: r['client_name'] as String?)).toList();
+  Future<Result<DebtModel>> update(DebtModel debt) async {
+    try {
+      final db = await _db.database;
+      await db.update('debts', debt.toMap(), where: 'id = ?', whereArgs: [debt.id]);
+      return Result.success(debt);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<List<DebtModel>> getPendingAndOverdue() async {
-    final rows = await _db.rawQuery(
-      "$_joinQuery WHERE debts.status IN ('pending', 'overdue', 'partial') ORDER BY debts.due_date ASC",
-    );
-    return rows.map((r) => DebtModel.fromMap(r, clientName: r['client_name'] as String?)).toList();
+  Future<Result<void>> delete(String id) async {
+    try {
+      final db = await _db.database;
+      await db.delete('debts', where: 'id = ?', whereArgs: [id]);
+      return Result.success(null);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<double> getTotalPending() async {
-    final result = await _db.rawQuery(
-      "SELECT SUM(amount) as total FROM debts WHERE status IN ('pending', 'overdue', 'partial')",
-    );
-    return ((result.first['total'] as num?) ?? 0).toDouble();
+  Future<Result<Map<String, double>>> getTotalsByStatus() async {
+    try {
+      final db = await _db.database;
+      final result = await db.rawQuery(
+        'SELECT status, SUM(amount) as total FROM debts GROUP BY status',
+      );
+      final totals = <String, double>{};
+      for (final row in result) {
+        totals[row['status'] as String] = (row['total'] as num?)?.toDouble() ?? 0;
+      }
+      return Result.success(totals);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<DebtModel> create(DebtModel debt) async {
-    final now = DateTime.now();
-    final model = debt.copyWith(
-      id: IdUtils.generate(),
-      createdAt: now,
-      updatedAt: now,
-    );
-    await _db.insert('debts', model.toMap());
-    return model;
+  Future<Result<double>> getPendingTotal() async {
+    try {
+      final db = await _db.database;
+      final result = await db.rawQuery(
+        "SELECT SUM(amount) as total FROM debts WHERE status IN ('pending','overdue')",
+      );
+      return Result.success((Sqflite.firstIntValue(result) ?? 0).toDouble());
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<DebtModel> update(DebtModel debt) async {
-    final model = debt.copyWith(updatedAt: DateTime.now());
-    await _db.update(
-      'debts',
-      model.toMap(),
-      where: 'id = ?',
-      whereArgs: [model.id],
-    );
-    return model;
+  Future<Result<void>> insertAll(List<DebtModel> debts) async {
+    try {
+      final db = await _db.database;
+      final batch = db.batch();
+      for (final d in debts) {
+        batch.insert('debts', d.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+      }
+      await batch.commit(noResult: true);
+      return Result.success(null);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<void> delete(String id) async {
-    await _db.delete('debts', where: 'id = ?', whereArgs: [id]);
+  Future<Result<void>> deleteAll() async {
+    try {
+      final db = await _db.database;
+      await db.delete('debts');
+      return Result.success(null);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 }

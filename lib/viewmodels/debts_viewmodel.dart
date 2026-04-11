@@ -1,69 +1,95 @@
 import '../core/base/base_viewmodel.dart';
 import '../models/debt_model.dart';
+import '../models/enums.dart';
 import '../services/repositories/debt_repository.dart';
+import '../services/repositories/client_repository.dart';
+import '../models/client_model.dart';
 
 class DebtsViewModel extends BaseViewModel {
-  final DebtRepository _repo;
+  final DebtRepository _debtRepo;
+  final ClientRepository _clientRepo;
 
-  DebtsViewModel({required DebtRepository debtRepository})
-      : _repo = debtRepository;
+  DebtsViewModel({required DebtRepository debtRepo, required ClientRepository clientRepo})
+      : _debtRepo = debtRepo,
+        _clientRepo = clientRepo;
 
-  List<DebtModel> _all = [];
-  List<DebtModel> _filtered = [];
+  List<DebtModel> _allDebts = [];
+  Map<String, ClientModel> _clientsMap = {};
+  String _searchQuery = '';
   DebtStatus? _statusFilter;
-  double _totalPending = 0;
 
-  List<DebtModel> get items => _filtered;
+  List<DebtModel> get debts {
+    return _allDebts.where((d) {
+      final client = _clientsMap[d.clientId];
+      final matchesSearch = _searchQuery.isEmpty ||
+          d.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          (client?.fullName.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false);
+      final matchesStatus = _statusFilter == null || d.status == _statusFilter;
+      return matchesSearch && matchesStatus;
+    }).toList();
+  }
+
+  ClientModel? clientFor(String clientId) => _clientsMap[clientId];
+  String get searchQuery => _searchQuery;
   DebtStatus? get statusFilter => _statusFilter;
-  double get totalPending => _totalPending;
+  bool get isEmpty => _allDebts.isEmpty;
+
+  double get pendingTotal => _allDebts
+      .where((d) => d.status == DebtStatus.pending || d.status == DebtStatus.overdue)
+      .fold(0.0, (s, d) => s + d.amount);
+
+  double get overdueTotal => _allDebts
+      .where((d) => d.status == DebtStatus.overdue || d.isOverdue)
+      .fold(0.0, (s, d) => s + d.amount);
 
   Future<void> load() async {
     setLoading(true);
     clearError();
-    try {
-      final results = await Future.wait([
-        _repo.getAll(),
-        _repo.getTotalPending(),
-      ]);
-      _all = results[0] as List<DebtModel>;
-      _totalPending = results[1] as double;
-      _applyFilter();
-    } catch (e) {
-      setError('errorDebtsLoad');
-    } finally {
-      setLoading(false);
+    final debtsResult = await _debtRepo.getAll();
+    final clientsResult = await _clientRepo.getAll();
+
+    if (debtsResult.isSuccess) {
+      _allDebts = _updateOverdueStatus(debtsResult.data!);
+    } else {
+      setError(debtsResult.error);
     }
+
+    if (clientsResult.isSuccess) {
+      _clientsMap = {for (final c in clientsResult.data!) c.id: c};
+    }
+
+    setLoading(false);
+  }
+
+  List<DebtModel> _updateOverdueStatus(List<DebtModel> debts) {
+    return debts.map((d) {
+      if (d.status == DebtStatus.pending && d.isOverdue) {
+        return d.copyWith(status: DebtStatus.overdue);
+      }
+      return d;
+    }).toList();
   }
 
   Future<void> refresh() => load();
 
-  void filterByStatus(DebtStatus? status) {
-    _statusFilter = status;
-    _applyFilter();
+  void setSearch(String q) {
+    _searchQuery = q;
+    safeNotify();
   }
 
-  void _applyFilter() {
-    if (_statusFilter == null) {
-      _filtered = _all;
-    } else {
-      _filtered = _all.where((d) => d.status == _statusFilter).toList();
-    }
-    notifyListeners();
+  void setStatusFilter(DebtStatus? s) {
+    _statusFilter = s;
+    safeNotify();
   }
 
-  Future<void> delete(String id) async {
-    try {
-      await _repo.delete(id);
-      _all.removeWhere((d) => d.id == id);
-      _totalPending = _all
-          .where((d) =>
-              d.status == DebtStatus.pending ||
-              d.status == DebtStatus.overdue ||
-              d.status == DebtStatus.partial)
-          .fold(0, (sum, d) => sum + d.amount);
-      _applyFilter();
-    } catch (e) {
-      setError('errorDebtDelete');
+  Future<bool> delete(String id) async {
+    final result = await _debtRepo.delete(id);
+    if (result.isSuccess) {
+      _allDebts.removeWhere((d) => d.id == id);
+      safeNotify();
+      return true;
     }
+    setError(result.error);
+    return false;
   }
 }

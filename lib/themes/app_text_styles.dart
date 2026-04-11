@@ -1,137 +1,104 @@
 import 'package:flutter/material.dart';
-import 'app_colors.dart';
 
 abstract class AppTextStyles {
-  // ─── Large Title ───────────────────────────────────────────────────────────
-  static const TextStyle largeTitle = TextStyle(
-    fontSize: 34,
+  // Display
+  static const TextStyle displayLarge = TextStyle(
+    fontSize: 32,
     fontWeight: FontWeight.w700,
-    letterSpacing: 0.37,
-    color: AppColors.textPrimary,
+    letterSpacing: -0.5,
     height: 1.2,
   );
 
-  // ─── Titles ────────────────────────────────────────────────────────────────
-  static const TextStyle title1 = TextStyle(
-    fontSize: 28,
+  static const TextStyle displayMedium = TextStyle(
+    fontSize: 26,
     fontWeight: FontWeight.w700,
-    letterSpacing: 0.36,
-    color: AppColors.textPrimary,
+    letterSpacing: -0.3,
+    height: 1.2,
   );
 
-  static const TextStyle title2 = TextStyle(
+  // Headings
+  static const TextStyle h1 = TextStyle(
     fontSize: 22,
     fontWeight: FontWeight.w700,
-    letterSpacing: 0.35,
-    color: AppColors.textPrimary,
+    letterSpacing: -0.2,
+    height: 1.3,
   );
 
-  static const TextStyle title3 = TextStyle(
-    fontSize: 20,
+  static const TextStyle h2 = TextStyle(
+    fontSize: 18,
     fontWeight: FontWeight.w600,
-    letterSpacing: 0.38,
-    color: AppColors.textPrimary,
+    letterSpacing: -0.1,
+    height: 1.3,
   );
 
-  // ─── Content ───────────────────────────────────────────────────────────────
-  static const TextStyle headline = TextStyle(
-    fontSize: 17,
+  static const TextStyle h3 = TextStyle(
+    fontSize: 16,
     fontWeight: FontWeight.w600,
-    letterSpacing: -0.41,
-    color: AppColors.textPrimary,
+    height: 1.4,
   );
 
-  static const TextStyle body = TextStyle(
-    fontSize: 17,
-    fontWeight: FontWeight.w400,
-    letterSpacing: -0.41,
-    color: AppColors.textPrimary,
-  );
-
-  static const TextStyle callout = TextStyle(
+  // Body
+  static const TextStyle bodyLarge = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w400,
-    letterSpacing: -0.32,
-    color: AppColors.textPrimary,
+    height: 1.5,
   );
 
-  static const TextStyle subheadline = TextStyle(
-    fontSize: 15,
+  static const TextStyle bodyMedium = TextStyle(
+    fontSize: 14,
     fontWeight: FontWeight.w400,
-    letterSpacing: -0.24,
-    color: AppColors.textPrimary,
+    height: 1.5,
   );
 
-  static const TextStyle footnote = TextStyle(
-    fontSize: 13,
-    fontWeight: FontWeight.w400,
-    letterSpacing: -0.08,
-    color: AppColors.textSecondary,
-  );
-
-  static const TextStyle caption1 = TextStyle(
+  static const TextStyle bodySmall = TextStyle(
     fontSize: 12,
     fontWeight: FontWeight.w400,
-    letterSpacing: 0,
-    color: AppColors.textSecondary,
+    height: 1.4,
   );
 
-  static const TextStyle caption2 = TextStyle(
-    fontSize: 11,
-    fontWeight: FontWeight.w400,
-    letterSpacing: 0.07,
-    color: AppColors.textTertiary,
-  );
-
-  // ─── Amount ────────────────────────────────────────────────────────────────
-  static const TextStyle amountLarge = TextStyle(
-    fontSize: 28,
-    fontWeight: FontWeight.w700,
-    letterSpacing: -0.5,
-    color: AppColors.textPrimary,
-  );
-
-  static const TextStyle amountMedium = TextStyle(
-    fontSize: 20,
+  // Label / Caption
+  static const TextStyle labelLarge = TextStyle(
+    fontSize: 14,
     fontWeight: FontWeight.w600,
+    letterSpacing: 0.1,
+  );
+
+  static const TextStyle labelMedium = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 0.2,
+  );
+
+  static const TextStyle labelSmall = TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 0.3,
+  );
+
+  // Amount / Currency
+  static const TextStyle amount = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.w700,
     letterSpacing: -0.3,
-    color: AppColors.textPrimary,
   );
 
   static const TextStyle amountSmall = TextStyle(
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: FontWeight.w600,
     letterSpacing: -0.2,
-    color: AppColors.textPrimary,
   );
 
-  // ─── Buttons ───────────────────────────────────────────────────────────────
+  // Button
   static const TextStyle button = TextStyle(
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: FontWeight.w600,
-    letterSpacing: -0.41,
-    color: AppColors.textInverse,
+    letterSpacing: 0.1,
   );
 
-  static const TextStyle buttonSecondary = TextStyle(
-    fontSize: 17,
-    fontWeight: FontWeight.w600,
-    letterSpacing: -0.41,
-    color: AppColors.primary,
-  );
-
-  // ─── Navigation ────────────────────────────────────────────────────────────
-  static const TextStyle navTitle = TextStyle(
-    fontSize: 17,
-    fontWeight: FontWeight.w600,
-    letterSpacing: -0.41,
-    color: AppColors.textPrimary,
-  );
-
-  static const TextStyle sectionHeader = TextStyle(
-    fontSize: 13,
+  // Navigation
+  static const TextStyle navLabel = TextStyle(
+    fontSize: 11,
     fontWeight: FontWeight.w500,
-    letterSpacing: 0.06,
-    color: AppColors.textSecondary,
+    letterSpacing: 0.2,
   );
 }

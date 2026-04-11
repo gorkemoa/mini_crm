@@ -1,14 +1,16 @@
-// Sync service skeleton — reserved for future backend integration.
-// When a remote backend is added, this service will coordinate:
-//   1. Detecting local changes since last sync
-//   2. Pushing changes via SyncQueueService
-//   3. Pulling remote changes
-//   4. Resolving conflicts
+/// Stub for future sync service.
+/// Will handle push/pull sync, conflict resolution, and change queue.
+abstract class SyncService {
+  Future<void> sync();
+  bool get isSyncing;
+}
 
-class SyncService {
-  bool get isSyncEnabled => false;
+class SyncServiceStub implements SyncService {
+  @override
+  bool get isSyncing => false;
 
-  Future<void> syncAll() async {
-    // Not implemented in local-first v1
+  @override
+  Future<void> sync() async {
+    // No-op for local-first MVP
   }
 }

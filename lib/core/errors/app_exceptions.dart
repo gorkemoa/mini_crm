@@ -1,11 +1,10 @@
 class AppException implements Exception {
   final String message;
   final String? code;
-
   const AppException(this.message, {this.code});
 
   @override
-  String toString() => 'AppException($code): $message';
+  String toString() => 'AppException: $message${code != null ? ' (code: $code)' : ''}';
 }
 
 class DatabaseException extends AppException {
@@ -13,7 +12,8 @@ class DatabaseException extends AppException {
 }
 
 class ValidationException extends AppException {
-  const ValidationException(super.message, {super.code});
+  final Map<String, String>? fieldErrors;
+  const ValidationException(super.message, {this.fieldErrors, super.code});
 }
 
 class ImportException extends AppException {

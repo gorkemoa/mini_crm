@@ -1,26 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../../core/constants/app_constants.dart';
-import '../../core/utils/l10n_utils.dart';
-import '../../l10n/app_localizations.dart';
-import '../../models/project_model.dart';
+
 import '../../themes/app_colors.dart';
-import '../../themes/app_radii.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
 import '../../viewmodels/project_form_viewmodel.dart';
-import '../widgets/primary_button.dart';
+import '../../models/project_model.dart';
+import '../../models/enums.dart';
+import '../../core/utils/currency_utils.dart';
+import '../../core/utils/app_date_utils.dart';
+import '../../core/utils/validators.dart';
 
 class ProjectFormView extends StatefulWidget {
-  final ProjectModel? initialProject;
-  final String? initialClientId;
-
-  const ProjectFormView({
-    super.key,
-    this.initialProject,
-    this.initialClientId,
-  });
+  final ProjectModel? editProject;
+  final String? preselectedClientId;
+  const ProjectFormView({super.key, this.editProject, this.preselectedClientId});
 
   @override
   State<ProjectFormView> createState() => _ProjectFormViewState();
@@ -28,24 +22,28 @@ class ProjectFormView extends StatefulWidget {
 
 class _ProjectFormViewState extends State<ProjectFormView> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _titleCtrl;
-  late final TextEditingController _descCtrl;
-  late final TextEditingController _budgetCtrl;
+  late final ProjectFormViewModel _vm;
+
+  final _titleCtrl = TextEditingController();
+  final _descCtrl = TextEditingController();
+  final _budgetCtrl = TextEditingController();
+  final _noteCtrl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    final p = widget.initialProject;
-    _titleCtrl = TextEditingController(text: p?.title ?? '');
-    _descCtrl = TextEditingController(text: p?.description ?? '');
-    _budgetCtrl = TextEditingController(
-        text: p?.budget != null ? p!.budget!.toStringAsFixed(2) : '');
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ProjectFormViewModel>().init(
-            editProject: p,
-            preselectedClientId: widget.initialClientId,
-          );
+    _vm = context.read<ProjectFormViewModel>();
+    _vm.loadClients().then((_) {
+      if (widget.editProject != null) {
+        _vm.loadForEdit(widget.editProject!);
+        _titleCtrl.text = _vm.title;
+        _descCtrl.text = _vm.description;
+        _budgetCtrl.text = _vm.budget;
+        _noteCtrl.text = _vm.note;
+      } else if (widget.preselectedClientId != null) {
+        _vm.selectedClientId = widget.preselectedClientId;
+      }
+      if (mounted) setState(() {});
     });
   }
 
@@ -54,323 +52,177 @@ class _ProjectFormViewState extends State<ProjectFormView> {
     _titleCtrl.dispose();
     _descCtrl.dispose();
     _budgetCtrl.dispose();
+    _noteCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickDate(bool isStart) async {
+    final initial = isStart
+        ? (_vm.startDate ?? DateTime.now())
+        : (_vm.endDate ?? DateTime.now().add(const Duration(days: 30)));
+    final date = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+    );
+    if (date != null) {
+      setState(() {
+        if (isStart) {
+          _vm.startDate = date;
+        } else {
+          _vm.endDate = date;
+        }
+      });
+    }
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+    _vm.title = _titleCtrl.text;
+    _vm.description = _descCtrl.text;
+    _vm.budget = _budgetCtrl.text;
+    _vm.note = _noteCtrl.text;
+    final success = await _vm.submit();
+    if (success && mounted) Navigator.pop(context, true);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProjectFormViewModel>(
-      builder: (context, vm, _) {
-        final l10n = AppLocalizations.of(context)!;
-        if (vm.saved) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (context.mounted) Navigator.pop(context, true);
-          });
-        }
-
-        return Scaffold(
-          backgroundColor: AppColors.background,
-          appBar: AppBar(
-            title: Text(
-              widget.initialProject == null ? l10n.newProject : l10n.editProject,
-              style: AppTextStyles.navTitle,
-            ),
-            backgroundColor: AppColors.surface,
-          ),
-          body: SafeArea(
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
+      appBar: AppBar(
+        title: Text(widget.editProject != null ? 'Edit Project' : 'Add Project'),
+      ),
+      body: Consumer<ProjectFormViewModel>(
+        builder: (context, vm, _) {
+          return SingleChildScrollView(
+            padding: AppSpacing.screenPaddingAll,
             child: Form(
               key: _formKey,
-              child: ListView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.screenPaddingH,
-                  vertical: AppSpacing.md,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Client picker
-                  _FormSection(children: [
-                    _Label(l10n.customer),
-                    DropdownButton<String?>(
-                      value: vm.selectedClientId,
-                      isExpanded: true,
-                      underline: const SizedBox.shrink(),
-                      hint: Text(
-                        l10n.selectCustomerOptional,
-                        style: AppTextStyles.body
-                            .copyWith(color: AppColors.textTertiary),
+                  DropdownButtonFormField<String>(
+                    value: vm.selectedClientId,
+                    decoration: const InputDecoration(labelText: 'Client (optional)'),
+                    items: [
+                      const DropdownMenuItem<String>(value: null, child: Text('None')),
+                      ...vm.clients.map((c) => DropdownMenuItem(value: c.id, child: Text(c.fullName))),
+                    ],
+                    onChanged: (v) => setState(() => vm.selectedClientId = v),
+                  ),
+                  const SizedBox(height: AppSpacing.formFieldSpacing),
+                  TextFormField(
+                    controller: _titleCtrl,
+                    decoration: const InputDecoration(labelText: 'Project Title *'),
+                    validator: Validators.required,
+                  ),
+                  const SizedBox(height: AppSpacing.formFieldSpacing),
+                  TextFormField(
+                    controller: _descCtrl,
+                    decoration: const InputDecoration(labelText: 'Description'),
+                    maxLines: 3,
+                  ),
+                  const SizedBox(height: AppSpacing.formFieldSpacing),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: () => _pickDate(true),
+                          child: InputDecorator(
+                            decoration: const InputDecoration(labelText: 'Start Date'),
+                            child: Text(
+                              AppDateUtils.formatDate(vm.startDate),
+                              style: AppTextStyles.bodyMedium,
+                            ),
+                          ),
+                        ),
                       ),
-                      items: [
-                        DropdownMenuItem(
-                          value: null,
-                          child: Text(l10n.noCustomer),
-                        ),
-                        ...vm.clients.map(
-                          (c) => DropdownMenuItem(
-                            value: c.id,
-                            child: Text(c.displayName),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: InkWell(
+                          onTap: () => _pickDate(false),
+                          child: InputDecorator(
+                            decoration: const InputDecoration(labelText: 'End Date'),
+                            child: Text(
+                              AppDateUtils.formatDate(vm.endDate),
+                              style: AppTextStyles.bodyMedium,
+                            ),
                           ),
                         ),
-                      ],
-                      onChanged: (v) => vm.selectedClientId = v,
-                    ),
-                  ]),
-                  const SizedBox(height: AppSpacing.md),
-
-                  // Title + description
-                  _FormSection(children: [
-                    _AppTextField(
-                      controller: _titleCtrl,
-                      label: l10n.projectName,
-                      hint: l10n.projectNameHint,
-                      validator: (_) => localizeValidator(l10n, vm.validateTitle()),
-                      onChanged: (v) => vm.title = v,
-                    ),
-                    _Divider(),
-                    _AppTextField(
-                      controller: _descCtrl,
-                      label: l10n.description,
-                      hint: l10n.projectDetails,
-                      maxLines: 3,
-                      onChanged: (v) => vm.description = v,
-                    ),
-                  ]),
-                  const SizedBox(height: AppSpacing.md),
-
-                  // Budget + currency
-                  _FormSection(children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _AppTextField(
-                            controller: _budgetCtrl,
-                            label: l10n.budget,
-                            hint: l10n.amountHint,
-                            keyboardType:
-                                const TextInputType.numberWithOptions(
-                                    decimal: true),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                RegExp(r'^\d*\.?\d{0,2}'),
-                              ),
-                            ],
-                            onChanged: (v) => vm.budget = v,
-                          ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.formFieldSpacing),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: TextFormField(
+                          controller: _budgetCtrl,
+                          decoration: const InputDecoration(labelText: 'Budget'),
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          validator: Validators.positiveNumber,
                         ),
-                        const SizedBox(width: AppSpacing.sm),
-                        DropdownButton<String>(
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
                           value: vm.currency,
-                          underline: const SizedBox.shrink(),
-                          items: AppConstants.currencies
-                              .map((c) =>
-                                  DropdownMenuItem(value: c, child: Text(c)))
+                          decoration: const InputDecoration(labelText: 'Currency'),
+                          items: CurrencyUtils.supportedCurrencies
+                              .map((c) => DropdownMenuItem(value: c, child: Text(c)))
                               .toList(),
-                          onChanged: (v) {
-                            if (v != null) vm.currency = v;
-                          },
+                          onChanged: (v) => setState(() => vm.currency = v ?? 'USD'),
                         ),
-                      ],
-                    ),
-                  ]),
-                  const SizedBox(height: AppSpacing.md),
-
-                  // Dates + status
-                  _FormSection(children: [
-                    _DatePickerRow(
-                      label: l10n.startDate,
-                      value: vm.startDate,
-                      onPicked: (d) => vm.startDate = d,
-                    ),
-                    _Divider(),
-                    _DatePickerRow(
-                      label: l10n.endDate,
-                      value: vm.endDate,
-                      onPicked: (d) => vm.endDate = d,
-                    ),
-                    _Divider(),
-                    _Label(l10n.status),
-                    DropdownButton<ProjectStatus>(
-                      value: vm.status,
-                      isExpanded: true,
-                      underline: const SizedBox.shrink(),
-                      items: ProjectStatus.values
-                          .map((s) => DropdownMenuItem(
-                                value: s,
-                                child: Text(switch (s) {
-                                  ProjectStatus.planned => l10n.projectPlanned,
-                                  ProjectStatus.startingSoon => l10n.projectStartingSoon,
-                                  ProjectStatus.active => l10n.projectActive,
-                                  ProjectStatus.paused => l10n.projectPaused,
-                                  ProjectStatus.completed => l10n.projectCompleted,
-                                  ProjectStatus.cancelled => l10n.projectCancelled,
-                                }),
-                              ))
-                          .toList(),
-                      onChanged: (v) {
-                        if (v != null) vm.status = v;
-                      },
-                    ),
-                  ]),
-                  const SizedBox(height: AppSpacing.lg),
-
-                  if (vm.hasError)
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.formFieldSpacing),
+                  DropdownButtonFormField<ProjectStatus>(
+                    value: vm.status,
+                    decoration: const InputDecoration(labelText: 'Status'),
+                    items: ProjectStatus.values.map((s) => DropdownMenuItem(
+                      value: s,
+                      child: Text(_statusLabel(s)),
+                    )).toList(),
+                    onChanged: (s) => setState(() => vm.status = s ?? ProjectStatus.active),
+                  ),
+                  const SizedBox(height: AppSpacing.formFieldSpacing),
+                  TextFormField(
+                    controller: _noteCtrl,
+                    decoration: const InputDecoration(labelText: 'Note'),
+                    maxLines: 3,
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
+                  if (vm.errorMessage != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                      child: Text(
-                        localizeKey(l10n, vm.errorMessage),
-                        style: AppTextStyles.footnote
-                            .copyWith(color: AppColors.danger),
-                        textAlign: TextAlign.center,
-                      ),
+                      child: Text(vm.errorMessage!, style: const TextStyle(color: AppColors.error), textAlign: TextAlign.center),
                     ),
-
-                  PrimaryButton(
-                    label: widget.initialProject == null
-                        ? l10n.save
-                        : l10n.update,
-                    isLoading: vm.isLoading,
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        vm.submit();
-                      }
-                    },
+                  ElevatedButton(
+                    onPressed: vm.isLoading ? null : _submit,
+                    child: vm.isLoading
+                        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                        : Text(widget.editProject != null ? 'Save Changes' : 'Add Project'),
                   ),
                 ],
               ),
             ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-// ── helpers ──────────────────────────────────────────────────────────────────
-
-class _FormSection extends StatelessWidget {
-  final List<Widget> children;
-  const _FormSection({required this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadii.card),
-      ),
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.cardPadding, vertical: 4),
-      child:
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
-    );
-  }
-}
-
-class _Label extends StatelessWidget {
-  final String text;
-  const _Label(this.text);
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10, bottom: 2),
-      child: Text(text,
-          style: AppTextStyles.caption1
-              .copyWith(color: AppColors.textSecondary)),
-    );
-  }
-}
-
-class _Divider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) =>
-      const Divider(height: 1, thickness: 0.5);
-}
-
-class _AppTextField extends StatelessWidget {
-  final TextEditingController controller;
-  final String label;
-  final String hint;
-  final int maxLines;
-  final TextInputType? keyboardType;
-  final List<TextInputFormatter>? inputFormatters;
-  final String? Function(String?)? validator;
-  final ValueChanged<String> onChanged;
-
-  const _AppTextField({
-    required this.controller,
-    required this.label,
-    required this.hint,
-    this.maxLines = 1,
-    this.keyboardType,
-    this.inputFormatters,
-    this.validator,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      maxLines: maxLines,
-      keyboardType: keyboardType,
-      inputFormatters: inputFormatters,
-      validator: validator,
-      onChanged: onChanged,
-      style: AppTextStyles.body,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        border: InputBorder.none,
-        enabledBorder: InputBorder.none,
-        focusedBorder: InputBorder.none,
-        errorBorder: InputBorder.none,
-        focusedErrorBorder: InputBorder.none,
+          );
+        },
       ),
     );
   }
-}
 
-class _DatePickerRow extends StatelessWidget {
-  final String label;
-  final DateTime? value;
-  final ValueChanged<DateTime?> onPicked;
-
-  const _DatePickerRow({
-    required this.label,
-    required this.value,
-    required this.onPicked,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return GestureDetector(
-      onTap: () async {
-        final now = DateTime.now();
-        final d = await showDatePicker(
-          context: context,
-          initialDate: value ?? now,
-          firstDate: DateTime(2020),
-          lastDate: DateTime(2030),
-        );
-        if (d != null) onPicked(d);
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(label, style: AppTextStyles.body),
-            Text(
-              value != null
-                  ? '${value!.day}.${value!.month}.${value!.year}'
-                  : l10n.selectDate,
-              style: AppTextStyles.body.copyWith(
-                color:
-                    value != null ? AppColors.primary : AppColors.textTertiary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  String _statusLabel(ProjectStatus s) => switch (s) {
+        ProjectStatus.planned => 'Planned',
+        ProjectStatus.startingSoon => 'Starting Soon',
+        ProjectStatus.active => 'Active',
+        ProjectStatus.paused => 'Paused',
+        ProjectStatus.completed => 'Completed',
+        ProjectStatus.cancelled => 'Cancelled',
+      };
 }

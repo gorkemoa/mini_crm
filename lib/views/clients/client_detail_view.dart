@@ -1,351 +1,245 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/constants/route_names.dart';
-import '../../core/utils/currency_utils.dart';
-import '../../core/utils/date_utils.dart';
-import '../../l10n/app_localizations.dart';
-import '../../models/client_model.dart';
-import '../../models/debt_model.dart';
-import '../../models/project_model.dart';
+
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
 import '../../viewmodels/client_detail_viewmodel.dart';
-import '../widgets/badges.dart';
-import '../widgets/info_row.dart';
+import '../../models/debt_model.dart';
+import '../../models/project_model.dart';
+import '../../core/utils/currency_utils.dart';
+import '../../core/utils/app_date_utils.dart';
+import '../widgets/app_card.dart';
 import '../widgets/section_header.dart';
+import '../widgets/info_row.dart';
+import '../widgets/status_badge.dart';
+import '../widgets/confirm_dialog.dart';
 
 class ClientDetailView extends StatefulWidget {
-  final ClientModel client;
-
-  const ClientDetailView({super.key, required this.client});
+  final String clientId;
+  const ClientDetailView({super.key, required this.clientId});
 
   @override
   State<ClientDetailView> createState() => _ClientDetailViewState();
 }
 
 class _ClientDetailViewState extends State<ClientDetailView> {
+  late final ClientDetailViewModel _vm;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ClientDetailViewModel>().load(widget.client.id);
-    });
+    _vm = context.read<ClientDetailViewModel>();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _vm.load(widget.clientId));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ClientDetailViewModel>(
-      builder: (context, vm, _) {
-        final l10n = AppLocalizations.of(context)!;
-        final client = vm.client ?? widget.client;
-        return Scaffold(
-          backgroundColor: AppColors.background,
-          appBar: AppBar(
-            title: Text(client.fullName),
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, size: 18),
-              onPressed: () => Navigator.pop(context),
-            ),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.edit_outlined),
-                onPressed: () async {
-                  await Navigator.pushNamed(
-                    context,
-                    RouteNames.clientForm,
-                    arguments: client,
-                  );
-                  if (context.mounted) vm.refresh(client.id);
-                },
-              ),
-            ],
-          ),
-          body: vm.isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : RefreshIndicator(
-                  onRefresh: () => vm.refresh(client.id),
-                  color: AppColors.primary,
-                  child: ListView(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.screenPaddingH,
-                      vertical: AppSpacing.sm,
-                    ),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
+      appBar: AppBar(
+        title: const Text('Client Details'),
+        actions: [
+          Consumer<ClientDetailViewModel>(
+            builder: (_, vm, __) => vm.client == null
+                ? const SizedBox.shrink()
+                : Row(
                     children: [
-                      // ─── Avatar + Name
-                      _ProfileHeader(client: client),
-                      const SizedBox(height: AppSpacing.lg),
-
-                      // ─── Contact Info Card
-                      _ContactCard(client: client),
-
-                      // ─── Debts
-                      SectionHeader(
-                        title: l10n.debtsSection,
-                        action: l10n.add,
-                        onAction: () async {
-                          await Navigator.pushNamed(
-                            context,
-                            RouteNames.debtForm,
-                            arguments: {'clientId': client.id},
-                          );
-                          if (context.mounted) vm.refresh(client.id);
+                      IconButton(
+                        icon: const Icon(Icons.edit_rounded),
+                        onPressed: () async {
+                          await Navigator.pushNamed(context, '/clients/form', arguments: vm.client);
+                          if (context.mounted) vm.refresh();
                         },
                       ),
-                      if (vm.debts.isEmpty)
-                        _EmptyInline(l10n.noDebtsInline)
-                      else
-                        _DebtList(debts: vm.debts),
-
-                      // ─── Projects
-                      SectionHeader(
-                        title: l10n.projectsSection,
-                        action: l10n.add,
-                        onAction: () async {
-                          await Navigator.pushNamed(
+                      IconButton(
+                        icon: const Icon(Icons.delete_outline_rounded),
+                        color: AppColors.error,
+                        onPressed: () async {
+                          final confirmed = await showConfirmDialog(
                             context,
-                            RouteNames.projectForm,
-                            arguments: {'clientId': client.id},
+                            title: 'Delete Client',
+                            message: 'Delete "${vm.client!.fullName}"?',
                           );
-                          if (context.mounted) vm.refresh(client.id);
+                          if (confirmed && context.mounted) {
+                            await vm.deleteClient();
+                            if (context.mounted) Navigator.pop(context, true);
+                          }
                         },
                       ),
-                      if (vm.projects.isEmpty)
-                        _EmptyInline(l10n.noProjectsInline)
-                      else
-                        _ProjectList(projects: vm.projects),
+                    ],
+                  ),
+          ),
+        ],
+      ),
+      body: Consumer<ClientDetailViewModel>(
+        builder: (context, vm, _) {
+          if (vm.isLoading) return const Center(child: CircularProgressIndicator());
+          if (vm.client == null) return const Center(child: Text('Client not found'));
+          return _buildContent(context, vm);
+        },
+      ),
+    );
+  }
 
-                      const SizedBox(height: AppSpacing.xxxl),
+  Widget _buildContent(BuildContext context, ClientDetailViewModel vm) {
+    final client = vm.client!;
+    return RefreshIndicator(
+      onRefresh: vm.refresh,
+      child: ListView(
+        padding: AppSpacing.screenPaddingAll,
+        children: [
+          // Header Card
+          AppCard(
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: AppColors.primaryContainer,
+                  radius: 32,
+                  child: Text(
+                    client.fullName.isNotEmpty ? client.fullName[0].toUpperCase() : '?',
+                    style: AppTextStyles.h1.copyWith(color: AppColors.primary),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(client.fullName, style: AppTextStyles.h2),
+                      if (client.companyName != null)
+                        Text(client.companyName!, style: AppTextStyles.bodyMedium),
+                      const SizedBox(height: AppSpacing.xs),
+                      StatusBadge.fromClientStatus(client.status, context),
                     ],
                   ),
                 ),
-        );
-      },
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+
+          // Contact Info
+          AppCard(
+            child: Column(
+              children: [
+                InfoRow(label: 'Email', value: client.email),
+                InfoRow(label: 'Phone', value: client.phone),
+                InfoRow(label: 'Created', value: AppDateUtils.formatDate(client.createdAt), showDivider: false),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+
+          if (client.notes != null) ...[
+            AppCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Notes', style: AppTextStyles.labelLarge),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(client.notes!, style: AppTextStyles.bodyMedium),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+          ],
+
+          // Debts section
+          SectionHeader(
+            title: 'Debts (${vm.debts.length})',
+            actionLabel: 'Add',
+            onAction: () async {
+              await Navigator.pushNamed(context, '/debts/form', arguments: {'clientId': client.id});
+              if (context.mounted) vm.refresh();
+            },
+          ),
+          ...vm.debts.take(5).map((d) => Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                child: _DebtItem(debt: d),
+              )),
+          const SizedBox(height: AppSpacing.md),
+
+          // Projects section
+          SectionHeader(
+            title: 'Projects (${vm.projects.length})',
+            actionLabel: 'Add',
+            onAction: () async {
+              await Navigator.pushNamed(context, '/projects/form', arguments: {'clientId': client.id});
+              if (context.mounted) vm.refresh();
+            },
+          ),
+          ...vm.projects.take(5).map((p) => Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                child: _ProjectItem(project: p),
+              )),
+          const SizedBox(height: AppSpacing.xl),
+        ],
+      ),
     );
   }
 }
 
-class _ProfileHeader extends StatelessWidget {
-  final ClientModel client;
-  const _ProfileHeader({required this.client});
+class _DebtItem extends StatelessWidget {
+  final DebtModel debt;
+  const _DebtItem({required this.debt});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        InitialsAvatar(initials: client.initials, size: 56),
-        const SizedBox(width: AppSpacing.md),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return AppCard(
+      onTap: () => Navigator.pushNamed(context, '/debts/detail', arguments: debt.id),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(debt.title, style: AppTextStyles.labelLarge),
+                Text(AppDateUtils.formatDate(debt.dueDate), style: AppTextStyles.bodySmall),
+              ],
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(client.fullName, style: AppTextStyles.title3),
-              if (client.companyName != null)
-                Text(client.companyName!, style: AppTextStyles.footnote),
+              Text(
+                CurrencyUtils.format(debt.amount, debt.currency),
+                style: AppTextStyles.amountSmall,
+              ),
+              StatusBadge.fromDebtStatus(debt.status),
             ],
           ),
-        ),
-        ClientStatusBadge(status: client.status),
-      ],
-    );
-  }
-}
-
-class _ContactCard extends StatelessWidget {
-  final ClientModel client;
-  const _ContactCard({required this.client});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final rows = <Widget>[];
-    if (client.email != null) {
-      rows.add(InfoRow(label: l10n.email, value: client.email!));
-    }
-    if (client.phone != null) {
-      rows.add(InfoRow(label: l10n.phone, value: client.phone!));
-    }
-    if (client.notes != null) {
-      rows.add(InfoRow(label: l10n.notes, value: client.notes!, isLast: true));
-    }
-    if (rows.isEmpty) return const SizedBox.shrink();
-
-    // mark last
-    if (rows.isNotEmpty) {
-      rows[rows.length - 1] = InfoRow(
-        label: rows.last is InfoRow ? (rows.last as InfoRow).label : '',
-        value: rows.last is InfoRow ? (rows.last as InfoRow).value : '',
-        isLast: true,
-      );
-    }
-
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.cardPadding),
-        child: Column(
-          children: [
-            if (client.email != null)
-              InfoRow(
-                label: l10n.email,
-                value: client.email!,
-                isLast: client.phone == null && client.notes == null,
-              ),
-            if (client.phone != null)
-              InfoRow(
-                label: l10n.phone,
-                value: client.phone!,
-                isLast: client.notes == null,
-              ),
-            if (client.notes != null)
-              InfoRow(label: l10n.notes, value: client.notes!, isLast: true),
-          ],
-        ),
+        ],
       ),
     );
   }
 }
 
-class _EmptyInline extends StatelessWidget {
-  final String text;
-  const _EmptyInline(this.text);
+class _ProjectItem extends StatelessWidget {
+  final ProjectModel project;
+  const _ProjectItem({required this.project});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-      child: Text(text, style: AppTextStyles.footnote),
-    );
-  }
-}
-
-class _DebtList extends StatelessWidget {
-  final List<DebtModel> debts;
-  const _DebtList({required this.debts});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        children: debts.asMap().entries.map((e) {
-          final debt = e.value;
-          final isLast = e.key == debts.length - 1;
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.cardPadding,
-                  vertical: 12,
+    return AppCard(
+      onTap: () => Navigator.pushNamed(context, '/projects/detail', arguments: project.id),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(project.title, style: AppTextStyles.labelLarge),
+                Text(
+                  '${AppDateUtils.formatDate(project.startDate)} – ${AppDateUtils.formatDate(project.endDate)}',
+                  style: AppTextStyles.bodySmall,
                 ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            debt.title,
-                            style: AppTextStyles.subheadline.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          if (debt.dueDate != null)
-                            Text(
-                              AppDateUtils.toDisplay(debt.dueDate!),
-                              style: AppTextStyles.caption1,
-                            ),
-                        ],
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          CurrencyUtils.format(debt.amount, debt.currency),
-                          style: AppTextStyles.amountSmall,
-                        ),
-                        DebtStatusBadge(status: debt.status),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              if (!isLast)
-                const Divider(
-                  height: 1,
-                  thickness: 0.5,
-                  indent: AppSpacing.cardPadding,
-                ),
-            ],
-          );
-        }).toList(),
-      ),
-    );
-  }
-}
-
-class _ProjectList extends StatelessWidget {
-  final List<ProjectModel> projects;
-  const _ProjectList({required this.projects});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        children: projects.asMap().entries.map((e) {
-          final project = e.value;
-          final isLast = e.key == projects.length - 1;
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.cardPadding,
-                  vertical: 12,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            project.title,
-                            style: AppTextStyles.subheadline.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          if (project.startDate != null)
-                            Text(
-                              AppDateUtils.toDisplay(project.startDate!),
-                              style: AppTextStyles.caption1,
-                            ),
-                        ],
-                      ),
-                    ),
-                    ProjectStatusBadge(status: project.status),
-                  ],
-                ),
-              ),
-              if (!isLast)
-                const Divider(
-                  height: 1,
-                  thickness: 0.5,
-                  indent: AppSpacing.cardPadding,
-                ),
-            ],
-          );
-        }).toList(),
+              ],
+            ),
+          ),
+          StatusBadge.fromProjectStatus(project.status),
+        ],
       ),
     );
   }

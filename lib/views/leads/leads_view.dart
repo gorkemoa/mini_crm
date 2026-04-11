@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/constants/route_names.dart';
-import '../../l10n/app_localizations.dart';
-import '../../models/lead_model.dart';
+
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
+import '../../themes/app_radii.dart';
 import '../../viewmodels/leads_viewmodel.dart';
-import '../widgets/badges.dart';
+import '../../models/lead_model.dart';
+import '../../models/enums.dart';
+import '../../core/utils/currency_utils.dart';
+import '../../core/utils/app_date_utils.dart';
 import '../widgets/empty_state.dart';
+import '../widgets/search_field.dart';
+import '../widgets/status_badge.dart';
+import '../widgets/confirm_dialog.dart';
 
 class LeadsView extends StatefulWidget {
   const LeadsView({super.key});
@@ -18,6 +23,8 @@ class LeadsView extends StatefulWidget {
 }
 
 class _LeadsViewState extends State<LeadsView> {
+  final _searchCtrl = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -27,186 +34,172 @@ class _LeadsViewState extends State<LeadsView> {
   }
 
   @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Consumer<LeadsViewModel>(
-      builder: (context, vm, _) {
-        final l10n = AppLocalizations.of(context)!;
-        return Scaffold(
-          backgroundColor: AppColors.background,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.primary),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ),
-          body: SafeArea(
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
+      appBar: AppBar(
+        title: const Text('Leads'),
+      ),
+      body: Consumer<LeadsViewModel>(
+        builder: (context, vm, _) {
+          return RefreshIndicator(
+            onRefresh: vm.refresh,
             child: Column(
               children: [
-                // Header
+                if (!vm.isEmpty) _buildWinRate(context, vm),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.screenPaddingH,
-                    AppSpacing.screenPaddingV,
-                    AppSpacing.screenPaddingH,
-                    0,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  padding: AppSpacing.screenPaddingH.copyWith(top: AppSpacing.sm, bottom: AppSpacing.sm),
+                  child: Column(
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(l10n.leadsTitle, style: AppTextStyles.largeTitle),
-                          if (!vm.isLoading && vm.items.isNotEmpty)
-                            Text(
-                              '${vm.items.where((l) => l.isActive).length} ${l10n.leadsActiveCount}',
-                              style: AppTextStyles.footnote
-                                  .copyWith(color: AppColors.primary),
-                            ),
-                        ],
+                      SearchField(
+                        controller: _searchCtrl,
+                        hint: 'Search leads...',
+                        onChanged: vm.setSearch,
                       ),
-                      const Spacer(),
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        color: AppColors.primary,
-                        onPressed: () async {
-                          await Navigator.pushNamed(
-                            context,
-                            RouteNames.leadForm,
-                          );
-                          if (context.mounted) vm.refresh();
-                        },
-                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      _buildFilterRow(context, vm),
                     ],
                   ),
                 ),
-
-                // Stage filter chips
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.screenPaddingH,
-                    AppSpacing.sm,
-                    AppSpacing.screenPaddingH,
-                    AppSpacing.sm,
-                  ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        _Chip(
-                          label: l10n.all,
-                          isSelected: vm.stageFilter == null,
-                          onTap: () => vm.filterByStage(null),
-                        ),
-                        const SizedBox(width: AppSpacing.xs),
-                        ...LeadStage.values.map((s) => Padding(
-                              padding: const EdgeInsets.only(
-                                  right: AppSpacing.xs),
-                              child: _Chip(
-                                label: switch (s) {
-                                  LeadStage.newLead => l10n.leadNew,
-                                  LeadStage.contacted => l10n.leadContacted,
-                                  LeadStage.proposalSent => l10n.leadProposalSent,
-                                  LeadStage.negotiating => l10n.leadNegotiating,
-                                  LeadStage.won => l10n.leadWon,
-                                  LeadStage.lost => l10n.leadLost,
-                                },
-                                isSelected: vm.stageFilter == s,
-                                onTap: () => vm.filterByStage(s),
-                              ),
-                            )),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // List
                 Expanded(
                   child: vm.isLoading
                       ? const Center(child: CircularProgressIndicator())
-                      : vm.items.isEmpty
+                      : vm.isEmpty
                           ? EmptyState(
                               icon: Icons.person_search_outlined,
-                              title: l10n.noLeadsYet,
-                              subtitle: l10n.noLeadsSubtitle,
-                              actionLabel: l10n.addLead,
+                              title: 'No leads yet',
+                              description: 'Track potential clients with leads',
+                              actionLabel: 'Add Lead',
                               onAction: () async {
-                                await Navigator.pushNamed(
-                                  context,
-                                  RouteNames.leadForm,
-                                );
+                                await Navigator.pushNamed(context, '/leads/form');
                                 if (context.mounted) vm.refresh();
                               },
                             )
-                          : RefreshIndicator(
-                              onRefresh: vm.refresh,
-                              color: AppColors.primary,
-                              child: ListView.separated(
-                                padding: const EdgeInsets.only(
-                                  left: AppSpacing.screenPaddingH,
-                                  right: AppSpacing.screenPaddingH,
-                                  bottom: AppSpacing.xxxl,
-                                ),
-                                itemCount: vm.items.length,
-                                separatorBuilder: (_, __) =>
-                                    const SizedBox(height: AppSpacing.xs),
-                                itemBuilder: (context, i) => _LeadTile(
-                                  lead: vm.items[i],
-                                  onTap: () async {
-                                    await Navigator.pushNamed(
-                                      context,
-                                      RouteNames.leadForm,
-                                      arguments: vm.items[i],
-                                    );
-                                    if (context.mounted) vm.refresh();
-                                  },
-                                  onDelete: () => vm.delete(vm.items[i].id),
-                                ),
-                              ),
-                            ),
+                          : _buildList(context, vm),
                 ),
               ],
             ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await Navigator.pushNamed(context, '/leads/form');
+          if (context.mounted) context.read<LeadsViewModel>().refresh();
+        },
+        child: const Icon(Icons.add_rounded),
+      ),
+    );
+  }
+
+  Widget _buildWinRate(BuildContext context, LeadsViewModel vm) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      padding: AppSpacing.cardPaddingAll,
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        border: Border.all(color: isDark ? AppColors.borderDark : AppColors.borderLight),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                Text('Total', style: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondaryLight)),
+                const SizedBox(height: 4),
+                Text('${vm.leads.length}', style: AppTextStyles.amount),
+              ],
+            ),
           ),
+          Container(width: 1, height: 40, color: isDark ? AppColors.borderDark : AppColors.borderLight),
+          Expanded(
+            child: Column(
+              children: [
+                Text('Won', style: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondaryLight)),
+                const SizedBox(height: 4),
+                Text('${vm.wonCount}', style: AppTextStyles.amount.copyWith(color: AppColors.success)),
+              ],
+            ),
+          ),
+          Container(width: 1, height: 40, color: isDark ? AppColors.borderDark : AppColors.borderLight),
+          Expanded(
+            child: Column(
+              children: [
+                Text('Win Rate', style: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondaryLight)),
+                const SizedBox(height: 4),
+                Text('${vm.winRate.toStringAsFixed(0)}%', style: AppTextStyles.amount.copyWith(color: AppColors.info)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterRow(BuildContext context, LeadsViewModel vm) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          _Chip(label: 'All', selected: vm.stageFilter == null, onTap: () => vm.setStageFilter(null)),
+          const SizedBox(width: AppSpacing.xs),
+          ...[LeadStage.newLead, LeadStage.contacted, LeadStage.proposalSent, LeadStage.negotiating, LeadStage.won, LeadStage.lost]
+              .map((s) => Padding(
+                    padding: const EdgeInsets.only(right: AppSpacing.xs),
+                    child: _Chip(
+                      label: _stageLabel(s),
+                      selected: vm.stageFilter == s,
+                      onTap: () => vm.setStageFilter(s),
+                    ),
+                  )),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildList(BuildContext context, LeadsViewModel vm) {
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 80),
+      itemCount: vm.leads.length,
+      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+      itemBuilder: (context, i) {
+        final lead = vm.leads[i];
+        return _LeadTile(
+          lead: lead,
+          onTap: () async {
+            await Navigator.pushNamed(context, '/leads/detail', arguments: lead.id);
+            if (context.mounted) vm.refresh();
+          },
+          onDelete: () async {
+            final confirmed = await showConfirmDialog(
+              context,
+              title: 'Delete Lead',
+              message: 'Delete "${lead.name}"?',
+            );
+            if (confirmed && context.mounted) vm.delete(lead.id);
+          },
         );
       },
     );
   }
-}
 
-class _Chip extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-  const _Chip(
-      {required this.label,
-      required this.isSelected,
-      required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.sm + 4, vertical: AppSpacing.xs + 2),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.surface,
-          borderRadius: BorderRadius.circular(100),
-        ),
-        child: Text(
-          label,
-          style: AppTextStyles.caption1.copyWith(
-            color: isSelected ? Colors.white : AppColors.textSecondary,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-          ),
-        ),
-      ),
-    );
-  }
+  String _stageLabel(LeadStage s) => switch (s) {
+        LeadStage.newLead => 'New',
+        LeadStage.contacted => 'Contacted',
+        LeadStage.proposalSent => 'Proposal',
+        LeadStage.negotiating => 'Negotiation',
+        LeadStage.won => 'Won',
+        LeadStage.lost => 'Lost',
+      };
 }
 
 class _LeadTile extends StatelessWidget {
@@ -214,97 +207,95 @@ class _LeadTile extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onDelete;
 
-  const _LeadTile({
-    required this.lead,
-    required this.onTap,
-    required this.onDelete,
-  });
+  const _LeadTile({required this.lead, required this.onTap, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isOverdue = lead.isFollowUpOverdue;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(14),
+        color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        border: Border.all(
+          color: isOverdue ? AppColors.warning.withValues(alpha: 0.4) : (isDark ? AppColors.borderDark : AppColors.borderLight),
+        ),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(14),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.cardPadding),
-            child: Row(
-              children: [
-                // Initials
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    lead.name.isNotEmpty
-                        ? lead.name[0].toUpperCase()
-                        : '?',
-                    style: AppTextStyles.subheadline.copyWith(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        lead.name,
-                        style: AppTextStyles.subheadline
-                            .copyWith(fontWeight: FontWeight.w500),
-                      ),
-                      if (lead.source != null)
-                        Text(lead.source!,
-                            style: AppTextStyles.caption1),
-                    ],
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        child: Padding(
+          padding: AppSpacing.cardPaddingAll,
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    LeadStageBadge(stage: lead.stage),
-                    if (lead.estimatedBudget != null) ...[
-                      const SizedBox(height: 4),
+                    Text(lead.name, style: AppTextStyles.labelLarge),
+                    if (lead.source != null) ...[
+                      const SizedBox(height: 2),
+                      Text(lead.source!, style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondaryLight)),
+                    ],
+                    if (lead.nextFollowUpDate != null) ...[
+                      const SizedBox(height: 2),
                       Text(
-                        '${lead.estimatedBudget!.toStringAsFixed(0)} ${lead.currency}',
-                        style: AppTextStyles.caption1
-                            .copyWith(color: AppColors.textSecondary),
+                        'Follow-up: ${AppDateUtils.formatDate(lead.nextFollowUpDate)}',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: isOverdue ? AppColors.warning : AppColors.textTertiaryLight,
+                        ),
                       ),
                     ],
                   ],
                 ),
-                const SizedBox(width: AppSpacing.xs),
-                PopupMenuButton<String>(
-                  icon: const Icon(Icons.more_horiz,
-                      color: AppColors.textTertiary, size: 20),
-                  itemBuilder: (_) => [
-                    PopupMenuItem(
-                        value: 'edit', child: Text(AppLocalizations.of(context)!.edit)),
-                    PopupMenuItem(
-                      value: 'delete',
-                      child: Text(AppLocalizations.of(context)!.delete,
-                          style: const TextStyle(color: AppColors.danger)),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  if (lead.estimatedBudget != null)
+                    Text(
+                      CurrencyUtils.format(lead.estimatedBudget!, lead.currency ?? 'USD'),
+                      style: AppTextStyles.amountSmall,
                     ),
-                  ],
-                  onSelected: (v) {
-                    if (v == 'edit') onTap();
-                    if (v == 'delete') onDelete();
-                  },
-                ),
-              ],
-            ),
+                  const SizedBox(height: 4),
+                  StatusBadge.fromLeadStage(lead.stage),
+                ],
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              IconButton(
+                icon: const Icon(Icons.delete_outline_rounded, size: 18),
+                color: AppColors.error,
+                onPressed: onDelete,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Chip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  const _Chip({required this.label, required this.selected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.primary : Colors.transparent,
+          borderRadius: BorderRadius.circular(AppRadii.chip),
+          border: Border.all(color: selected ? AppColors.primary : AppColors.borderLight),
+        ),
+        child: Text(
+          label,
+          style: AppTextStyles.labelSmall.copyWith(
+            color: selected ? Colors.white : AppColors.textSecondaryLight,
           ),
         ),
       ),

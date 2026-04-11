@@ -1,55 +1,69 @@
 import '../core/base/base_viewmodel.dart';
 import '../models/income_model.dart';
+import '../models/client_model.dart';
 import '../services/repositories/income_repository.dart';
+import '../services/repositories/client_repository.dart';
 
 class IncomeViewModel extends BaseViewModel {
-  final IncomeRepository _repo;
+  final IncomeRepository _incomeRepo;
+  final ClientRepository _clientRepo;
 
-  IncomeViewModel({required IncomeRepository incomeRepository})
-      : _repo = incomeRepository;
+  IncomeViewModel({required IncomeRepository incomeRepo, required ClientRepository clientRepo})
+      : _incomeRepo = incomeRepo,
+        _clientRepo = clientRepo;
 
-  List<IncomeModel> _all = [];
-  Map<String, double> _byPlatform = {};
-  double _thisMonthTotal = 0;
+  List<IncomeModel> _allIncomes = [];
+  Map<String, ClientModel> _clientsMap = {};
+  String _searchQuery = '';
 
-  List<IncomeModel> get items => _all;
-  Map<String, double> get byPlatform => _byPlatform;
-  double get thisMonthTotal => _thisMonthTotal;
+  List<IncomeModel> get incomes {
+    if (_searchQuery.isEmpty) return _allIncomes;
+    return _allIncomes.where((i) {
+      final client = _clientsMap[i.clientId];
+      return i.sourcePlatform?.toLowerCase().contains(_searchQuery.toLowerCase()) == true ||
+          (client?.fullName.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false) ||
+          (i.note?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false);
+    }).toList();
+  }
+
+  ClientModel? clientFor(String? clientId) => clientId != null ? _clientsMap[clientId] : null;
+  bool get isEmpty => _allIncomes.isEmpty;
+  double get total => _allIncomes.fold(0.0, (s, i) => s + i.amount);
+
+  double get monthlyTotal {
+    final now = DateTime.now();
+    return _allIncomes
+        .where((i) => i.date.year == now.year && i.date.month == now.month)
+        .fold(0.0, (s, i) => s + i.amount);
+  }
 
   Future<void> load() async {
     setLoading(true);
     clearError();
-    try {
-      final results = await Future.wait([
-        _repo.getAll(),
-        _repo.getTotalByPlatform(),
-        _repo.getTotalThisMonth(),
-      ]);
-      _all = results[0] as List<IncomeModel>;
-      _byPlatform = results[1] as Map<String, double>;
-      _thisMonthTotal = results[2] as double;
-    } catch (e) {
-      setError('errorIncomeLoad');
-    } finally {
-      setLoading(false);
+    final results = await Future.wait([_incomeRepo.getAll(), _clientRepo.getAll()]);
+    if (results[0].isSuccess) _allIncomes = results[0].data as List<IncomeModel>;
+    else setError(results[0].error);
+    if (results[1].isSuccess) {
+      _clientsMap = {for (final c in results[1].data as List<ClientModel>) c.id: c};
     }
+    setLoading(false);
   }
 
   Future<void> refresh() => load();
 
-  Future<void> delete(String id) async {
-    try {
-      await _repo.delete(id);
-      _all.removeWhere((i) => i.id == id);
-      _thisMonthTotal = _all
-          .where((i) {
-            final now = DateTime.now();
-            return i.date.year == now.year && i.date.month == now.month;
-          })
-          .fold(0, (sum, i) => sum + i.amount);
-      notifyListeners();
-    } catch (e) {
-      setError('errorIncomeDelete');
+  void setSearch(String q) {
+    _searchQuery = q;
+    safeNotify();
+  }
+
+  Future<bool> delete(String id) async {
+    final result = await _incomeRepo.delete(id);
+    if (result.isSuccess) {
+      _allIncomes.removeWhere((i) => i.id == id);
+      safeNotify();
+      return true;
     }
+    setError(result.error);
+    return false;
   }
 }

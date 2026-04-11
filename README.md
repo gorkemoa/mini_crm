@@ -1,197 +1,226 @@
-# Freelancer Mini CRM — Flutter README
+# Mini CRM — Flutter
 
-Swift hissiyatlı, sade, hızlı, temiz ve ileride backend entegrasyonuna uygun minimal CRM uygulaması.
+Freelancerlar, bireysel çalışanlar ve küçük ekipler için tasarlanmış; sade, hızlı ve modern bir mini CRM uygulaması.
 
----
-
-
-///// KESİN YAPILACAK ASLA UNUTMA
-
-# 🌍 Desteklenen Diller (Localization Strategy)
-
-Bu uygulama, global erişim ve maksimum kullanıcı trafiği hedefiyle çok dilli (multi-language) olarak tasarlanmıştır.  
-Aşağıdaki diller; nüfus, internet kullanımı ve mobil uygulama potansiyeline göre seçilmiştir.
+Amaç; karmaşık kurumsal CRM panelleri yapmak değil, kullanıcının her gün açıp işlerini net biçimde takip edebileceği düzenli bir mobil araç oluşturmaktır.
 
 ---
 
-## 🌐 Desteklenen Diller
+# 1. Ürün Özeti
 
-- İngilizce  
-- Basitleştirilmiş Çince  
-- İspanyolca  
-- Arapça  
-- Hintçe  
-- Portekizce  
-- Fransızca  
-- Endonezce  
-- Japonca  
-- Almanca  
-- Rusça  
-- Türkçe  
-- Korece  
-- Bengalce  
-- Urduca  
-- Vietnamca  
-- İtalyanca  
-- Farsça  
-- Lehçe
-- Tayca (Thai)  
+Mini CRM, günlük iş akışında gerçekten gerekli olan temel takibi tek yerde toplar:
+
+- Müşteri yönetimi
+- Alacak / ödeme takibi
+- Proje takibi
+- Potansiyel müşteri takibi
+- Gelir kayıtları
+- Hatırlatıcılar
+- Veri dışa aktarma / içe aktarma
+
+Bu uygulama şunları hedefler:
+
+- Hızlı kullanım
+- Düşük karmaşa
+- Temiz arayüz
+- Offline-first çalışma
+- İleride backend entegrasyonuna hazır mimari
 
 ---
 
-## 📌 Lokalizasyon Kuralları
-
-- Tüm metinler **localization dosyalarında** tutulmalıdır (View içinde hardcoded text yasak).
-- Dil değişimi **anlık (runtime)** olmalıdır, uygulama yeniden başlatılmamalıdır.
-- Tarih, para birimi ve sayı formatları locale’e göre değişmelidir.
-- Sağdan sola (RTL) destek zorunludur:
-  - Arapça
-  - Urduca
-  - Farsça
-
----
-
-## 🧩 Flutter Teknik Yapı
-
-Kullanılacak paketler:
-- `flutter_localizations`
-- `intl`
-
-Önerilen yapı:
-```text
-lib/
-  l10n/
-    app_en.arb
-    app_es.arb
-    app_tr.arb
-    app_ar.arb
-    ...
-
-
-
-# 1) Proje Özeti
-
-Bu uygulama, serbest çalışanların gerçekten ihtiyaç duyduğu birkaç temel şeyi takip etmek için tasarlanır:
-
-- Kim bana borçlu?
-- Hangi proje ne zaman başlıyor?
-- Hangi müşteri aktif, hangisi kaybedildi?
-- Hangi platformdan ne kadar gelir geliyor?
-- Hangi iş için tekrar takip yapılmalı?
-
-Bu proje klasik CRM mantığını reddeder. Amaç; ekipler için karmaşık paneller değil, tek kişinin her gün açıp kullanacağı hızlı bir iş takip uygulaması oluşturmaktır.
-
----
-
-# 2) Ürün Felsefesi
+# 2. Ürün Felsefesi
 
 ## Temel yaklaşım
-- Gereksiz özellik yok
-- Şişkin dashboard yok
-- Karmaşık raporlama yok
-- Önce hız, sadelik ve netlik
-- Uygulama açıldığı anda kritik bilgi görünmeli
+
+Bu proje klasik ağır CRM mantığıyla tasarlanmaz.
+
+Odak noktası:
+
+- Gereksiz özelliklerden kaçınmak
+- Kalabalık dashboard yapmamak
+- Kullanıcıyı veriyle boğmamak
+- En kritik bilgiyi ilk bakışta göstermek
+- Günlük kullanımı hızlandırmak
 
 ## Hedef kullanıcı
+
 - Freelancer
 - Tek başına çalışan geliştirici
 - Tasarımcı
 - Video editör
-- Sosyal medya yöneticisi
 - Danışman
-- Küçük ajans sahibi ama bireysel düzende çalışan kişi
+- Sosyal medya yöneticisi
+- Küçük ölçekli hizmet veren profesyoneller
 
 ---
 
-# 3) Tasarım Yaklaşımı
+# 3. Tasarım Yönü
 
-Uygulama Flutter ile geliştirilecek ancak his olarak SwiftUI / iOS native premium uygulama gibi davranmalıdır.
+Uygulama Flutter ile geliştirilecek, ancak görsel yaklaşımı modern, temiz ve profesyonel bir mini CRM gibi olmalıdır.
 
 ## UI/UX hedefleri
-- Beyaz alan bol kullanılmalı
-- Kalabalık ekran olmayacak
-- Büyük başlıklar
-- İnce ayırıcılar
-- Kart yapısı temiz olacak
-- Gereksiz border ve ağır gölge kullanılmayacak
-- Renk sadece anlam taşıdığında kullanılacak
-- Her ekranda tek ana amaç olacak
-- Kullanıcı 2 tıklamada hedefe ulaşmalı
 
-## Görsel karakter
-- Apple benzeri minimal yaklaşım
-- Yumuşak radius
-- Sistem font hissiyatı
-- Sessiz renk paleti
-- Düşük görsel gürültü
-- “Profesyonel ama sade” görünüm
+- Düzenli ve sakin ekranlar
+- Bol beyaz alan
+- Net hiyerarşi
+- Gereksiz görsel gürültü yok
+- Kart yapıları sade ve işlevsel
+- Tek ekranda tek ana amaç
+- Az ama anlamlı renk kullanımı
+- Hızlı okunabilir tipografi
+- Mobilde tek elle rahat kullanım
 
----
+## Arayüz karakteri
 
-# 4) Teknik Hedef
-
-Bu proje **gerçek MVVM** ile kurulmalıdır. Kod tabanı ileride backend’e geçebilecek şekilde hazırlanmalıdır.
-
-İlk sürüm:
-- Offline-first
-- Local database ile çalışır
-- Kullanıcı verileri cihazda tutulur
-
-Gelecek sürüm:
-- Backend eklenebilir
-- Sync sistemi eklenebilir
-- Kullanıcı verileri export/import yapılabilir
-- Hesap sistemi bağlanabilir
-- Remote API katmanı doğrudan entegre edilebilir
-
-Bu yüzden mimari en baştan sadece “local app” gibi değil, “yarın backend gelir” mantığıyla kurulmalıdır.
+- Modern
+- Minimal
+- Kurumsal ama soğuk olmayan
+- Derli toplu
+- Hızlı algılanan
+- Veri odaklı ama sade
 
 ---
 
-# 5) Zorunlu Mimari Kurallar
+# 4. Desteklenen Diller
 
-## Genel kurallar
-- MVVM dışına çıkılmayacak
-- View içinde veri işleme yapılmayacak
-- View içinde fake business logic olmayacak
-- Veri erişimi sadece service / repository üzerinden olacak
-- Model katmanı net tanımlı olacak
-- Her feature kendi içinde ayrılacak
-- Tema yönetimi merkezi olacak
-- Local ve remote veri kaynakları soyutlanacak
-- İleride backend gelirse ekranlar bozulmadan entegre edilebilecek yapı kurulacak
+Bu uygulama global trafik ve geniş kullanıcı kitlesi hedefiyle çok dilli tasarlanacaktır.
 
-## Katman sınırları
-- `View`: sadece render + kullanıcı etkileşimi
-- `ViewModel`: state yönetimi + ekran akışı + business orchestration
-- `Service`: veri işlemleri, local storage, remote adapter, export/import, sync hazırlığı
-- `Model`: veri yapıları
-- `Theme`: tüm renk, boşluk, tipografi, radius ve component stilleri
+## Desteklenecek diller
 
----
+- İngilizce
+- Basitleştirilmiş Çince
+- İspanyolca
+- Arapça
+- Hintçe
+- Portekizce
+- Fransızca
+- Endonezce
+- Japonca
+- Almanca
+- Rusça
+- Türkçe
+- Korece
+- Bengalce
+- Urduca
+- Vietnamca
+- İtalyanca
+- Farsça
+- Lehçe
+- Tayca
 
-# 6) Teknoloji Kararları
+## Lokalizasyon kuralları
 
-## Kullanılacak yapı
-- Flutter
-- Dart
-- MVVM
-- Local database: `Isar` veya `Hive`
-- State management: `ChangeNotifier` veya `ValueNotifier` tabanlı sade yapı
-- Dependency injection: basit service locator veya constructor injection
-- JSON serialize: `json_serializable` veya manuel mapleme
-- Routing: sade ve okunabilir yapı
-- Export/import: JSON tabanlı ilk sürüm
-- Future backend preparation: repository abstraction
+- Tüm metinler localization dosyalarında tutulmalı
+- View içinde hardcoded text kullanılmamalı
+- Dil değişimi runtime desteklemeli
+- Tarih, sayı ve para formatları locale’e göre değişmeli
+- RTL destek zorunlu:
+  - Arapça
+  - Urduca
+  - Farsça
 
-## Neden bu yaklaşım?
-Çünkü amaç hızlı, bakım yapılabilir, büyüyebilir ve kırılmadan backend’e geçebilir bir temel kurmaktır.
+## Flutter localization yapısı
 
----
+Kullanılacak paketler:
 
-# 7) Klasör Yapısı
+- `flutter_localizations`
+- `intl`
+
+Önerilen yapı:
 
 ```text
+lib/
+  l10n/
+    app_en.arb
+    app_tr.arb
+    app_es.arb
+    app_ar.arb
+    app_fr.arb
+    ...
+    5. Teknik Hedef
+
+Bu proje gerçek anlamda MVVM mimarisiyle kurulmalıdır.
+
+İlk sürüm:
+
+Offline-first çalışır
+Veriler cihazda tutulur
+Local database kullanır
+İnternetsiz temel kullanım mümkündür
+
+İleride eklenebilecek yapı:
+
+Backend entegrasyonu
+Kullanıcı hesabı
+Senkronizasyon
+Çoklu cihaz desteği
+Cloud backup
+Remote API bağlantısı
+
+Mimari, ilk sürüm local çalışsa bile gelecekte online sisteme geçişi bozmayacak şekilde kurulmalıdır.
+
+6. Zorunlu Mimari Kurallar
+Genel kurallar
+MVVM dışına çıkılmayacak
+View içinde iş kuralı yazılmayacak
+View içinde veri işleme yapılmayacak
+Veri erişimi yalnızca service / repository üzerinden olacak
+Tema yönetimi merkezi olacak
+Local ve remote veri kaynakları ayrıştırılacak
+Gelecekte backend geldiğinde ekranlar yeniden yazılmayacak
+Katman sorumlulukları
+View
+Sadece arayüz
+Kullanıcı etkileşimi
+ViewModel dinleme
+ViewModel
+State yönetimi
+İş akışı
+Form kontrolü
+Listeleme, filtreleme, sıralama
+Hata / loading / empty state yönetimi
+Service
+Veri işlemleri
+Local database erişimi
+Export / import
+Sync hazırlığı
+Remote servis adaptasyonu
+Model
+Veri yapıları
+Entity tanımları
+Enum ve tipler
+Theme
+Renkler
+Yazı stilleri
+Boşluk sistemi
+Radius
+Component stilleri
+7. Teknoloji Kararları
+Kullanılacak yapı
+Flutter
+Dart
+MVVM
+Local database: Isar veya Hive
+State management: ChangeNotifier veya ValueNotifier
+Dependency injection: constructor injection veya sade service locator
+JSON dönüşümleri: json_serializable veya kontrollü manuel mapleme
+Export / import: JSON tabanlı yapı
+Repository abstraction ile future backend hazırlığı
+Ana prensip
+
+Amaç sadece çalışan bir uygulama yapmak değildir.
+
+Amaç:
+
+Bakımı kolay
+Büyüyebilir
+Modüler
+Temiz
+Geleceğe hazır
+
+bir temel kurmaktır.
+
+8. Klasör Yapısı
 lib/
   main.dart
 
@@ -201,7 +230,6 @@ lib/
     app_spacing.dart
     app_radii.dart
     app_theme.dart
-    app_shadows.dart
 
   core/
     constants/
@@ -235,9 +263,9 @@ lib/
       local_database_service.dart
       local_database_initializer.dart
     storage/
-      secure_storage_service.dart
       file_export_service.dart
       file_import_service.dart
+      secure_storage_service.dart
     repositories/
       client_repository.dart
       debt_repository.dart
@@ -245,14 +273,30 @@ lib/
       lead_repository.dart
       income_repository.dart
       reminder_repository.dart
-    sync/
-      sync_service.dart
-      sync_queue_service.dart
-      sync_mapper_service.dart
     remote/
       remote_api_service.dart
       remote_auth_service.dart
       remote_sync_service.dart
+    sync/
+      sync_service.dart
+      sync_queue_service.dart
+      sync_mapper_service.dart
+
+  viewmodels/
+    dashboard_viewmodel.dart
+    clients_viewmodel.dart
+    client_detail_viewmodel.dart
+    client_form_viewmodel.dart
+    debts_viewmodel.dart
+    debt_form_viewmodel.dart
+    projects_viewmodel.dart
+    project_form_viewmodel.dart
+    leads_viewmodel.dart
+    lead_form_viewmodel.dart
+    income_viewmodel.dart
+    income_form_viewmodel.dart
+    reminders_viewmodel.dart
+    settings_viewmodel.dart
 
   views/
     app/
@@ -294,91 +338,10 @@ lib/
       primary_button.dart
       search_field.dart
       info_row.dart
-
-  viewmodels/
-    dashboard_viewmodel.dart
-    clients_viewmodel.dart
-    client_detail_viewmodel.dart
-    debts_viewmodel.dart
-    debt_form_viewmodel.dart
-    projects_viewmodel.dart
-    project_form_viewmodel.dart
-    leads_viewmodel.dart
-    lead_form_viewmodel.dart
-    income_viewmodel.dart
-    reminders_viewmodel.dart
-    settings_viewmodel.dart
-
-    8) Katmanların Görevleri
-models
-
-Sadece veri yapıları.
-Örnek:
-
-ClientModel
-DebtModel
-ProjectModel
-LeadModel
-IncomeModel
-ReminderModel
-
-Burada UI kodu bulunmaz.
-
-views
-
-Sadece arayüz.
-Kurallar:
-
-İş kuralı yazılmaz
-Veri çekme mantığı yazılmaz
-Direkt storage erişimi yapılmaz
-Büyük hesaplama yapılmaz
-
-View sadece ViewModel dinler ve kullanıcı aksiyonunu iletir.
-
-viewmodels
-
-Ekranın beyni.
-Görevleri:
-
-Ekran state’i tutmak
-Service / repository çağrıları yapmak
-Loading / error / empty state yönetmek
-Form submit işlemlerini yürütmek
-Liste filtreleme, sıralama, segment state yönetimi
-View için hazır veri sunmak
-services
-
-Veri omurgası.
-Görevleri:
-
-Local DB işlemleri
-Repository erişimi
-Export / import
-Sync hazırlığı
-Remote API adaptasyonu
-İleride backend geldiğinde veri akışını yönetmek
-
-Buradaki yapı ileride local + remote hibrit çalışmaya uygun tasarlanmalıdır.
-
-themes
-
-Uygulamanın görsel merkezi.
-Görevleri:
-
-Renkler
-Yazı stilleri
-Boşluk sistemleri
-Radius
-Shadow
-Buton / input / card davranışı
-
-View içinde rastgele stil yazımı minimumda tutulmalıdır.
-
-9) Domain Modelleri
+9. Domain Modelleri
 ClientModel
 
-Freelancer’ın müşteri kartı.
+Müşteri kartı.
 
 Alanlar:
 
@@ -393,7 +356,7 @@ createdAt
 updatedAt
 DebtModel
 
-Alacak takibi.
+Alacak / ödeme takibi.
 
 Alanlar:
 
@@ -408,7 +371,7 @@ note
 createdAt
 updatedAt
 
-Status:
+Durumlar:
 
 pending
 overdue
@@ -433,7 +396,7 @@ note
 createdAt
 updatedAt
 
-Status:
+Durumlar:
 
 planned
 startingSoon
@@ -457,7 +420,7 @@ note
 createdAt
 updatedAt
 
-Stage:
+Aşamalar:
 
 newLead
 contacted
@@ -497,7 +460,7 @@ createdAt
 updatedAt
 AppUserModel
 
-İleride hesap sistemi veya export/import için temel kullanıcı modeli.
+İleride hesap, backup veya sync için temel kullanıcı modeli.
 
 Alanlar:
 
@@ -521,11 +484,11 @@ leads
 incomes
 reminders
 user
-10) Repository Mantığı
+10. Repository Yapısı
 
 Repository katmanı local ve remote veri farkını gizlemelidir.
 
-Örnek:
+Örnek repository’ler:
 
 ClientRepository
 DebtRepository
@@ -534,77 +497,69 @@ LeadRepository
 IncomeRepository
 ReminderRepository
 
-Bu repository’ler ilk aşamada local database kullanır.
-Gelecekte:
+İlk aşamada local database üzerinden çalışırlar.
 
-önce local oku
-sonra remote sync et
-conflict çöz
-tekrar local güncelle
+İleride şu senaryolar desteklenebilir:
 
-gibi senaryolar için genişletilebilir olmalıdır.
+Önce local oku
+Sonra remote senkronize et
+Çakışma çöz
+Local veriyi güncelle
 
-11) Local-First ve Gelecekte Backend’e Geçiş
+Bu yüzden repository yapısı baştan genişleyebilir tasarlanmalıdır.
 
-Bu proje ilk günden backend zorunluluğu olmadan çalışmalıdır. Ancak veri katmanı, ileride online sisteme geçiş için bozulmadan büyüyebilmelidir.
-
+11. Local-First Yaklaşım
 İlk sürüm
-Tüm veri local database’de
-Kullanıcı internet olmadan kullanabilir
-Export JSON ile veri indirilebilir
-Import JSON ile geri yüklenebilir
-İkinci sürüm
-Kullanıcı hesabı
+Tüm veri local database’de tutulur
+İnternetsiz kullanım desteklenir
+Export ile JSON alınabilir
+Import ile veri geri yüklenebilir
+Gelecek sürüm
+Login / hesap sistemi
 Cloud backup
+Çoklu cihaz kullanımı
 Remote sync
-Multi-device support
-API tabanlı data restore
+API tabanlı veri geri yükleme
 Mimari hazırlık
 
-Bu yüzden şu ayrımlar baştan kurulmalıdır:
+Bu nedenle aşağıdaki katmanlar baştan düşünülmelidir:
 
 Local database service
-Remote api service
+Remote API service
 Sync service
 Queue service
-Export/import service
+Export / import service
 Repository abstraction
-
-Yani ilk sürüm local çalışsa bile klasör yapısında remote/ ve sync/ klasörleri bulunmalıdır.
-
-12) Örnek Veri Akışı
-Senaryo 1: Borç ekleme
-Kullanıcı borç ekleme formunu açar
-View form verisini toplar
+12. Örnek Veri Akışı
+Senaryo 1: Alacak ekleme
+Kullanıcı alacak formunu açar
+View input verilerini toplar
 ViewModel validasyon yapar
 ViewModel DebtRepository.createDebt() çağırır
-Repository local database service üzerinden kaydı oluşturur
-ViewModel listeyi yeniler
-View güncel state’i gösterir
-Senaryo 2: Gelecekte backend ile aynı akış
-Kullanıcı borç ekler
-Repository local DB’ye hemen kaydeder
-Sync queue içine işlem atılır
-İnternet varsa remote sync service API’ye yollar
-Başarılıysa sync status güncellenir
-
-Bu yaklaşım uygulamanın offline-first kalmasını sağlar.
-
-13) Ekran Listesi
+Repository local database’e kaydeder
+ViewModel state’i günceller
+View yeni listeyi gösterir
+Senaryo 2: Gelecekte backend ile
+Kullanıcı kayıt ekler
+Repository veriyi önce local’e yazar
+Sync queue içine işlem eklenir
+İnternet varsa remote servise gönderilir
+Başarılıysa sync durumu güncellenir
+13. Ekran Listesi
 1. Dashboard
 
-Ana ekran.
+Ana özet ekranı.
 
-Gösterilecek alanlar:
+Gösterilecek temel alanlar:
 
-Toplam bekleyen alacak
-Yaklaşan proje
-Cevap bekleyen lead sayısı
-Son gelir kaydı
+Bekleyen alacak toplamı
+Bu hafta başlayacak proje
+Takip bekleyen lead sayısı
+Son gelir bilgisi
 Bugünkü hatırlatıcılar
 
 Amaç:
-Kullanıcı uygulamayı açtığında 5 saniyede genel durumu görmeli.
+Kullanıcı uygulamayı açınca birkaç saniyede durumunu görmelidir.
 
 2. Clients View
 
@@ -615,33 +570,33 @@ Müşteri listesi.
 Aktif müşteriler
 Pasif müşteriler
 Arama
-Filtre
+Filtreleme
 Hızlı detay geçişi
 3. Client Detail View
 
-Müşterinin tüm özet bilgisi.
+Tek müşteri özeti.
 
 İçerik:
 
 İletişim bilgileri
 Bu müşteriye ait borçlar
 Aktif projeler
-Kazanılan / kaybedilen lead geçmişi
-Notlar
+Geçmiş notlar
+İlişkili kayıtlar
 4. Debts View
 
-Borç / alacak listesi.
+Alacak listesi.
 
 İçerik:
 
-Bekleyen
-Geciken
-Ödenen
+Bekleyenler
+Gecikenler
+Ödenenler
 Toplam tutar
-Yaklaşan ödeme tarihi
+Yaklaşan ödeme tarihleri
 5. Debt Form View
 
-Yeni alacak ekleme veya düzenleme ekranı.
+Yeni alacak ekleme / düzenleme ekranı.
 
 Alanlar:
 
@@ -659,23 +614,23 @@ Proje listesi.
 İçerik:
 
 Başlayacak projeler
-Devam edenler
+Aktif projeler
 Tamamlananlar
-Proje tarihi
 Bütçe
-İlgili müşteri
+Tarihler
+Müşteri bilgisi
 7. Project Detail View
 
-Tek projenin detay ekranı.
+Proje detay ekranı.
 
 İçerik:
 
-Proje açıklaması
+Açıklama
 Başlangıç / bitiş
-İlgili müşteri
-Durum
 Bütçe
+Durum
 Notlar
+İlişkili müşteri
 8. Leads View
 
 Potansiyel müşteri takibi.
@@ -683,13 +638,14 @@ Potansiyel müşteri takibi.
 İçerik:
 
 Yeni lead
+İletişime geçildi
 Teklif gönderildi
-Görüşmede
+Görüşme aşaması
 Kazanıldı
 Kaybedildi
 9. Lead Form View
 
-Lead oluşturma / düzenleme ekranı.
+Lead oluşturma / düzenleme.
 
 Alanlar:
 
@@ -701,17 +657,17 @@ Sonraki takip tarihi
 Not
 10. Income View
 
-Gelir takibi.
+Gelir ekranı.
 
 İçerik:
 
 Platform bazlı gelir
 Müşteri bazlı gelir
-Son kayıtlar
+Son eklenen kayıtlar
 Toplam gelir
 11. Reminders View
 
-Takip hatırlatmaları.
+Hatırlatıcı ekranı.
 
 İçerik:
 
@@ -729,55 +685,61 @@ Tema tercihleri
 Veri dışa aktar
 Veri içe aktar
 Uygulama sürümü
-Gelecekte hesap / sync alanı için hazır bölüm
-14) Dashboard Kuralları
+Gelecekte sync alanı için hazır bölüm
+14. Dashboard Kuralları
 
-Dashboard karmaşık olmayacak.
-Gösterilecek kart sayısı sınırlı olmalı.
+Dashboard sade kalmalıdır.
 
-Önerilen yapı:
+İlk sürümde amaç grafik doldurmak değil, net özet sunmaktır.
+
+Önerilen kartlar:
 
 Bekleyen alacak toplamı
 Bu hafta başlayacak proje
 Takip bekleyen lead
-Bu ayki toplam gelir
+Bu ay toplam gelir
 Bugünkü hatırlatıcı
 
-Grafik zorunlu değil.
-İlk sürümde sade özet kartlar yeterlidir.
+Not:
+İlk sürümde karmaşık grafik zorunlu değildir.
 
-15) Durum Yapıları
+15. State Yönetimi
+
+Her liste ve form ekranında aşağıdaki durumlar açıkça tanımlanmalıdır:
+
 Loading state
-
-Her liste ekranında yüklenme durumu açıkça tanımlanmalı.
-
+Veri yükleniyor
+Form submit ediliyor
+Import / export işleniyor
 Empty state
 
-Boş sayfalar kuru görünmemeli.
+Boş ekranlar açıklayıcı olmalı.
+
 Örnek:
 
 Henüz müşteri eklenmedi
-İlk borcunu ekle
-Henüz proje yok
+İlk alacağını ekle
+Henüz proje bulunmuyor
+Takip bekleyen kayıt yok
 Error state
 
-Local-first app olduğu için hata az olur ancak import/export ve gelecekte sync için hata state’i gereklidir.
+Özellikle import / export ve gelecekte sync süreçleri için hata yönetimi net olmalıdır.
 
-16) Tema Sistemi
+16. Tema Sistemi
 
-Tema merkezi olmalıdır.
+Tema tek merkezden yönetilmelidir.
 
 app_colors.dart
 
-Uygulamadaki tüm renkler tek merkezde tanımlanır.
+Uygulamadaki tüm renkler burada tanımlanır.
 
 app_text_styles.dart
 
-Başlık, alt başlık, body, caption, button stilleri burada olur.
+Başlık, gövde, açıklama ve buton yazı stilleri burada bulunur.
 
 app_spacing.dart
 
-Tüm boşluk sistemi:
+Boşluk sistemi:
 
 xs
 sm
@@ -786,133 +748,117 @@ lg
 xl
 app_radii.dart
 
-Kart, input, buton radius değerleri.
+Kart, input ve buton radius değerleri.
 
 app_theme.dart
 
-Light theme temel tanımı.
+Light theme ve temel component davranışları.
 
-app_shadows.dart
+Tasarım kuralları
+Sert kontrastlardan kaçın
+Renk sadece anlam taşıyorsa kullan
+Gölge çok kontrollü olmalı
+Kartlar sade olmalı
+Border kullanımı abartılmamalı
+Görsel düzen tutarlı kalmalı
+17. ViewModel Standartları
 
-Gölge kullanımı çok düşük ve kontrollü olmalı.
-
-17) Swift Hissiyatı İçin Kurallar
-Büyük başlık kullan
-Section yapısını temiz ayır
-Kartları düz ve sade yap
-Input alanları geniş ve rahat olsun
-Toolbar sade olsun
-FAB varsa dikkatli kullan
-Her yerde renkli ikon kullanma
-Çok fazla chip / badge kullanma
-Görsel gürültüyü sürekli azalt
-Her sayfada ana eylem net olsun
-18) ViewModel Standartları
-
-Her ViewModel için ortak yaklaşım:
+Her ViewModel aşağıdaki ortak yapıya yakın ilerlemelidir:
 
 İçermesi gerekenler
 isLoading
 errorMessage
-items
+items / state
 load()
 refresh()
 Form ekranlarında
 field state
 validation
-submit
-update mode / create mode ayrımı
+submit()
+create / update ayrımı
 Yasaklar
-ViewModel içinde UI widget üretmek yok
-BuildContext bağımlılığı minimum
-Repository bypass etmek yok
-19) Service Standartları
+Widget üretmek
+View logic taşımak
+Repository katmanını atlamak
+Gereksiz BuildContext bağımlılığı
+18. Service Standartları
 Local database service
 CRUD işlemleri
 Koleksiyon bazlı erişim
 Batch işlemler
-İndeks hazırlığı
+Performans odaklı sorgular
 File export service
-Tüm veriyi JSON’a çevirme
+Tüm veriyi JSON’a dönüştürme
 Sürüm bilgisi ekleme
 Geriye dönük uyumluluk alanı bırakma
 File import service
 JSON doğrulama
 Model parse etme
-Merge veya replace stratejisi desteği
+Merge veya replace desteği
 Sync service
 
-İlk sürümde aktif kullanılmasa da iskeleti bulunmalı.
-Görev:
+İlk sürümde aktif olmayabilir ama iskeleti bulunmalıdır.
 
-local changes tespiti
-queue mantığı
-push/pull senaryosu hazırlığı
-Remote api service
+Hazırlanacak konular:
 
-Şimdilik placeholder olabilir ama klasörde bulunmalı.
-Amaç:
-Backend geldiğinde yeni mimari kurmak zorunda kalmamak.
+Local değişiklik tespiti
+Queue mantığı
+Push / pull akışı
+Çakışma çözüm altyapısı
+Remote API service
 
-20) Export / Import Yapısı
+Şimdilik placeholder olabilir.
+Ama klasörde ve mimaride yeri baştan ayrılmalıdır.
 
-Bu proje ileride backend’e geçmese bile kullanıcının verisini dışa aktarabilmelidir.
+19. Export / Import Yapısı
+
+Bu uygulama veriyi kullanıcıya ait hissettirmelidir.
+
+Bu yüzden export / import temel özellik olarak düşünülmelidir.
 
 Export
-JSON format
-Tüm tablolar tek pakette
-Sürüm numarası içermeli
+JSON formatı
+Tüm veriler tek pakette
+Sürüm bilgisi içermeli
 Oluşturulma tarihi içermeli
 Import
-Dosya seç
-İçeriği parse et
-Versiyon kontrolü yap
-Uyumluysa içeri aktar
-Hata varsa kullanıcıya net göster
+Dosya seçimi
+İçeriği parse etme
+Versiyon kontrolü
+Uyumluysa içe aktarma
+Hata varsa kullanıcıya net açıklama
+20. Backend’e Hazırlık Notları
 
-Bu özellik hem güven verir hem de gelecekteki cloud sync için güçlü temel olur.
+İleride backend eklenirse aşağıdaki yapılar desteklenebilir olmalı:
 
-21) Backend’e Hazırlık Notları
-
-İleride backend eklenirse aşağıdaki alanlar hazır olmalı:
-
-local id + remote id ayrımı
-createdAt / updatedAt tüm modellerde bulunmalı
-deletedAt veya soft delete düşünülmeli
-sync status alanı eklenebilir
-conflict resolution stratejisi hazırlanmalı
-export bundle schema version kullanılmalı
-
-Örnek gelecek alanlar:
-
-remoteId
+localId + remoteId ayrımı
+createdAt / updatedAt alanları
 syncStatus
 lastSyncedAt
-isDeleted
+isDeleted veya soft delete desteği
+conflict resolution mantığı
+export schema version
 
-İlk sürümde bu alanlar zorunlu değil ama model tasarımı bunları kaldırabilmelidir.
+Bu alanlar ilk sürümde şart olmasa da model yapısı buna engel olmamalıdır.
 
-22) Kod Kalitesi Kuralları
+21. Kod Kalitesi Kuralları
 Kısa ve anlamlı dosyalar
-Widget parçalama yapılmalı
-500 satırlık ekran dosyaları olmamalı
-Tek dosyada her şey toplanmamalı
-Enum’lar net olmalı
-Magic string kullanılmamalı
-Tekrarlayan UI componentleri ortak widget yapılmalı
-Format ve lint kuralları uygulanmalı
-23) Yasaklar
+Büyük ekranları widget’lara bölmek
+500+ satırlık tek ekran dosyalarından kaçınmak
+Tekrarlayan UI parçalarını ortak widget yapmak
+Magic string kullanmamak
+Enum ve model yapısını net tutmak
+Format ve lint kurallarını uygulamak
+22. Yasaklar
 View içinde database erişimi
 View içinde repository çağrısı
+Service katmanını bypass etmek
 Hardcoded demo veri ile ekran bağlamak
-Service katmanını atlayıp direkt storage kullanmak
-Theme dışında rastgele renk sistemi
-Her feature için farklı tasarım dili
-Future backend için hiçbir hazırlık yapmadan tamamen local’e gömülmek
-24) MVP Kapsamı
-
-İlk sürümde mutlaka olacaklar:
-
+Theme dışında rastgele renk kullanmak
+Feature bazında kopuk tasarım dili oluşturmak
+Future backend hazırlığını tamamen yok saymak
+23. MVP Kapsamı
+İlk sürümde mutlaka olacaklar
 Client yönetimi
 Debt yönetimi
 Project yönetimi
@@ -923,48 +869,56 @@ Dashboard
 Settings
 Export / import temel yapısı
 Local storage
-
-İlk sürümde olmayabilecekler:
-
+İlk sürümde olmayabilecekler
 Auth
 Cloud sync
 Push notification
 Takvim entegrasyonu
 Email entegrasyonu
 Gelişmiş raporlama
-Çoklu kullanıcı
-
-26) Beklenen Sonuç
+Çoklu kullanıcı yapısı
+24. Beklenen Sonuç
 
 Ortaya çıkacak uygulama şu hissi vermelidir:
 
-Karmaşık değil
 Hafif
 Hızlı
-Premium
+Düzenli
+Modern
 Güvenilir
 Verim odaklı
-Freelancer için yapılmış
+Günlük kullanıma uygun
 
-Bu ürün bir “büyük şirket CRM’i” gibi görünmemeli.
-Bir profesyonelin her gün açıp kullanacağı kişisel iş paneli gibi görünmelidir.
+Bu ürün büyük şirket CRM’i gibi değil, profesyonelin cebindeki kişisel iş paneli gibi görünmelidir.
 
-27) Son Teknik Talimat
+25. Geliştirme Sırası
 
-Bu projeyi geliştirirken kod üretimi aşağıdaki prensiple ilerlemelidir:
+Kod üretimi şu sırayla ilerlemelidir:
 
-Önce temel mimari
-Sonra veri modeli
-Sonra repository
-Sonra viewmodel
-Sonra view
-Son olarak ince UI polish
+Temel mimari
+Tema sistemi
+Veri modelleri
+Repository katmanı
+Service katmanı
+ViewModel yapısı
+View ekranları
+Form akışları
+Export / import
+Son UI polish
 
-Sıra bozulmamalıdır.
+Bu sıra bozulmamalıdır.
 
-Amaç sadece çalışan ekranlar üretmek değildir.
-Amaç; sürdürülebilir, sade, temiz, premium ve gelecekte backend’e geçebilecek doğru tabanı kurmaktır.
+26. Son Talimat
 
+Amaç sadece birkaç ekran üretmek değildir.
 
+Amaç:
 
+temiz
+sürdürülebilir
+modern
+derli toplu
+premium hissiyatlı
+gelecekte backend’e geçebilecek
 
+bir mini CRM temeli kurmaktır.

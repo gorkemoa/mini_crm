@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../core/utils/currency_utils.dart';
-import '../../core/utils/date_utils.dart';
-import '../../core/utils/l10n_utils.dart';
-import '../../l10n/app_localizations.dart';
+import '../../core/utils/app_date_utils.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
+import '../../themes/app_radii.dart';
 import '../../viewmodels/dashboard_viewmodel.dart';
-import '../widgets/empty_state.dart';
+import '../../models/reminder_model.dart';
+import '../widgets/app_card.dart';
 import '../widgets/section_header.dart';
-import '../widgets/badges.dart';
-import '../../core/constants/route_names.dart';
+import '../widgets/empty_state.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -31,445 +31,272 @@ class _DashboardViewState extends State<DashboardView> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return Consumer<DashboardViewModel>(
-      builder: (context, vm, _) {
-        return Scaffold(
-          backgroundColor: AppColors.background,
-          body: SafeArea(
-            child: RefreshIndicator(
-              onRefresh: vm.refresh,
-              color: AppColors.primary,
-              child: CustomScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                slivers: [
-                  // ─── Header
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(
-                        AppSpacing.screenPaddingH,
-                        AppSpacing.screenPaddingV,
-                        AppSpacing.screenPaddingH,
-                        0,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            l10n.appTitle,
-                            style: AppTextStyles.largeTitle,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
+      body: Consumer<DashboardViewModel>(
+        builder: (context, vm, _) {
+          return RefreshIndicator(
+            onRefresh: vm.refresh,
+            child: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  floating: true,
+                  pinned: false,
+                  expandedHeight: 120,
+                  flexibleSpace: FlexibleSpaceBar(
+                    titlePadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    title: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Mini CRM',
+                          style: AppTextStyles.h1.copyWith(
+                            color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
                           ),
-                          const SizedBox(height: AppSpacing.xs),
-                          Text(
-                            _greeting(l10n),
-                            style: AppTextStyles.footnote,
+                        ),
+                        Text(
+                          'Overview',
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-
-                  // ─── Loading
-                  if (vm.isLoading)
-                    const SliverFillRemaining(
-                      child: Center(child: CircularProgressIndicator()),
-                    )
-
-                  // ─── Error
-                  else if (vm.hasError)
-                    SliverFillRemaining(
-                      child: EmptyState(
-                        icon: Icons.error_outline,
-                        title: l10n.errorOccurred,
-                        subtitle: localizeKey(l10n, vm.errorMessage),
-                        actionLabel: l10n.tryAgain,
-                        onAction: vm.refresh,
-                      ),
-                    )
-
-                  else ...[
-                    // ─── Stat Cards
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(
-                          AppSpacing.screenPaddingH,
-                          AppSpacing.lg,
-                          AppSpacing.screenPaddingH,
-                          0,
+                ),
+                if (vm.isLoading)
+                  const SliverFillRemaining(
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                else
+                  SliverPadding(
+                    padding: AppSpacing.screenPaddingAll,
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        _buildStatsGrid(context, vm),
+                        const SizedBox(height: AppSpacing.lg),
+                        SectionHeader(
+                          title: "Today's Reminders",
+                          actionLabel: vm.todayReminders.isNotEmpty ? 'View All' : null,
+                          onAction: () => Navigator.pushNamed(context, '/reminders'),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const _SectionLabel(),
-                            const SizedBox(height: AppSpacing.sm),
-                            GridView.count(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              crossAxisCount: 2,
-                              mainAxisSpacing: AppSpacing.cardGap,
-                              crossAxisSpacing: AppSpacing.cardGap,
-                              childAspectRatio: 1.25,
-                              children: [
-                                StatCard(
-                                  title: l10n.pendingDebts,
-                                  value: CurrencyUtils.formatCompact(
-                                    vm.totalPendingDebt,
-                                    vm.defaultCurrency,
-                                  ),
-                                  accentColor: AppColors.warning,
-                                  icon: Icons.account_balance_wallet_outlined,
-                                  onTap: () => Navigator.pushNamed(
-                                    context,
-                                    RouteNames.debts,
-                                  ),
-                                ),
-                                StatCard(
-                                  title: l10n.activeLead,
-                                  value: vm.activeLeadCount.toString(),
-                                  accentColor: AppColors.purple,
-                                  icon: Icons.person_search_outlined,
-                                  onTap: () => Navigator.pushNamed(
-                                    context,
-                                    RouteNames.leads,
-                                  ),
-                                ),
-                                StatCard(
-                                  title: l10n.thisMonthIncome,
-                                  value: CurrencyUtils.formatCompact(
-                                    vm.thisMonthIncome,
-                                    vm.defaultCurrency,
-                                  ),
-                                  accentColor: AppColors.success,
-                                  icon: Icons.trending_up,
-                                  onTap: () => Navigator.pushNamed(
-                                    context,
-                                    RouteNames.income,
-                                  ),
-                                ),
-                                StatCard(
-                                  title: l10n.todayReminders,
-                                  value: vm.todayReminders.length.toString(),
-                                  accentColor: AppColors.danger,
-                                  icon: Icons.notifications_outlined,
-                                  onTap: () => Navigator.pushNamed(
-                                    context,
-                                    RouteNames.reminders,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
+                        const SizedBox(height: AppSpacing.sm),
+                        _buildReminders(context, vm),
+                        const SizedBox(height: AppSpacing.xl),
+                      ]),
                     ),
+                  ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
 
-                    // ─── Overdue Debts
-                    if (vm.overdueDebts.isNotEmpty)
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.screenPaddingH,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SectionHeader(
-                                title: l10n.overdueDebts,
-                                action: l10n.seeAll,
-                                onAction: () => Navigator.pushNamed(
-                                  context,
-                                  RouteNames.debts,
-                                ),
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.surface,
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                                child: Column(
-                                  children: vm.overdueDebts
-                                      .asMap()
-                                      .entries
-                                      .map((e) {
-                                    final isLast =
-                                        e.key == vm.overdueDebts.length - 1;
-                                    return _OverdueDebtTile(
-                                      debt: e.value,
-                                      isLast: isLast,
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                    // ─── Upcoming Projects
-                    if (vm.upcomingProjects.isNotEmpty)
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.screenPaddingH,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SectionHeader(
-                                title: l10n.activeProjects,
-                                action: l10n.seeAll,
-                                onAction: () => Navigator.pushNamed(
-                                  context,
-                                  RouteNames.projects,
-                                ),
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.surface,
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                                child: Column(
-                                  children: vm.upcomingProjects
-                                      .asMap()
-                                      .entries
-                                      .map((e) {
-                                    final isLast = e.key ==
-                                        vm.upcomingProjects.length - 1;
-                                    return _ProjectTile(
-                                      project: e.value,
-                                      isLast: isLast,
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                    // ─── Today Reminders
-                    if (vm.todayReminders.isNotEmpty)
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.screenPaddingH,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SectionHeader(
-                                title: l10n.today,
-                                action: l10n.seeAll,
-                                onAction: () => Navigator.pushNamed(
-                                  context,
-                                  RouteNames.reminders,
-                                ),
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.surface,
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                                child: Column(
-                                  children: vm.todayReminders
-                                      .asMap()
-                                      .entries
-                                      .map((e) {
-                                    final isLast =
-                                        e.key == vm.todayReminders.length - 1;
-                                    return _ReminderTile(
-                                      title: e.value.title,
-                                      note: e.value.note,
-                                      isLast: isLast,
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                    const SliverToBoxAdapter(
-                      child: SizedBox(height: AppSpacing.xxxl),
-                    ),
-                  ],
-                ],
+  Widget _buildStatsGrid(BuildContext context, DashboardViewModel vm) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: _StatCard(
+                label: 'Pending Debts',
+                value: CurrencyUtils.formatCompact(vm.pendingDebtTotal, 'USD'),
+                icon: Icons.account_balance_wallet_rounded,
+                color: AppColors.warning,
+                bgColor: AppColors.warningBg,
+                onTap: () => Navigator.pushNamed(context, '/debts'),
               ),
             ),
-          ),
-        );
-      },
-    );
-  }
-
-  String _greeting(AppLocalizations l10n) {
-    final hour = DateTime.now().hour;
-    if (hour < 12) return l10n.greetingMorning;
-    if (hour < 18) return l10n.greetingAfternoon;
-    return l10n.greetingEvening;
-  }
-}
-
-class _SectionLabel extends StatelessWidget {
-  const _SectionLabel();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return Text(l10n.dashboardSummarySection, style: AppTextStyles.sectionHeader);
-  }
-}
-
-class _OverdueDebtTile extends StatelessWidget {
-  final debt;
-  final bool isLast;
-  const _OverdueDebtTile({required this.debt, required this.isLast});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.cardPadding,
-            vertical: 12,
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(debt.title, style: AppTextStyles.subheadline),
-                    if (debt.clientName != null)
-                      Text(
-                        debt.clientName!,
-                        style: AppTextStyles.caption1,
-                      ),
-                  ],
-                ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: _StatCard(
+                label: 'Active Clients',
+                value: vm.activeClients.toString(),
+                icon: Icons.people_rounded,
+                color: AppColors.primary,
+                bgColor: AppColors.primaryContainer,
+                onTap: () => Navigator.pushNamed(context, '/clients'),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    CurrencyUtils.format(debt.amount, debt.currency),
-                    style: AppTextStyles.amountSmall.copyWith(
-                      color: AppColors.danger,
-                    ),
-                  ),
-                  if (debt.dueDate != null)
-                    Text(
-                      AppDateUtils.relativeLabel(debt.dueDate!),
-                      style: AppTextStyles.caption2.copyWith(
-                        color: AppColors.danger,
-                      ),
-                    ),
-                ],
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-        if (!isLast)
-          const Divider(
-            height: 1,
-            thickness: 0.5,
-            indent: AppSpacing.cardPadding,
-          ),
+        const SizedBox(height: AppSpacing.sm),
+        Row(
+          children: [
+            Expanded(
+              child: _StatCard(
+                label: 'Active Projects',
+                value: vm.activeProjects.toString(),
+                icon: Icons.folder_rounded,
+                color: AppColors.info,
+                bgColor: AppColors.infoBg,
+                onTap: () => Navigator.pushNamed(context, '/projects'),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: _StatCard(
+                label: 'Leads to Follow',
+                value: vm.leadsToFollow.toString(),
+                icon: Icons.trending_up_rounded,
+                color: AppColors.success,
+                bgColor: AppColors.successBg,
+                onTap: () => Navigator.pushNamed(context, '/leads'),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        _StatCard(
+          label: 'This Month Income',
+          value: CurrencyUtils.formatCompact(vm.monthlyIncome, 'USD'),
+          icon: Icons.bar_chart_rounded,
+          color: AppColors.success,
+          bgColor: AppColors.successBg,
+          onTap: () => Navigator.pushNamed(context, '/income'),
+          isWide: true,
+        ),
       ],
     );
   }
-}
 
-class _ProjectTile extends StatelessWidget {
-  final project;
-  final bool isLast;
-  const _ProjectTile({required this.project, required this.isLast});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.cardPadding,
-            vertical: 12,
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(project.title, style: AppTextStyles.subheadline),
-                    if (project.clientName != null)
-                      Text(project.clientName!, style: AppTextStyles.caption1),
-                  ],
-                ),
-              ),
-              ProjectStatusBadge(status: project.status),
-            ],
+  Widget _buildReminders(BuildContext context, DashboardViewModel vm) {
+    if (vm.todayReminders.isEmpty) {
+      return AppCard(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+          child: EmptyState(
+            icon: Icons.check_circle_outline_rounded,
+            title: "All clear!",
+            description: "No reminders for today",
           ),
         ),
-        if (!isLast)
-          const Divider(
-            height: 1,
-            thickness: 0.5,
-            indent: AppSpacing.cardPadding,
-          ),
-      ],
+      );
+    }
+
+    return Column(
+      children: vm.todayReminders
+          .map((r) => Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                child: _ReminderItem(reminder: r),
+              ))
+          .toList(),
     );
   }
 }
 
-class _ReminderTile extends StatelessWidget {
-  final String title;
-  final String? note;
-  final bool isLast;
-  const _ReminderTile({
-    required this.title,
-    this.note,
-    required this.isLast,
+class _StatCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+  final Color bgColor;
+  final VoidCallback? onTap;
+  final bool isWide;
+
+  const _StatCard({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+    required this.bgColor,
+    this.onTap,
+    this.isWide = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.cardPadding,
-            vertical: 12,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return AppCard(
+      onTap: onTap,
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: BorderRadius.circular(AppRadii.md),
+            ),
+            child: Icon(icon, color: color, size: 22),
           ),
-          child: Row(
-            children: [
-              const Icon(
-                Icons.circle,
-                size: 8,
-                color: AppColors.danger,
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title, style: AppTextStyles.subheadline),
-                    if (note != null)
-                      Text(note!, style: AppTextStyles.caption1),
-                  ],
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: AppTextStyles.labelSmall.copyWith(
+                    color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: AppTextStyles.h2.copyWith(
+                    color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        if (!isLast)
-          const Divider(
-            height: 1,
-            thickness: 0.5,
-            indent: AppSpacing.cardPadding,
+          Icon(
+            Icons.chevron_right_rounded,
+            color: isDark ? AppColors.textTertiaryDark : AppColors.textTertiaryLight,
+            size: 18,
           ),
-      ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ReminderItem extends StatelessWidget {
+  final ReminderModel reminder;
+
+  const _ReminderItem({required this.reminder});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return AppCard(
+      child: Row(
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: const BoxDecoration(
+              color: AppColors.primary,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  reminder.title,
+                  style: AppTextStyles.labelLarge.copyWith(
+                    color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                  ),
+                ),
+                Text(
+                  AppDateUtils.formatDateTime(reminder.reminderDate),
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

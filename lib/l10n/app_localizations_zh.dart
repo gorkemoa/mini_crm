@@ -1,5 +1,3 @@
-// ignore: unused_import
-import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -9,7 +7,12 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get appTitle => 'Mini CRM';
+  String get appTitle => '迷你CRM';
+
+  @override
+  String appVersion(String version) {
+    return 'Version $version';
+  }
 
   @override
   String get navDashboard => '仪表板';
@@ -18,584 +21,642 @@ class AppLocalizationsZh extends AppLocalizations {
   String get navClients => '客户';
 
   @override
-  String get navDebts => '应收款';
+  String get navLeads => '潜在客户';
+
+  @override
+  String get navDebts => '债务';
 
   @override
   String get navProjects => '项目';
 
   @override
+  String get navIncome => '收入';
+
+  @override
+  String get navReminders => '提醒';
+
+  @override
+  String get navSettings => '设置';
+
+  @override
   String get navMore => '更多';
 
   @override
-  String get all => '全部';
+  String get navFinance => 'Finance';
 
   @override
-  String get edit => '编辑';
+  String get actionAdd => '添加';
 
   @override
-  String get delete => '删除';
+  String get actionEdit => '编辑';
 
   @override
-  String get save => '保存';
+  String get actionDelete => '删除';
 
   @override
-  String get update => '更新';
+  String get actionSave => '保存';
 
   @override
-  String get cancel => '取消';
+  String get actionCancel => '取消';
 
   @override
-  String get add => '添加';
+  String get actionBack => 'Back';
 
   @override
-  String get selectDate => '选择';
+  String get actionSearch => 'Search';
 
   @override
-  String get status => '状态';
+  String get actionFilter => 'Filter';
 
   @override
-  String get note => '备注';
+  String get actionExport => 'Export';
 
   @override
-  String get additionalNotesHint => '附加备注...';
+  String get actionImport => 'Import';
 
   @override
-  String get amount => '金额';
+  String get actionClose => 'Close';
 
   @override
-  String get amountHint => '0.00';
+  String get actionConfirm => 'Confirm';
 
   @override
-  String get notes => '备注';
+  String get actionDone => 'Done';
 
   @override
-  String get email => '电子邮件';
+  String get actionMarkComplete => 'Mark as Complete';
 
   @override
-  String get phone => '电话';
+  String get actionMarkIncomplete => 'Mark as Incomplete';
 
   @override
-  String get customer => '客户';
+  String get actionViewAll => 'View All';
 
   @override
-  String get selectCustomerOptional => '选择客户（可选）';
+  String get actionRefresh => 'Refresh';
 
   @override
-  String get noCustomer => '— 无客户 —';
+  String get labelName => 'Name';
 
   @override
-  String get budget => '预算';
+  String get labelTitle => 'Title';
 
   @override
-  String get description => '描述';
+  String get labelStatus => 'Status';
 
   @override
-  String get startDate => '开始';
+  String get labelDate => 'Date';
 
   @override
-  String get endDate => '结束';
+  String get labelAmount => 'Amount';
 
   @override
-  String get endDatePrefix => '结束: ';
+  String get labelCurrency => 'Currency';
 
   @override
-  String get fullName => '姓名';
+  String get labelNote => 'Note';
 
   @override
-  String get notesOptional => '备注（可选）';
+  String get labelNotes => 'Notes';
 
   @override
-  String get notesHint => '关于客户的备注...';
+  String get labelEmail => 'Email';
 
   @override
-  String get errorOccurred => '发生错误';
+  String get labelPhone => 'Phone';
 
   @override
-  String get tryAgain => '重试';
+  String get labelCompany => 'Company';
 
   @override
-  String get seeAll => '全部';
+  String get labelSource => 'Source';
 
   @override
-  String get today => '今天';
+  String get labelBudget => 'Budget';
 
   @override
-  String get upcoming => '即将到来';
+  String get labelStartDate => 'Start Date';
 
   @override
-  String get past => '已过期';
+  String get labelEndDate => 'End Date';
 
   @override
-  String get completed => '已完成';
+  String get labelDueDate => 'Due Date';
 
   @override
-  String get notSpecified => '— 未指定 —';
+  String get labelCreatedAt => 'Created';
 
   @override
-  String get dashboardSummarySection => '摘要';
+  String get labelDescription => 'Description';
 
   @override
-  String get pendingDebts => '待收款项';
+  String get labelPlatform => 'Platform';
 
   @override
-  String get activeLead => '活跃潜在客户';
+  String get labelClient => 'Client';
 
   @override
-  String get thisMonthIncome => '本月收入';
+  String get labelSelectClient => 'Select Client';
 
   @override
-  String get todayReminders => '今日提醒';
+  String get labelNoClient => 'No Client';
 
   @override
-  String get overdueDebts => '逾期款项';
+  String get labelOptional => 'Optional';
 
   @override
-  String get activeProjects => '活跃项目';
+  String get labelStage => 'Stage';
 
   @override
-  String get greetingMorning => '早上好 👋';
+  String get labelFollowUpDate => 'Follow-up Date';
 
   @override
-  String get greetingAfternoon => '下午好 👋';
+  String get labelEstimatedBudget => 'Estimated Budget';
 
   @override
-  String get greetingEvening => '晚上好 👋';
+  String get labelReminderDate => 'Reminder Date';
 
   @override
-  String get clientsTitle => '客户';
+  String get labelRelatedTo => 'Related To';
 
   @override
-  String get noClientsYet => '暂无客户';
+  String get labelAll => 'All';
 
   @override
-  String get noClientsSubtitle => '从添加第一个客户开始。';
+  String get clientStatusActive => '活跃';
 
   @override
-  String get addClient => '添加客户';
+  String get clientStatusInactive => '不活跃';
 
   @override
-  String get deleteClient => '删除客户';
+  String get clientStatusArchived => 'Archived';
 
   @override
-  String get editClient => '编辑客户';
+  String get debtStatusPending => '待处理';
 
   @override
-  String get newClient => '新客户';
+  String get debtStatusOverdue => 'Overdue';
 
   @override
-  String get debtsSection => '应收款项';
+  String get debtStatusPaid => '已付';
 
   @override
-  String get projectsSection => '项目';
+  String get debtStatusPartial => 'Partial';
 
   @override
-  String get noDebtsInline => '暂无应收款项。';
+  String get projectStatusPlanned => 'Planned';
 
   @override
-  String get noProjectsInline => '暂无项目。';
+  String get projectStatusStartingSoon => 'Starting Soon';
 
   @override
-  String get companyOptional => '公司（可选）';
+  String get projectStatusActive => 'Active';
 
   @override
-  String get companyHint => '公司名称';
+  String get projectStatusPaused => 'Paused';
 
   @override
-  String get emailOptional => '电子邮件（可选）';
+  String get projectStatusCompleted => 'Completed';
 
   @override
-  String get emailHint => 'example@email.com';
+  String get projectStatusCancelled => 'Cancelled';
 
   @override
-  String get phoneOptional => '电话（可选）';
+  String get leadStageNew => 'New Lead';
 
   @override
-  String get phoneHint => '+86 138 0000 0000';
+  String get leadStageContacted => 'Contacted';
 
   @override
-  String get fullNameHint => '张三';
+  String get leadStageProposalSent => 'Proposal Sent';
 
   @override
-  String get debtsTitle => '应收款项';
+  String get leadStageNegotiating => 'Negotiating';
 
   @override
-  String get debtWaiting => '等待中';
+  String get leadStageWon => 'Won';
 
   @override
-  String get noDebtsYet => '暂无应收款项';
+  String get leadStageLost => 'Lost';
 
   @override
-  String get noDebtsSubtitle => '从添加第一笔款项开始。';
+  String get dashboardTitle => 'Dashboard';
 
   @override
-  String get addDebt => '添加款项';
+  String get dashboardPendingDebts => 'Pending Debts';
 
   @override
-  String get newDebt => '新款项';
+  String get dashboardOverdueDebts => 'Overdue';
 
   @override
-  String get editDebt => '编辑款项';
+  String get dashboardProjectsThisWeek => 'This Week';
 
   @override
-  String get debtTitleLabel => '标题';
+  String get dashboardLeadsToFollow => 'Leads to Follow';
 
   @override
-  String get debtTitleHint => '例如：项目交付';
+  String get dashboardMonthlyIncome => 'This Month';
 
   @override
-  String get dueDate => '到期日';
+  String get dashboardTodayReminders => 'Today\'s Reminders';
 
   @override
-  String get projectsTitle => '项目';
+  String get dashboardActiveClients => 'Active Clients';
 
   @override
-  String get noProjectsYet => '暂无项目';
+  String get dashboardActiveProjects => 'Active Projects';
 
   @override
-  String get noProjectsSubtitle => '从添加第一个项目开始。';
+  String get dashboardNoRemindersToday => 'No reminders for today';
 
   @override
-  String get addProject => '添加项目';
+  String get dashboardGoodMorning => 'Good morning';
 
   @override
-  String get newProject => '新项目';
+  String get dashboardOverview => 'Here\'s your overview';
 
   @override
-  String get editProject => '编辑项目';
+  String get clientsTitle => 'Clients';
 
   @override
-  String get projectName => '项目名称';
+  String get clientsEmpty => 'No clients yet';
 
   @override
-  String get projectNameHint => '例如：网站设计';
+  String get clientsEmptyDesc => 'Add your first client to get started';
 
   @override
-  String get projectDetails => '项目详情...';
+  String get clientsSearchHint => 'Search clients...';
 
   @override
-  String get leadsTitle => '潜在客户';
+  String get clientAddTitle => 'Add Client';
 
   @override
-  String get leadsActiveCount => '活跃';
+  String get clientEditTitle => 'Edit Client';
 
   @override
-  String get noLeadsYet => '暂无潜在客户';
+  String get clientDetailTitle => 'Client Details';
 
   @override
-  String get noLeadsSubtitle => '在此添加潜在客户。';
+  String get clientFullName => 'Full Name';
 
   @override
-  String get addLead => '添加潜在客户';
+  String get clientCompanyName => 'Company Name';
 
   @override
-  String get newLead => '新潜在客户';
+  String get clientDebts => 'Debts';
 
   @override
-  String get editLead => '编辑潜在客户';
+  String get clientProjects => 'Projects';
 
   @override
-  String get stage => '阶段';
+  String get clientTotalDebt => 'Total Debt';
 
   @override
-  String get source => '来源';
+  String get clientActiveProjects => 'Active Projects';
 
   @override
-  String get selectSource => '选择来源';
+  String get debtsTitle => 'Debts';
 
   @override
-  String get estimatedBudget => '预估预算';
+  String get debtsEmpty => 'No debts yet';
 
   @override
-  String get followUpDate => '跟进日期';
+  String get debtsEmptyDesc => 'Add your first debt record';
 
   @override
-  String get meetingNotesHint => '会议记录...';
+  String get debtsSearchHint => 'Search debts...';
 
   @override
-  String get incomeTitle => '收入';
+  String get debtsTotal => 'Total';
 
   @override
-  String get thisMonthPrefix => '本月: ';
+  String get debtsOverdue => 'Overdue';
 
   @override
-  String get noIncomeYet => '暂无收入';
+  String get debtsPending => 'Pending';
 
   @override
-  String get noIncomeSubtitle => '在此添加您的付款记录。';
+  String get debtsPaid => 'Paid';
 
   @override
-  String get addIncome => '添加收入';
+  String get debtsAddTitle => 'Add Debt';
 
   @override
-  String get newIncome => '新收入';
+  String get debtsEditTitle => 'Edit Debt';
 
   @override
-  String get editIncome => '编辑收入';
+  String get debtDetailTitle => 'Debt Details';
 
   @override
-  String get platform => '平台';
+  String get debtsClient => 'Client';
 
   @override
-  String get selectPlatform => '选择平台';
+  String get debtsTotalAmount => 'Total Amount';
 
   @override
-  String get receiptDate => '收款日期';
+  String get debtsFilterAll => 'All';
 
   @override
-  String get income => '收入';
+  String get debtsFilterPending => 'Pending';
 
   @override
-  String get remindersTitle => '提醒';
+  String get debtsFilterOverdue => 'Overdue';
 
   @override
-  String get noRemindersYet => '暂无提醒';
+  String get debtsFilterPaid => 'Paid';
 
   @override
-  String get noRemindersSubtitle => '在此添加重要日期和任务。';
+  String get projectsTitle => 'Projects';
 
   @override
-  String get addReminderTitle => '添加提醒';
+  String get projectsEmpty => 'No projects yet';
 
   @override
-  String get reminderTitleHint => '提醒标题...';
+  String get projectsEmptyDesc => 'Add your first project';
 
   @override
-  String get titleCannotBeEmpty => '标题不能为空。';
+  String get projectsSearchHint => 'Search projects...';
 
   @override
-  String get markCompleted => '已完成';
+  String get projectsAddTitle => 'Add Project';
 
   @override
-  String get markIncomplete => '标记为未完成';
+  String get projectsEditTitle => 'Edit Project';
 
   @override
-  String get settingsTitle => '设置';
+  String get projectDetailTitle => 'Project Details';
 
   @override
-  String get sectionData => '数据';
+  String get projectClient => 'Client';
 
   @override
-  String get sectionApp => '应用程序';
+  String get projectBudget => 'Budget';
 
   @override
-  String get sectionLanguage => '语言';
+  String get projectDuration => 'Duration';
 
   @override
-  String get exportData => '导出数据';
+  String get leadsTitle => 'Leads';
 
   @override
-  String get exportDataSubtitle => '将所有数据以JSON格式共享';
+  String get leadsEmpty => 'No leads yet';
 
   @override
-  String get importData => '导入数据';
+  String get leadsEmptyDesc => 'Start tracking potential clients';
 
   @override
-  String get importDataSubtitle => '从JSON文件加载';
+  String get leadsSearchHint => 'Search leads...';
 
   @override
-  String get version => '版本';
+  String get leadsAddTitle => 'Add Lead';
 
   @override
-  String get exportDialogTitle => '导出数据';
+  String get leadsEditTitle => 'Edit Lead';
 
   @override
-  String get exportDialogContent => '所有客户、债务、项目和收入数据将以JSON格式导出，并打开分享菜单。';
+  String get leadDetailTitle => 'Lead Details';
 
   @override
-  String get importDialogTitle => '导入数据';
+  String get leadsConversionRate => 'Won Rate';
 
   @override
-  String get importDialogContent => '此操作不会覆盖现有数据；所选文件中的记录将被添加。是否继续？';
+  String get leadsTotal => 'Total Leads';
 
   @override
-  String get exportButton => '导出';
+  String get incomeTitle => 'Income';
 
   @override
-  String get importButton => '导入';
+  String get incomeEmpty => 'No income records yet';
 
   @override
-  String get language => '语言';
+  String get incomeEmptyDesc => 'Start recording your income';
 
   @override
-  String get selectLanguage => '选择语言';
+  String get incomeSearchHint => 'Search income...';
 
   @override
-  String get moreTitle => '更多';
+  String get incomeAddTitle => 'Add Income';
 
   @override
-  String get sectionBusiness => '业务跟踪';
+  String get incomeEditTitle => 'Edit Income';
 
   @override
-  String get sectionRemindersNav => '提醒';
+  String get incomeTotal => 'Total Income';
 
   @override
-  String get sectionAppNav => '应用程序';
+  String get incomeThisMonth => 'This Month';
 
   @override
-  String get leadsMenuSubtitle => '跟踪潜在客户';
+  String get incomeDate => 'Income Date';
 
   @override
-  String get incomeMenuSubtitle => '付款和收入记录';
+  String get remindersTitle => 'Reminders';
 
   @override
-  String get remindersMenuSubtitle => '任务和日历提醒';
+  String get remindersEmpty => 'No reminders';
 
   @override
-  String get settingsMenuSubtitle => '数据管理和应用信息';
+  String get remindersEmptyDesc => 'Set reminders for important tasks';
 
   @override
-  String get searchHint => '搜索...';
+  String get remindersAddTitle => 'Add Reminder';
 
   @override
-  String get statusActive => '活跃';
+  String get remindersEditTitle => 'Edit Reminder';
 
   @override
-  String get statusInactive => '非活跃';
+  String get remindersToday => 'Today';
 
   @override
-  String get statusLost => '已流失';
+  String get remindersUpcoming => 'Upcoming';
 
   @override
-  String get debtPending => '待处理';
+  String get remindersOverdue => 'Overdue';
 
   @override
-  String get debtOverdue => '已逾期';
+  String get remindersCompleted => 'Completed';
 
   @override
-  String get debtPaid => '已付款';
+  String get remindersAll => 'All';
 
   @override
-  String get debtPartial => '部分付款';
+  String get settingsTitle => 'Settings';
 
   @override
-  String get projectPlanned => '已计划';
+  String get settingsAppearance => 'Appearance';
 
   @override
-  String get projectStartingSoon => '即将开始';
+  String get settingsTheme => 'Theme';
 
   @override
-  String get projectActive => '进行中';
+  String get settingsLanguage => 'Language';
 
   @override
-  String get projectPaused => '已暂停';
+  String get settingsData => 'Data Management';
 
   @override
-  String get projectCompleted => '已完成';
+  String get settingsExport => 'Export Data';
 
   @override
-  String get projectCancelled => '已取消';
+  String get settingsImport => 'Import Data';
 
   @override
-  String get leadNew => '新线索';
+  String get settingsAbout => 'About';
 
   @override
-  String get leadContacted => '已联系';
+  String get settingsVersion => 'App Version';
 
   @override
-  String get leadProposalSent => '已发送提案';
+  String get settingsExportDesc => 'Export all data as JSON file';
 
   @override
-  String get leadNegotiating => '谈判中';
+  String get settingsImportDesc => 'Import data from a JSON file';
 
   @override
-  String get leadWon => '已赢得';
+  String get themeLight => 'Light';
 
   @override
-  String get leadLost => '已流失';
+  String get themeDark => 'Dark';
 
   @override
-  String get errorDataLoad => '数据加载失败。';
+  String get themeSystem => 'System Default';
 
   @override
-  String get errorClientsLoad => '客户加载失败。';
+  String get exportTitle => 'Export Data';
 
   @override
-  String get errorClientDelete => '客户删除失败。';
+  String get exportDesc => 'Your data will be exported as a JSON file. You can use this file to backup or restore your data.';
 
   @override
-  String get errorClientDetailLoad => '客户详情加载失败。';
+  String get exportSuccess => 'Data exported successfully';
 
   @override
-  String get errorClientSave => '客户保存失败。';
+  String get exportError => 'Export failed. Please try again.';
 
   @override
-  String get errorDebtsLoad => '应收款项加载失败。';
+  String get exportButton => 'Export JSON';
 
   @override
-  String get errorDebtDelete => '款项删除失败。';
+  String get importTitle => 'Import Data';
 
   @override
-  String get errorDebtSave => '款项保存失败。';
+  String get importDesc => 'Select a Mini CRM JSON file to import your data.';
 
   @override
-  String get errorFormDataLoad => '表单数据加载失败。';
+  String get importSuccess => 'Data imported successfully';
 
   @override
-  String get errorProjectsLoad => '项目加载失败。';
+  String get importError => 'Import failed. Invalid or corrupted file.';
 
   @override
-  String get errorProjectDelete => '项目删除失败。';
+  String get importWarning => 'Importing will replace ALL existing data. This action cannot be undone.';
 
   @override
-  String get errorProjectSave => '项目保存失败。';
+  String get importButton => 'Select File';
 
   @override
-  String get errorLeadsLoad => '潜在客户加载失败。';
+  String get importReplace => 'Replace all existing data';
 
   @override
-  String get errorLeadDelete => '潜在客户删除失败。';
+  String get deleteConfirmTitle => 'Delete';
 
   @override
-  String get errorLeadSave => '潜在客户保存失败。';
+  String get deleteConfirmMessage => 'Are you sure you want to delete this? This action cannot be undone.';
 
   @override
-  String get errorIncomeLoad => '收入加载失败。';
+  String get deleteConfirmButton => 'Delete';
 
   @override
-  String get errorIncomeDelete => '收入记录删除失败。';
+  String get validationRequired => 'This field is required';
 
   @override
-  String get errorIncomeSave => '收入记录保存失败。';
+  String get validationEmail => 'Please enter a valid email address';
 
   @override
-  String get errorRemindersLoad => '提醒加载失败。';
+  String get validationAmount => 'Please enter a valid amount';
 
   @override
-  String get errorStatusUpdate => '状态更新失败。';
+  String get validationPositiveAmount => 'Amount must be greater than zero';
 
   @override
-  String get errorReminderDelete => '提醒删除失败。';
+  String get validationDateInvalid => 'Please select a valid date';
 
   @override
-  String get errorReminderAdd => '提醒添加失败。';
+  String get errorGeneric => 'Something went wrong. Please try again.';
 
   @override
-  String get errorExportFailed => '导出失败。';
+  String get errorDatabase => 'Database error. Please restart the app.';
 
   @override
-  String get errorFileRead => '文件读取失败。';
+  String get errorLoadFailed => 'Failed to load data';
 
   @override
-  String get errorImportFailed => '导入失败。';
+  String get errorSaveFailed => 'Failed to save';
 
   @override
-  String get validationRequired => '此字段是必填项。';
+  String get errorDeleteFailed => 'Failed to delete';
 
   @override
-  String get validationEmail => '请输入有效的电子邮件地址。';
+  String get currencyUSD => 'USD — US Dollar';
 
   @override
-  String get validationPhone => '请输入有效的电话号码。';
+  String get currencyEUR => 'EUR — Euro';
 
   @override
-  String get validationAmountRequired => '金额为必填项。';
+  String get currencyTRY => 'TRY — Turkish Lira';
 
   @override
-  String get validationAmountInvalid => '请输入有效金额。';
+  String get currencyGBP => 'GBP — British Pound';
 
   @override
-  String get validationAmountPositive => '金额必须大于0。';
+  String get currencyJPY => 'JPY — Japanese Yen';
 
   @override
-  String get validationSelectClient => '请选择一个客户。';
+  String get currencyCNY => 'CNY — Chinese Yuan';
+
+  @override
+  String get currencyINR => 'INR — Indian Rupee';
+
+  @override
+  String get currencyBRL => 'BRL — Brazilian Real';
+
+  @override
+  String get currencyAUD => 'AUD — Australian Dollar';
+
+  @override
+  String get currencyCAD => 'CAD — Canadian Dollar';
+
+  @override
+  String get reminderRelatedClient => 'Client';
+
+  @override
+  String get reminderRelatedDebt => 'Debt';
+
+  @override
+  String get reminderRelatedProject => 'Project';
+
+  @override
+  String get reminderRelatedLead => 'Lead';
+
+  @override
+  String get reminderRelatedIncome => 'Income';
+
+  @override
+  String get reminderRelatedGeneral => 'General';
+
+  @override
+  String daysOverdue(int days) {
+    return '$days day(s) overdue';
+  }
+
+  @override
+  String daysRemaining(int days) {
+    return '$days day(s) remaining';
+  }
+
+  @override
+  String get dueToday => 'Due today';
+
+  @override
+  String get dueTomorrow => 'Due tomorrow';
 }

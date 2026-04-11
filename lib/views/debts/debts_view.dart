@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/constants/route_names.dart';
-import '../../core/utils/currency_utils.dart';
-import '../../core/utils/date_utils.dart';
-import '../../l10n/app_localizations.dart';
-import '../../models/debt_model.dart';
+
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
+import '../../themes/app_radii.dart';
 import '../../viewmodels/debts_viewmodel.dart';
-import '../widgets/badges.dart';
+import '../../models/debt_model.dart';
+import '../../models/enums.dart';
+import '../../core/utils/currency_utils.dart';
+import '../../core/utils/app_date_utils.dart';
 import '../widgets/empty_state.dart';
+import '../widgets/search_field.dart';
+import '../widgets/status_badge.dart';
+import '../widgets/confirm_dialog.dart';
 
 class DebtsView extends StatefulWidget {
   const DebtsView({super.key});
@@ -20,6 +23,8 @@ class DebtsView extends StatefulWidget {
 }
 
 class _DebtsViewState extends State<DebtsView> {
+  final _searchCtrl = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -29,179 +34,242 @@ class _DebtsViewState extends State<DebtsView> {
   }
 
   @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Consumer<DebtsViewModel>(
-      builder: (context, vm, _) {
-        final l10n = AppLocalizations.of(context)!;
-        return Scaffold(
-          backgroundColor: AppColors.background,
-          body: SafeArea(
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
+      appBar: AppBar(
+        title: const Text('Debts'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add_rounded),
+            onPressed: () async {
+              await Navigator.pushNamed(context, '/debts/form');
+              if (context.mounted) context.read<DebtsViewModel>().refresh();
+            },
+          ),
+        ],
+      ),
+      body: Consumer<DebtsViewModel>(
+        builder: (context, vm, _) {
+          return RefreshIndicator(
+            onRefresh: vm.refresh,
             child: Column(
               children: [
-                // ─── Header
+                if (!vm.isEmpty) _buildSummary(context, vm),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.screenPaddingH,
-                    AppSpacing.screenPaddingV,
-                    AppSpacing.screenPaddingH,
-                    0,
+                  padding: AppSpacing.screenPaddingH.copyWith(
+                    top: AppSpacing.sm,
+                    bottom: AppSpacing.sm,
                   ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                  child: Column(
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(l10n.debtsTitle, style: AppTextStyles.largeTitle),
-                          if (!vm.isLoading)
-                            Text(
-                              '${CurrencyUtils.format(vm.totalPending, 'TRY')} ${l10n.debtWaiting}',
-                              style: AppTextStyles.footnote.copyWith(
-                                color: AppColors.warning,
-                              ),
-                            ),
-                        ],
+                      SearchField(
+                        controller: _searchCtrl,
+                        hint: 'Search debts...',
+                        onChanged: vm.setSearch,
                       ),
-                      const Spacer(),
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        color: AppColors.primary,
-                        onPressed: () async {
-                          await Navigator.pushNamed(
-                            context,
-                            RouteNames.debtForm,
-                          );
-                          if (context.mounted) vm.refresh();
-                        },
-                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      _buildFilterRow(context, vm),
                     ],
                   ),
                 ),
-
-                // ─── Filter
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.screenPaddingH,
-                    AppSpacing.sm,
-                    AppSpacing.screenPaddingH,
-                    AppSpacing.sm,
-                  ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        _Chip(
-                          label: l10n.all,
-                          isSelected: vm.statusFilter == null,
-                          onTap: () => vm.filterByStatus(null),
-                        ),
-                        const SizedBox(width: AppSpacing.xs),
-                        ...DebtStatus.values.map((s) => Padding(
-                              padding: const EdgeInsets.only(
-                                right: AppSpacing.xs,
-                              ),
-                              child: _Chip(
-                                label: switch (s) {
-                                  DebtStatus.pending => l10n.debtPending,
-                                  DebtStatus.overdue => l10n.debtOverdue,
-                                  DebtStatus.paid => l10n.debtPaid,
-                                  DebtStatus.partial => l10n.debtPartial,
-                                },
-                                isSelected: vm.statusFilter == s,
-                                onTap: () => vm.filterByStatus(s),
-                              ),
-                            )),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // ─── List
                 Expanded(
                   child: vm.isLoading
                       ? const Center(child: CircularProgressIndicator())
-                      : vm.items.isEmpty
+                      : vm.isEmpty
                           ? EmptyState(
                               icon: Icons.account_balance_wallet_outlined,
-                              title: l10n.noDebtsYet,
-                              subtitle: l10n.noDebtsSubtitle,
-                              actionLabel: l10n.addDebt,
+                              title: 'No debts yet',
+                              description: 'Add your first debt record',
+                              actionLabel: 'Add Debt',
                               onAction: () async {
-                                await Navigator.pushNamed(
-                                  context,
-                                  RouteNames.debtForm,
-                                );
+                                await Navigator.pushNamed(context, '/debts/form');
                                 if (context.mounted) vm.refresh();
                               },
                             )
-                          : RefreshIndicator(
-                              onRefresh: vm.refresh,
-                              color: AppColors.primary,
-                              child: ListView.separated(
-                                padding: const EdgeInsets.only(
-                                  left: AppSpacing.screenPaddingH,
-                                  right: AppSpacing.screenPaddingH,
-                                  bottom: AppSpacing.xxxl,
-                                ),
-                                itemCount: vm.items.length,
-                                separatorBuilder: (_, __) =>
-                                    const SizedBox(height: AppSpacing.xs),
-                                itemBuilder: (context, i) => _DebtTile(
-                                  debt: vm.items[i],
-                                  onTap: () async {
-                                    await Navigator.pushNamed(
-                                      context,
-                                      RouteNames.debtForm,
-                                      arguments: {'debt': vm.items[i]},
-                                    );
-                                    if (context.mounted) vm.refresh();
-                                  },
-                                  onDelete: () {
-                                    vm.delete(vm.items[i].id);
-                                  },
-                                ),
-                              ),
-                            ),
+                          : _buildList(context, vm),
                 ),
               ],
             ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await Navigator.pushNamed(context, '/debts/form');
+          if (context.mounted) context.read<DebtsViewModel>().refresh();
+        },
+        child: const Icon(Icons.add_rounded),
+      ),
+    );
+  }
+
+  Widget _buildSummary(BuildContext context, DebtsViewModel vm) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      padding: AppSpacing.cardPaddingAll,
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        border: Border.all(color: isDark ? AppColors.borderDark : AppColors.borderLight),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _SummaryItem(
+              label: 'Pending',
+              value: CurrencyUtils.formatCompact(vm.pendingTotal, 'USD'),
+              color: AppColors.warning,
+            ),
           ),
+          Container(width: 1, height: 40, color: isDark ? AppColors.borderDark : AppColors.borderLight),
+          Expanded(
+            child: _SummaryItem(
+              label: 'Overdue',
+              value: CurrencyUtils.formatCompact(vm.overdueTotal, 'USD'),
+              color: AppColors.error,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterRow(BuildContext context, DebtsViewModel vm) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          _Chip(label: 'All', selected: vm.statusFilter == null, onTap: () => vm.setStatusFilter(null)),
+          const SizedBox(width: AppSpacing.xs),
+          _Chip(label: 'Pending', selected: vm.statusFilter == DebtStatus.pending, onTap: () => vm.setStatusFilter(DebtStatus.pending)),
+          const SizedBox(width: AppSpacing.xs),
+          _Chip(label: 'Overdue', selected: vm.statusFilter == DebtStatus.overdue, onTap: () => vm.setStatusFilter(DebtStatus.overdue)),
+          const SizedBox(width: AppSpacing.xs),
+          _Chip(label: 'Paid', selected: vm.statusFilter == DebtStatus.paid, onTap: () => vm.setStatusFilter(DebtStatus.paid)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildList(BuildContext context, DebtsViewModel vm) {
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 80),
+      itemCount: vm.debts.length,
+      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+      itemBuilder: (context, i) {
+        final debt = vm.debts[i];
+        final client = vm.clientFor(debt.clientId);
+        return _DebtTile(
+          debt: debt,
+          clientName: client?.fullName ?? 'Unknown Client',
+          onTap: () async {
+            await Navigator.pushNamed(context, '/debts/detail', arguments: debt.id);
+            if (context.mounted) vm.refresh();
+          },
+          onDelete: () async {
+            final confirmed = await showConfirmDialog(
+              context,
+              title: 'Delete Debt',
+              message: 'Delete "${debt.title}"?',
+            );
+            if (confirmed && context.mounted) vm.delete(debt.id);
+          },
         );
       },
     );
   }
 }
 
-class _Chip extends StatelessWidget {
+class _SummaryItem extends StatelessWidget {
   final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _Chip({
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
+  final String value;
+  final Color color;
+  const _SummaryItem({required this.label, required this.value, required this.color});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm + 4,
-          vertical: AppSpacing.xs + 2,
+    return Column(
+      children: [
+        Text(label, style: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondaryLight)),
+        const SizedBox(height: 4),
+        Text(value, style: AppTextStyles.amount.copyWith(color: color)),
+      ],
+    );
+  }
+}
+
+class _DebtTile extends StatelessWidget {
+  final DebtModel debt;
+  final String clientName;
+  final VoidCallback onTap;
+  final VoidCallback onDelete;
+
+  const _DebtTile({required this.debt, required this.clientName, required this.onTap, required this.onDelete});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isOverdue = debt.isOverdue || debt.status == DebtStatus.overdue;
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        border: Border.all(
+          color: isOverdue ? AppColors.error.withValues(alpha: 0.4) : (isDark ? AppColors.borderDark : AppColors.borderLight),
         ),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.surface,
-          borderRadius: BorderRadius.circular(100),
-        ),
-        child: Text(
-          label,
-          style: AppTextStyles.caption1.copyWith(
-            color: isSelected ? Colors.white : AppColors.textSecondary,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        child: Padding(
+          padding: AppSpacing.cardPaddingAll,
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(debt.title, style: AppTextStyles.labelLarge),
+                    const SizedBox(height: 2),
+                    Text(clientName, style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondaryLight)),
+                    const SizedBox(height: 2),
+                    if (debt.dueDate != null)
+                      Text(
+                        'Due: ${AppDateUtils.formatDate(debt.dueDate)}',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: isOverdue ? AppColors.error : AppColors.textTertiaryLight,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    CurrencyUtils.format(debt.amount, debt.currency),
+                    style: AppTextStyles.amountSmall,
+                  ),
+                  const SizedBox(height: 4),
+                  StatusBadge.fromDebtStatus(debt.status),
+                ],
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              IconButton(
+                icon: const Icon(Icons.delete_outline_rounded, size: 18),
+                color: AppColors.error,
+                onPressed: onDelete,
+              ),
+            ],
           ),
         ),
       ),
@@ -209,104 +277,27 @@ class _Chip extends StatelessWidget {
   }
 }
 
-class _DebtTile extends StatelessWidget {
-  final DebtModel debt;
+class _Chip extends StatelessWidget {
+  final String label;
+  final bool selected;
   final VoidCallback onTap;
-  final VoidCallback onDelete;
-
-  const _DebtTile({
-    required this.debt,
-    required this.onTap,
-    required this.onDelete,
-  });
+  const _Chip({required this.label, required this.selected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(14),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.cardPadding),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        debt.title,
-                        style: AppTextStyles.subheadline.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      if (debt.clientName != null)
-                        Text(
-                          debt.clientName!,
-                          style: AppTextStyles.caption1,
-                        ),
-                      if (debt.dueDate != null) ...[
-                        const SizedBox(height: 2),
-                        Text(
-                          AppDateUtils.relativeLabel(debt.dueDate!),
-                          style: AppTextStyles.caption2.copyWith(
-                            color: debt.isOverdue
-                                ? AppColors.danger
-                                : AppColors.textTertiary,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      CurrencyUtils.format(debt.amount, debt.currency),
-                      style: AppTextStyles.amountSmall.copyWith(
-                        color: debt.status == DebtStatus.paid
-                            ? AppColors.success
-                            : AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    DebtStatusBadge(status: debt.status),
-                  ],
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                PopupMenuButton<String>(
-                  icon: const Icon(
-                    Icons.more_horiz,
-                    color: AppColors.textTertiary,
-                    size: 20,
-                  ),
-                  itemBuilder: (_) => [
-                    PopupMenuItem(
-                      value: 'edit',
-                      child: Text(AppLocalizations.of(context)!.edit),
-                    ),
-                    PopupMenuItem(
-                      value: 'delete',
-                      child: Text(
-                        AppLocalizations.of(context)!.delete,
-                        style: const TextStyle(color: AppColors.danger),
-                      ),
-                    ),
-                  ],
-                  onSelected: (v) {
-                    if (v == 'delete') onDelete();
-                    if (v == 'edit') onTap();
-                  },
-                ),
-              ],
-            ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.primary : Colors.transparent,
+          borderRadius: BorderRadius.circular(AppRadii.chip),
+          border: Border.all(color: selected ? AppColors.primary : AppColors.borderLight),
+        ),
+        child: Text(
+          label,
+          style: AppTextStyles.labelSmall.copyWith(
+            color: selected ? Colors.white : AppColors.textSecondaryLight,
           ),
         ),
       ),

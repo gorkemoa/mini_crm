@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/constants/route_names.dart';
-import '../../core/utils/currency_utils.dart';
-import '../../core/utils/date_utils.dart';
-import '../../l10n/app_localizations.dart';
+
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
+import '../../themes/app_radii.dart';
 import '../../viewmodels/income_viewmodel.dart';
-import '../widgets/empty_state.dart';
 import '../../models/income_model.dart';
+import '../../core/utils/currency_utils.dart';
+import '../../core/utils/app_date_utils.dart';
+import '../widgets/empty_state.dart';
+import '../widgets/search_field.dart';
+import '../widgets/confirm_dialog.dart';
 
 class IncomeView extends StatefulWidget {
   const IncomeView({super.key});
@@ -19,6 +21,8 @@ class IncomeView extends StatefulWidget {
 }
 
 class _IncomeViewState extends State<IncomeView> {
+  final _searchCtrl = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -28,262 +32,199 @@ class _IncomeViewState extends State<IncomeView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer<IncomeViewModel>(
-      builder: (context, vm, _) {
-        final l10n = AppLocalizations.of(context)!;
-        return Scaffold(
-          backgroundColor: AppColors.background,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.primary),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ),
-          body: SafeArea(
-            child: Column(
-              children: [
-                // Header
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.screenPaddingH,
-                    AppSpacing.screenPaddingV,
-                    AppSpacing.screenPaddingH,
-                    0,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(l10n.incomeTitle, style: AppTextStyles.largeTitle),
-                          if (!vm.isLoading)
-                            Text(
-                              '${l10n.thisMonthPrefix}${CurrencyUtils.format(vm.thisMonthTotal, 'TRY')}',
-                              style: AppTextStyles.footnote
-                                  .copyWith(color: AppColors.success),
-                            ),
-                        ],
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        color: AppColors.primary,
-                        onPressed: () async {
-                          await Navigator.pushNamed(
-                            context,
-                            RouteNames.incomeForm,
-                          );
-                          if (context.mounted) vm.refresh();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-
-                // Platform summary
-                if (!vm.isLoading && vm.byPlatform.isNotEmpty) ...[
-                  SizedBox(
-                    height: 72,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.screenPaddingH),
-                      itemCount: vm.byPlatform.length,
-                      separatorBuilder: (_, __) =>
-                          const SizedBox(width: AppSpacing.sm),
-                      itemBuilder: (context, i) {
-                        final e = vm.byPlatform.entries.elementAt(i);
-                        return _PlatformCard(
-                          platform: e.key,
-                          total: e.value,
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                ],
-
-                // List
-                Expanded(
-                  child: vm.isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : vm.items.isEmpty
-                          ? EmptyState(
-                              icon: Icons.attach_money,
-                              title: l10n.noIncomeYet,
-                              subtitle: l10n.noIncomeSubtitle,
-                              actionLabel: l10n.addIncome,
-                              onAction: () async {
-                                await Navigator.pushNamed(
-                                  context,
-                                  RouteNames.incomeForm,
-                                );
-                                if (context.mounted) vm.refresh();
-                              },
-                            )
-                          : RefreshIndicator(
-                              onRefresh: vm.refresh,
-                              color: AppColors.primary,
-                              child: ListView.separated(
-                                padding: const EdgeInsets.only(
-                                  left: AppSpacing.screenPaddingH,
-                                  right: AppSpacing.screenPaddingH,
-                                  bottom: AppSpacing.xxxl,
-                                ),
-                                itemCount: vm.items.length,
-                                separatorBuilder: (_, __) =>
-                                    const SizedBox(height: AppSpacing.xs),
-                                itemBuilder: (context, i) => _IncomeTile(
-                                  income: vm.items[i],
-                                  onEdit: () async {
-                                    await Navigator.pushNamed(
-                                      context,
-                                      RouteNames.incomeForm,
-                                      arguments: vm.items[i],
-                                    );
-                                    if (context.mounted) vm.refresh();
-                                  },
-                                  onDelete: () =>
-                                      vm.delete(vm.items[i].id),
-                                ),
-                              ),
-                            ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
   }
-}
-
-class _PlatformCard extends StatelessWidget {
-  final String platform;
-  final double total;
-  const _PlatformCard({required this.platform, required this.total});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm + 4, vertical: AppSpacing.sm),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
+      appBar: AppBar(
+        title: const Text('Income'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add_rounded),
+            onPressed: () async {
+              await Navigator.pushNamed(context, '/income/form');
+              if (context.mounted) context.read<IncomeViewModel>().refresh();
+            },
+          ),
+        ],
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: Consumer<IncomeViewModel>(
+        builder: (context, vm, _) {
+          return RefreshIndicator(
+            onRefresh: vm.refresh,
+            child: Column(
+              children: [
+                if (!vm.isEmpty) _buildSummary(context, vm),
+                Padding(
+                  padding: AppSpacing.screenPaddingH.copyWith(top: AppSpacing.sm, bottom: AppSpacing.sm),
+                  child: SearchField(
+                    controller: _searchCtrl,
+                    hint: 'Search income records...',
+                    onChanged: vm.setSearch,
+                  ),
+                ),
+                Expanded(
+                  child: vm.isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : vm.isEmpty
+                          ? EmptyState(
+                              icon: Icons.attach_money_rounded,
+                              title: 'No income records yet',
+                              description: 'Track your freelance income here',
+                              actionLabel: 'Add Income',
+                              onAction: () async {
+                                await Navigator.pushNamed(context, '/income/form');
+                                if (context.mounted) vm.refresh();
+                              },
+                            )
+                          : _buildList(context, vm),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await Navigator.pushNamed(context, '/income/form');
+          if (context.mounted) context.read<IncomeViewModel>().refresh();
+        },
+        child: const Icon(Icons.add_rounded),
+      ),
+    );
+  }
+
+  Widget _buildSummary(BuildContext context, IncomeViewModel vm) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      padding: AppSpacing.cardPaddingAll,
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        border: Border.all(color: isDark ? AppColors.borderDark : AppColors.borderLight),
+      ),
+      child: Row(
         children: [
-          Text(platform, style: AppTextStyles.caption1),
-          Text(
-            CurrencyUtils.formatCompact(total, 'TRY'),
-            style: AppTextStyles.amountSmall.copyWith(
-              color: AppColors.success,
-              fontSize: 16,
+          Expanded(
+            child: Column(
+              children: [
+                Text('This Month', style: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondaryLight)),
+                const SizedBox(height: 4),
+                Text(CurrencyUtils.formatCompact(vm.monthlyTotal, 'USD'), style: AppTextStyles.amount.copyWith(color: AppColors.success)),
+              ],
+            ),
+          ),
+          Container(width: 1, height: 40, color: isDark ? AppColors.borderDark : AppColors.borderLight),
+          Expanded(
+            child: Column(
+              children: [
+                Text('All Time', style: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondaryLight)),
+                const SizedBox(height: 4),
+                Text(CurrencyUtils.formatCompact(vm.total, 'USD'), style: AppTextStyles.amount.copyWith(color: AppColors.primary)),
+              ],
             ),
           ),
         ],
       ),
     );
   }
+
+  Widget _buildList(BuildContext context, IncomeViewModel vm) {
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 80),
+      itemCount: vm.incomes.length,
+      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+      itemBuilder: (context, i) {
+        final income = vm.incomes[i];
+        final client = vm.clientFor(income.clientId)?.fullName;
+        return _IncomeTile(
+          income: income,
+          clientName: client,
+          onTap: () async {
+            await Navigator.pushNamed(context, '/income/form', arguments: income);
+            if (context.mounted) vm.refresh();
+          },
+          onDelete: () async {
+            final confirmed = await showConfirmDialog(
+              context,
+              title: 'Delete Record',
+              message: 'Delete this income record?',
+            );
+            if (confirmed && context.mounted) vm.delete(income.id);
+          },
+        );
+      },
+    );
+  }
 }
 
 class _IncomeTile extends StatelessWidget {
   final IncomeModel income;
-  final VoidCallback onEdit;
+  final String? clientName;
+  final VoidCallback onTap;
   final VoidCallback onDelete;
 
-  const _IncomeTile({
-    required this.income,
-    required this.onEdit,
-    required this.onDelete,
-  });
+  const _IncomeTile({required this.income, this.clientName, required this.onTap, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(14),
+        color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        border: Border.all(color: isDark ? AppColors.borderDark : AppColors.borderLight),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(14),
-          onTap: onEdit,
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.cardPadding),
-            child: Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: AppColors.success.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(Icons.attach_money,
-                      color: AppColors.success, size: 20),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        child: Padding(
+          padding: AppSpacing.cardPaddingAll,
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: AppColors.success.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppRadii.sm),
                 ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        income.sourcePlatform ?? AppLocalizations.of(context)!.income,
-                        style: AppTextStyles.subheadline
-                            .copyWith(fontWeight: FontWeight.w500),
-                      ),
-                      if (income.clientName != null)
-                        Text(income.clientName!,
-                            style: AppTextStyles.caption1),
-                    ],
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                child: const Icon(Icons.attach_money_rounded, color: AppColors.success, size: 20),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      CurrencyUtils.format(income.amount, income.currency),
-                      style: AppTextStyles.amountSmall
-                          .copyWith(color: AppColors.success),
-                    ),
-                    Text(
-                      AppDateUtils.toDisplayShort(income.date),
-                      style: AppTextStyles.caption2.copyWith(
-                        color: AppColors.textTertiary,
-                      ),
-                    ),
+                    Text(income.sourcePlatform ?? 'Income', style: AppTextStyles.labelLarge),
+                    if (clientName != null)
+                      Text(clientName!, style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondaryLight)),
+                    Text(AppDateUtils.formatDate(income.date), style: AppTextStyles.bodySmall.copyWith(color: AppColors.textTertiaryLight)),
                   ],
                 ),
-                const SizedBox(width: AppSpacing.xs),
-                PopupMenuButton<String>(
-                  icon: const Icon(Icons.more_horiz,
-                      color: AppColors.textTertiary, size: 20),
-                  itemBuilder: (_) => [
-                    PopupMenuItem(
-                        value: 'edit', child: Text(AppLocalizations.of(context)!.edit)),
-                    PopupMenuItem(
-                      value: 'delete',
-                      child: Text(AppLocalizations.of(context)!.delete,
-                          style: const TextStyle(color: AppColors.danger)),
-                    ),
-                  ],
-                  onSelected: (v) {
-                    if (v == 'edit') onEdit();
-                    if (v == 'delete') onDelete();
-                  },
-                ),
-              ],
-            ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    CurrencyUtils.format(income.amount, income.currency),
+                    style: AppTextStyles.amountSmall.copyWith(color: AppColors.success),
+                  ),
+                ],
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete_outline_rounded, size: 18),
+                color: AppColors.error,
+                onPressed: onDelete,
+              ),
+            ],
           ),
         ),
       ),

@@ -1,77 +1,69 @@
 import '../core/base/base_viewmodel.dart';
-import '../core/constants/app_constants.dart';
 import '../core/utils/id_utils.dart';
-import '../core/utils/validators.dart';
 import '../models/lead_model.dart';
+import '../models/enums.dart';
 import '../services/repositories/lead_repository.dart';
 
 class LeadFormViewModel extends BaseViewModel {
-  final LeadRepository _repo;
+  final LeadRepository _repository;
+  LeadFormViewModel(this._repository);
 
-  LeadFormViewModel({required LeadRepository leadRepository})
-      : _repo = leadRepository;
-
-  LeadModel? _editingLead;
-  bool get isEditMode => _editingLead != null;
+  bool get isEditMode => _editId != null;
+  String? _editId;
 
   String name = '';
   String source = '';
   LeadStage stage = LeadStage.newLead;
   String estimatedBudget = '';
-  String currency = AppConstants.defaultCurrency;
+  String currency = 'USD';
   DateTime? nextFollowUpDate;
   String note = '';
 
-  bool _saved = false;
-  bool get saved => _saved;
-
   void loadForEdit(LeadModel lead) {
-    _editingLead = lead;
+    _editId = lead.id;
     name = lead.name;
     source = lead.source ?? '';
     stage = lead.stage;
     estimatedBudget = lead.estimatedBudget?.toString() ?? '';
-    currency = lead.currency;
+    currency = lead.currency ?? 'USD';
     nextFollowUpDate = lead.nextFollowUpDate;
     note = lead.note ?? '';
-    notifyListeners();
+    safeNotify();
   }
 
-  String? validateName() => Validators.required(name);
-
-  bool validate() => validateName() == null;
-
-  Future<void> submit() async {
-    if (!validate()) return;
+  Future<bool> submit() async {
     setLoading(true);
     clearError();
-    try {
-      final now = DateTime.now();
-      final lead = LeadModel(
-        id: _editingLead?.id ?? IdUtils.generate(),
-        name: name.trim(),
-        source: source.trim().isEmpty ? null : source.trim(),
-        stage: stage,
-        estimatedBudget: estimatedBudget.trim().isEmpty
-            ? null
-            : Validators.parseAmount(estimatedBudget),
-        currency: currency,
-        nextFollowUpDate: nextFollowUpDate,
-        note: note.trim().isEmpty ? null : note.trim(),
-        createdAt: _editingLead?.createdAt ?? now,
-        updatedAt: now,
-      );
-      if (isEditMode) {
-        await _repo.update(lead);
-      } else {
-        await _repo.create(lead);
-      }
-      _saved = true;
-      notifyListeners();
-    } catch (e) {
-      setError('errorLeadSave');
-    } finally {
+
+    final parsedBudget = estimatedBudget.trim().isEmpty
+        ? null
+        : double.tryParse(estimatedBudget.replaceAll(',', '.'));
+    if (estimatedBudget.trim().isNotEmpty && parsedBudget == null) {
+      setError('Please enter a valid budget');
       setLoading(false);
+      return false;
     }
+
+    final now = DateTime.now();
+    final lead = LeadModel(
+      id: _editId ?? IdUtils.generate(),
+      name: name.trim(),
+      source: source.trim().isEmpty ? null : source.trim(),
+      stage: stage,
+      estimatedBudget: parsedBudget,
+      currency: estimatedBudget.trim().isEmpty ? null : currency,
+      nextFollowUpDate: nextFollowUpDate,
+      note: note.trim().isEmpty ? null : note.trim(),
+      createdAt: now,
+      updatedAt: now,
+    );
+
+    final result = isEditMode ? await _repository.update(lead) : await _repository.create(lead);
+    setLoading(false);
+    if (result.isFailure) {
+      setError(result.error);
+      return false;
+    }
+    return true;
   }
 }

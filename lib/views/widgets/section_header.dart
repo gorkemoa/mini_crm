@@ -1,45 +1,44 @@
 import 'package:flutter/material.dart';
-import '../../themes/app_text_styles.dart';
 import '../../themes/app_colors.dart';
+import '../../themes/app_text_styles.dart';
 import '../../themes/app_spacing.dart';
 
 class SectionHeader extends StatelessWidget {
   final String title;
-  final String? action;
+  final String? actionLabel;
   final VoidCallback? onAction;
 
   const SectionHeader({
     super.key,
     required this.title,
-    this.action,
+    this.actionLabel,
     this.onAction,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
-      padding: const EdgeInsets.only(
-        top: AppSpacing.lg,
-        bottom: AppSpacing.sm,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            title.toUpperCase(),
-            style: AppTextStyles.sectionHeader,
+            title,
+            style: AppTextStyles.h3.copyWith(
+              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+            ),
           ),
-          if (action != null) ...[
-            const Spacer(),
+          if (actionLabel != null && onAction != null)
             GestureDetector(
               onTap: onAction,
               child: Text(
-                action!,
-                style: AppTextStyles.footnote.copyWith(
+                actionLabel!,
+                style: AppTextStyles.labelMedium.copyWith(
                   color: AppColors.primary,
                 ),
               ),
             ),
-          ],
         ],
       ),
     );

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/constants/route_names.dart';
-import '../../l10n/app_localizations.dart';
-import '../../models/client_model.dart';
+
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
+import '../../themes/app_radii.dart';
 import '../../viewmodels/clients_viewmodel.dart';
+import '../../models/client_model.dart';
+import '../../models/enums.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/search_field.dart';
-import '../widgets/badges.dart';
+import '../widgets/status_badge.dart';
+import '../widgets/confirm_dialog.dart';
 
 class ClientsView extends StatefulWidget {
   const ClientsView({super.key});
@@ -19,6 +21,8 @@ class ClientsView extends StatefulWidget {
 }
 
 class _ClientsViewState extends State<ClientsView> {
+  final _searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -28,223 +32,135 @@ class _ClientsViewState extends State<ClientsView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer<ClientsViewModel>(
-      builder: (context, vm, _) {
-        final l10n = AppLocalizations.of(context)!;
-        return Scaffold(
-          backgroundColor: AppColors.background,
-          body: SafeArea(
-            child: Column(
-              children: [
-                // ─── Header
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.screenPaddingH,
-                    AppSpacing.screenPaddingV,
-                    AppSpacing.screenPaddingH,
-                    0,
-                  ),
-                  child: Row(
-                    children: [
-                      Text(l10n.clientsTitle, style: AppTextStyles.largeTitle),
-                      const Spacer(),
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        color: AppColors.primary,
-                        onPressed: () async {
-                          await Navigator.pushNamed(
-                            context,
-                            RouteNames.clientForm,
-                          );
-                          if (context.mounted) vm.refresh();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-
-                // ─── Search & Filter
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.screenPaddingH,
-                    AppSpacing.sm,
-                    AppSpacing.screenPaddingH,
-                    AppSpacing.sm,
-                  ),
-                  child: Column(
-                    children: [
-                      SearchField(
-                        placeholder: l10n.searchHint,
-                        onChanged: vm.search,
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      _StatusFilterRow(
-                        selected: vm.statusFilter,
-                        onSelected: vm.filterByStatus,
-                      ),
-                    ],
-                  ),
-                ),
-
-                // ─── List
-                Expanded(
-                  child: vm.isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : vm.items.isEmpty
-                          ? EmptyState(
-                              icon: Icons.people_outline,
-                              title: l10n.noClientsYet,
-                              subtitle: l10n.noClientsSubtitle,
-                              actionLabel: l10n.addClient,
-                              onAction: () async {
-                                await Navigator.pushNamed(
-                                  context,
-                                  RouteNames.clientForm,
-                                );
-                                if (context.mounted) vm.refresh();
-                              },
-                            )
-                          : RefreshIndicator(
-                              onRefresh: vm.refresh,
-                              color: AppColors.primary,
-                              child: ListView.separated(
-                                padding: const EdgeInsets.only(
-                                  left: AppSpacing.screenPaddingH,
-                                  right: AppSpacing.screenPaddingH,
-                                  bottom: AppSpacing.xxxl,
-                                ),
-                                itemCount: vm.items.length,
-                                separatorBuilder: (_, __) =>
-                                    const SizedBox(height: AppSpacing.xs),
-                                itemBuilder: (context, i) {
-                                  return _ClientTile(
-                                    client: vm.items[i],
-                                    onTap: () async {
-                                      await Navigator.pushNamed(
-                                        context,
-                                        RouteNames.clientDetail,
-                                        arguments: vm.items[i],
-                                      );
-                                      if (context.mounted) vm.refresh();
-                                    },
-                                    onDelete: () => _confirmDelete(
-                                      context,
-                                      vm,
-                                      vm.items[i],
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
-
-  void _confirmDelete(
-    BuildContext context,
-    ClientsViewModel vm,
-    ClientModel client,
-  ) {
-    final l10n = AppLocalizations.of(context)!;
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(l10n.deleteClient),
-        content: Text(client.fullName),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              vm.deleteClient(client.id);
-            },
-            style: TextButton.styleFrom(foregroundColor: AppColors.danger),
-            child: Text(l10n.delete),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatusFilterRow extends StatelessWidget {
-  final ClientStatus? selected;
-  final ValueChanged<ClientStatus?> onSelected;
-
-  const _StatusFilterRow({required this.selected, required this.onSelected});
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
+      appBar: AppBar(
+        title: const Text('Clients'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add_rounded),
+            onPressed: () async {
+              await Navigator.pushNamed(context, '/clients/form');
+              if (context.mounted) context.read<ClientsViewModel>().refresh();
+            },
+          ),
+        ],
+      ),
+      body: Consumer<ClientsViewModel>(
+        builder: (context, vm, _) {
+          return RefreshIndicator(
+            onRefresh: vm.refresh,
+            child: Column(
+              children: [
+                Padding(
+                  padding: AppSpacing.screenPaddingAll,
+                  child: Column(
+                    children: [
+                      SearchField(
+                        controller: _searchController,
+                        hint: 'Search clients...',
+                        onChanged: vm.setSearch,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      _buildFilterChips(context, vm),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: vm.isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : vm.isEmpty
+                          ? EmptyState(
+                              icon: Icons.people_outline_rounded,
+                              title: 'No clients yet',
+                              description: 'Add your first client to get started',
+                              actionLabel: 'Add Client',
+                              onAction: () async {
+                                await Navigator.pushNamed(context, '/clients/form');
+                                if (context.mounted) vm.refresh();
+                              },
+                            )
+                          : vm.isFilteredEmpty
+                              ? const Center(child: Text('No results found'))
+                              : _buildList(context, vm),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await Navigator.pushNamed(context, '/clients/form');
+          if (context.mounted) context.read<ClientsViewModel>().refresh();
+        },
+        child: const Icon(Icons.add_rounded),
+      ),
+    );
+  }
+
+  Widget _buildFilterChips(BuildContext context, ClientsViewModel vm) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-        _FilterChip(
-            label: l10n.all,
-            isSelected: selected == null,
-            onTap: () => onSelected(null),
+          _FilterChip(
+            label: 'All',
+            selected: vm.statusFilter == null,
+            onSelected: () => vm.setStatusFilter(null),
           ),
           const SizedBox(width: AppSpacing.xs),
-          ...ClientStatus.values.map((s) => Padding(
-                padding: const EdgeInsets.only(right: AppSpacing.xs),
-                child: _FilterChip(
-                  label: switch (s) {
-                    ClientStatus.active => l10n.statusActive,
-                    ClientStatus.inactive => l10n.statusInactive,
-                    ClientStatus.lost => l10n.statusLost,
-                  },
-                  isSelected: selected == s,
-                  onTap: () => onSelected(s),
-                ),
-              )),
+          _FilterChip(
+            label: 'Active',
+            selected: vm.statusFilter == ClientStatus.active,
+            onSelected: () => vm.setStatusFilter(ClientStatus.active),
+          ),
+          const SizedBox(width: AppSpacing.xs),
+          _FilterChip(
+            label: 'Inactive',
+            selected: vm.statusFilter == ClientStatus.inactive,
+            onSelected: () => vm.setStatusFilter(ClientStatus.inactive),
+          ),
+          const SizedBox(width: AppSpacing.xs),
+          _FilterChip(
+            label: 'Archived',
+            selected: vm.statusFilter == ClientStatus.archived,
+            onSelected: () => vm.setStatusFilter(ClientStatus.archived),
+          ),
         ],
       ),
     );
   }
-}
 
-class _FilterChip extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _FilterChip({
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm + 4,
-          vertical: AppSpacing.xs + 2,
-        ),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.surface,
-          borderRadius: BorderRadius.circular(100),
-        ),
-        child: Text(
-          label,
-          style: AppTextStyles.caption1.copyWith(
-            color: isSelected ? Colors.white : AppColors.textSecondary,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-          ),
-        ),
+  Widget _buildList(BuildContext context, ClientsViewModel vm) {
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+      itemCount: vm.clients.length,
+      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+      itemBuilder: (context, i) => _ClientTile(
+        client: vm.clients[i],
+        onTap: () async {
+          await Navigator.pushNamed(context, '/clients/detail', arguments: vm.clients[i].id);
+          if (context.mounted) vm.refresh();
+        },
+        onDelete: () async {
+          final confirmed = await showConfirmDialog(
+            context,
+            title: 'Delete Client',
+            message: 'Delete "${vm.clients[i].fullName}"? This will also delete related debts.',
+          );
+          if (confirmed && context.mounted) {
+            vm.delete(vm.clients[i].id);
+          }
+        },
       ),
     );
   }
@@ -255,84 +171,106 @@ class _ClientTile extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onDelete;
 
-  const _ClientTile({
-    required this.client,
-    required this.onTap,
-    required this.onDelete,
-  });
+  const _ClientTile({required this.client, required this.onTap, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(14),
+        color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        border: Border.all(
+          color: isDark ? AppColors.borderDark : AppColors.borderLight,
+        ),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(14),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.cardPadding),
-            child: Row(
-              children: [
-                InitialsAvatar(initials: client.initials),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        child: Padding(
+          padding: AppSpacing.cardPaddingAll,
+          child: Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: AppColors.primaryContainer,
+                radius: 22,
+                child: Text(
+                  client.fullName.isNotEmpty ? client.fullName[0].toUpperCase() : '?',
+                  style: AppTextStyles.h3.copyWith(color: AppColors.primary),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      client.fullName,
+                      style: AppTextStyles.labelLarge.copyWith(
+                        color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                      ),
+                    ),
+                    if (client.companyName != null) ...[
+                      const SizedBox(height: 2),
                       Text(
-                        client.fullName,
-                        style: AppTextStyles.subheadline.copyWith(
-                          fontWeight: FontWeight.w500,
+                        client.companyName!,
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
                         ),
                       ),
-                      if (client.companyName != null &&
-                          client.companyName!.isNotEmpty)
-                        Text(
-                          client.companyName!,
-                          style: AppTextStyles.caption1,
-                        ),
                     ],
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                ClientStatusBadge(status: client.status),
-                const SizedBox(width: AppSpacing.xs),
-                PopupMenuButton<String>(
-                  icon: const Icon(
-                    Icons.more_horiz,
-                    color: AppColors.textTertiary,
-                    size: 20,
-                  ),
-                  itemBuilder: (_) => [
-                    PopupMenuItem(
-                      value: 'edit',
-                      child: Text(AppLocalizations.of(context)!.edit),
-                    ),
-                    PopupMenuItem(
-                      value: 'delete',
-                      child: Text(
-                        AppLocalizations.of(context)!.delete,
-                        style: const TextStyle(color: AppColors.danger),
+                    if (client.email != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        client.email!,
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: isDark ? AppColors.textTertiaryDark : AppColors.textTertiaryLight,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
-                  onSelected: (v) {
-                    if (v == 'delete') onDelete();
-                    if (v == 'edit') {
-                      Navigator.pushNamed(
-                        context,
-                        RouteNames.clientForm,
-                        arguments: client,
-                      );
-                    }
-                  },
                 ),
-              ],
-            ),
+              ),
+              StatusBadge.fromClientStatus(client.status, context),
+              const SizedBox(width: AppSpacing.sm),
+              IconButton(
+                icon: const Icon(Icons.delete_outline_rounded, size: 20),
+                color: AppColors.error,
+                onPressed: onDelete,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FilterChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onSelected;
+
+  const _FilterChip({required this.label, required this.selected, required this.onSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onSelected,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.primary : Colors.transparent,
+          borderRadius: BorderRadius.circular(AppRadii.chip),
+          border: Border.all(
+            color: selected ? AppColors.primary : AppColors.borderLight,
+          ),
+        ),
+        child: Text(
+          label,
+          style: AppTextStyles.labelSmall.copyWith(
+            color: selected ? Colors.white : AppColors.textSecondaryLight,
           ),
         ),
       ),

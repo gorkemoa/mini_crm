@@ -1,7 +1,5 @@
 abstract class StorageKeys {
-  static const String dbVersion = 'db_version';
-  static const String lastExportDate = 'last_export_date';
-  static const String onboardingDone = 'onboarding_done';
   static const String themeMode = 'theme_mode';
-  static const String locale = 'app_locale';
+  static const String locale = 'locale';
+  static const String firstLaunch = 'first_launch';
 }

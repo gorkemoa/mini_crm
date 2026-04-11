@@ -1,83 +1,102 @@
 import 'package:sqflite/sqflite.dart';
+
+import '../../core/base/result.dart';
 import '../../models/client_model.dart';
-import '../../core/utils/id_utils.dart';
+import '../../models/enums.dart';
 import '../database/local_database_service.dart';
 
 class ClientRepository {
-  final LocalDatabaseService _dbService;
+  final LocalDatabaseService _db;
+  ClientRepository(this._db);
 
-  ClientRepository(this._dbService);
-
-  Database get _db => _dbService.db;
-
-  Future<List<ClientModel>> getAll() async {
-    final rows = await _db.query(
-      'clients',
-      orderBy: 'full_name ASC',
-    );
-    return rows.map(ClientModel.fromMap).toList();
+  Future<Result<List<ClientModel>>> getAll({ClientStatus? status}) async {
+    try {
+      final db = await _db.database;
+      final maps = await db.query(
+        'clients',
+        where: status != null ? 'status = ?' : null,
+        whereArgs: status != null ? [status.name] : null,
+        orderBy: 'full_name ASC',
+      );
+      return Result.success(maps.map(ClientModel.fromMap).toList());
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<ClientModel?> getById(String id) async {
-    final rows = await _db.query(
-      'clients',
-      where: 'id = ?',
-      whereArgs: [id],
-      limit: 1,
-    );
-    if (rows.isEmpty) return null;
-    return ClientModel.fromMap(rows.first);
+  Future<Result<ClientModel?>> getById(String id) async {
+    try {
+      final db = await _db.database;
+      final maps = await db.query('clients', where: 'id = ?', whereArgs: [id]);
+      if (maps.isEmpty) return Result.success(null);
+      return Result.success(ClientModel.fromMap(maps.first));
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<List<ClientModel>> search(String query) async {
-    final q = '%${query.toLowerCase()}%';
-    final rows = await _db.query(
-      'clients',
-      where: 'LOWER(full_name) LIKE ? OR LOWER(company_name) LIKE ?',
-      whereArgs: [q, q],
-      orderBy: 'full_name ASC',
-    );
-    return rows.map(ClientModel.fromMap).toList();
+  Future<Result<ClientModel>> create(ClientModel client) async {
+    try {
+      final db = await _db.database;
+      await db.insert('clients', client.toMap(), conflictAlgorithm: ConflictAlgorithm.fail);
+      return Result.success(client);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<List<ClientModel>> getByStatus(ClientStatus status) async {
-    final rows = await _db.query(
-      'clients',
-      where: 'status = ?',
-      whereArgs: [status.name],
-      orderBy: 'full_name ASC',
-    );
-    return rows.map(ClientModel.fromMap).toList();
+  Future<Result<ClientModel>> update(ClientModel client) async {
+    try {
+      final db = await _db.database;
+      await db.update('clients', client.toMap(), where: 'id = ?', whereArgs: [client.id]);
+      return Result.success(client);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<ClientModel> create(ClientModel client) async {
-    final now = DateTime.now();
-    final model = client.copyWith(
-      id: IdUtils.generate(),
-      createdAt: now,
-      updatedAt: now,
-    );
-    await _db.insert('clients', model.toMap());
-    return model;
+  Future<Result<void>> delete(String id) async {
+    try {
+      final db = await _db.database;
+      await db.delete('clients', where: 'id = ?', whereArgs: [id]);
+      return Result.success(null);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<ClientModel> update(ClientModel client) async {
-    final model = client.copyWith(updatedAt: DateTime.now());
-    await _db.update(
-      'clients',
-      model.toMap(),
-      where: 'id = ?',
-      whereArgs: [model.id],
-    );
-    return model;
+  Future<Result<int>> getCount() async {
+    try {
+      final db = await _db.database;
+      final result = await db.rawQuery(
+          'SELECT COUNT(*) as count FROM clients WHERE status = ?', ['active']);
+      return Result.success(Sqflite.firstIntValue(result) ?? 0);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<void> delete(String id) async {
-    await _db.delete('clients', where: 'id = ?', whereArgs: [id]);
+  Future<Result<void>> insertAll(List<ClientModel> clients) async {
+    try {
+      final db = await _db.database;
+      final batch = db.batch();
+      for (final c in clients) {
+        batch.insert('clients', c.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+      }
+      await batch.commit(noResult: true);
+      return Result.success(null);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<int> count() async {
-    final result = await _db.rawQuery('SELECT COUNT(*) as count FROM clients');
-    return (result.first['count'] as int?) ?? 0;
+  Future<Result<void>> deleteAll() async {
+    try {
+      final db = await _db.database;
+      await db.delete('clients');
+      return Result.success(null);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 }

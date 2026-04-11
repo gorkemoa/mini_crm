@@ -1,74 +1,73 @@
 import '../core/base/base_viewmodel.dart';
-import '../models/debt_model.dart';
-import '../models/project_model.dart';
-import '../models/reminder_model.dart';
+import '../services/repositories/client_repository.dart';
 import '../services/repositories/debt_repository.dart';
 import '../services/repositories/project_repository.dart';
 import '../services/repositories/lead_repository.dart';
 import '../services/repositories/income_repository.dart';
 import '../services/repositories/reminder_repository.dart';
+import '../models/reminder_model.dart';
 
 class DashboardViewModel extends BaseViewModel {
-  final DebtRepository _debtRepo;
-  final ProjectRepository _projectRepo;
-  final LeadRepository _leadRepo;
-  final IncomeRepository _incomeRepo;
-  final ReminderRepository _reminderRepo;
+  final ClientRepository _clients;
+  final DebtRepository _debts;
+  final ProjectRepository _projects;
+  final LeadRepository _leads;
+  final IncomeRepository _incomes;
+  final ReminderRepository _reminders;
 
   DashboardViewModel({
-    required DebtRepository debtRepository,
-    required ProjectRepository projectRepository,
-    required LeadRepository leadRepository,
-    required IncomeRepository incomeRepository,
-    required ReminderRepository reminderRepository,
-  })  : _debtRepo = debtRepository,
-        _projectRepo = projectRepository,
-        _leadRepo = leadRepository,
-        _incomeRepo = incomeRepository,
-        _reminderRepo = reminderRepository;
+    required ClientRepository clients,
+    required DebtRepository debts,
+    required ProjectRepository projects,
+    required LeadRepository leads,
+    required IncomeRepository incomes,
+    required ReminderRepository reminders,
+  })  : _clients = clients,
+        _debts = debts,
+        _projects = projects,
+        _leads = leads,
+        _incomes = incomes,
+        _reminders = reminders;
 
-  double _totalPendingDebt = 0;
-  List<ProjectModel> _upcomingProjects = [];
-  int _activeLeadCount = 0;
-  double _thisMonthIncome = 0;
+  int _activeClients = 0;
+  double _pendingDebtTotal = 0;
+  int _activeProjects = 0;
+  int _leadsToFollow = 0;
+  double _monthlyIncome = 0;
   List<ReminderModel> _todayReminders = [];
-  List<DebtModel> _overdueDebts = [];
 
-  double get totalPendingDebt => _totalPendingDebt;
-  List<ProjectModel> get upcomingProjects => _upcomingProjects;
-  int get activeLeadCount => _activeLeadCount;
-  double get thisMonthIncome => _thisMonthIncome;
+  int get activeClients => _activeClients;
+  double get pendingDebtTotal => _pendingDebtTotal;
+  int get activeProjects => _activeProjects;
+  int get leadsToFollow => _leadsToFollow;
+  double get monthlyIncome => _monthlyIncome;
   List<ReminderModel> get todayReminders => _todayReminders;
-  List<DebtModel> get overdueDebts => _overdueDebts;
-
-  String get defaultCurrency => 'TRY';
 
   Future<void> load() async {
     setLoading(true);
     clearError();
     try {
       final results = await Future.wait([
-        _debtRepo.getTotalPending(),
-        _projectRepo.getActive(),
-        _leadRepo.countActive(),
-        _incomeRepo.getTotalThisMonth(),
-        _reminderRepo.getToday(),
-        _debtRepo.getPendingAndOverdue(),
+        _clients.getCount(),
+        _debts.getPendingTotal(),
+        _projects.getActiveCount(),
+        _leads.getFollowUpCount(),
+        _incomes.getMonthlyTotal(),
+        _reminders.getTodayReminders(),
       ]);
-      _totalPendingDebt = results[0] as double;
-      _upcomingProjects = (results[1] as List<ProjectModel>).take(3).toList();
-      _activeLeadCount = results[2] as int;
-      _thisMonthIncome = results[3] as double;
-      _todayReminders = results[4] as List<ReminderModel>;
-      _overdueDebts = (results[5] as List<DebtModel>)
-          .where((d) => d.isOverdue)
-          .take(3)
-          .toList();
+
+      if (results[0].isSuccess) _activeClients = (results[0].data as int?) ?? 0;
+      if (results[1].isSuccess) _pendingDebtTotal = (results[1].data as double?) ?? 0;
+      if (results[2].isSuccess) _activeProjects = (results[2].data as int?) ?? 0;
+      if (results[3].isSuccess) _leadsToFollow = (results[3].data as int?) ?? 0;
+      if (results[4].isSuccess) _monthlyIncome = (results[4].data as double?) ?? 0;
+      if (results[5].isSuccess) {
+        _todayReminders = (results[5].data as List<ReminderModel>?) ?? [];
+      }
     } catch (e) {
-      setError('errorDataLoad');
-    } finally {
-      setLoading(false);
+      setError(e.toString());
     }
+    setLoading(false);
   }
 
   Future<void> refresh() => load();

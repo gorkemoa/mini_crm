@@ -4,75 +4,45 @@ import '../../themes/app_radii.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
 
-class SearchField extends StatefulWidget {
-  final String placeholder;
+class SearchField extends StatelessWidget {
+  final String hint;
   final ValueChanged<String> onChanged;
-  final VoidCallback? onClear;
+  final TextEditingController? controller;
 
   const SearchField({
     super.key,
-    this.placeholder = '',
+    required this.hint,
     required this.onChanged,
-    this.onClear,
+    this.controller,
   });
 
   @override
-  State<SearchField> createState() => _SearchFieldState();
-}
-
-class _SearchFieldState extends State<SearchField> {
-  final _controller = TextEditingController();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      decoration: BoxDecoration(
-        color: AppColors.surfaceSecondary,
-        borderRadius: BorderRadius.circular(AppRadii.input),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return TextField(
+      controller: controller,
+      onChanged: onChanged,
+      style: AppTextStyles.bodyMedium.copyWith(
+        color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
       ),
-      child: TextField(
-        controller: _controller,
-        onChanged: widget.onChanged,
-        style: AppTextStyles.subheadline,
-        decoration: InputDecoration(
-          hintText: widget.placeholder,
-          hintStyle: AppTextStyles.subheadline.copyWith(
-            color: AppColors.textTertiary,
-          ),
-          prefixIcon: const Icon(
-            Icons.search,
-            size: 18,
-            color: AppColors.textTertiary,
-          ),
-          suffixIcon: _controller.text.isNotEmpty
-              ? GestureDetector(
-                  onTap: () {
-                    _controller.clear();
-                    widget.onChanged('');
-                    widget.onClear?.call();
-                  },
-                  child: const Icon(
-                    Icons.cancel,
-                    size: 16,
-                    color: AppColors.textTertiary,
-                  ),
-                )
-              : null,
-          filled: false,
-          border: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: AppSpacing.xs,
-          ),
+      decoration: InputDecoration(
+        hintText: hint,
+        prefixIcon: Icon(
+          Icons.search_rounded,
+          color: isDark ? AppColors.textTertiaryDark : AppColors.textTertiaryLight,
+          size: 20,
         ),
+        filled: true,
+        fillColor: isDark ? AppColors.surfaceVariantDark : AppColors.surfaceVariantLight,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppRadii.input),
+          borderSide: BorderSide.none,
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+        isDense: true,
       ),
     );
   }

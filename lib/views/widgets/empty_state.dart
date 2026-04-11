@@ -6,7 +6,7 @@ import '../../themes/app_spacing.dart';
 class EmptyState extends StatelessWidget {
   final IconData icon;
   final String title;
-  final String? subtitle;
+  final String? description;
   final String? actionLabel;
   final VoidCallback? onAction;
 
@@ -14,44 +14,57 @@ class EmptyState extends StatelessWidget {
     super.key,
     required this.icon,
     required this.title,
-    this.subtitle,
+    this.description,
     this.actionLabel,
     this.onAction,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.xl,
-          vertical: AppSpacing.xxl,
-        ),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 48, color: AppColors.textTertiary),
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.surfaceVariantDark : AppColors.surfaceVariantLight,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                icon,
+                size: 36,
+                color: isDark ? AppColors.textTertiaryDark : AppColors.textTertiaryLight,
+              ),
+            ),
             const SizedBox(height: AppSpacing.md),
             Text(
               title,
-              style: AppTextStyles.headline.copyWith(
-                color: AppColors.textSecondary,
+              style: AppTextStyles.h3.copyWith(
+                color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
               ),
               textAlign: TextAlign.center,
             ),
-            if (subtitle != null) ...[
-              const SizedBox(height: AppSpacing.xs),
+            if (description != null) ...[
+              const SizedBox(height: AppSpacing.sm),
               Text(
-                subtitle!,
-                style: AppTextStyles.footnote,
+                description!,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
             if (actionLabel != null && onAction != null) ...[
               const SizedBox(height: AppSpacing.lg),
-              TextButton(
+              ElevatedButton.icon(
                 onPressed: onAction,
-                child: Text(actionLabel!),
+                icon: const Icon(Icons.add),
+                label: Text(actionLabel!),
               ),
             ],
           ],

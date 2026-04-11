@@ -1,47 +1,48 @@
 import 'package:flutter/material.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_radii.dart';
-import '../../themes/app_shadows.dart';
 import '../../themes/app_spacing.dart';
 
 class AppCard extends StatelessWidget {
   final Widget child;
   final VoidCallback? onTap;
-  final EdgeInsetsGeometry padding;
-  final bool hasShadow;
-  final Color? backgroundColor;
+  final EdgeInsetsGeometry? padding;
+  final Color? color;
 
   const AppCard({
     super.key,
     required this.child,
     this.onTap,
-    this.padding = const EdgeInsets.all(AppSpacing.cardPadding),
-    this.hasShadow = false,
-    this.backgroundColor,
+    this.padding,
+    this.color,
   });
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = color ??
+        (isDark ? AppColors.surfaceDark : AppColors.surfaceLight);
+    final borderColor = isDark ? AppColors.borderDark : AppColors.borderLight;
+
+    final content = Padding(
+      padding: padding ?? AppSpacing.cardPaddingAll,
+      child: child,
+    );
+
+    return Container(
       decoration: BoxDecoration(
-        color: backgroundColor ?? AppColors.surface,
+        color: cardColor,
         borderRadius: BorderRadius.circular(AppRadii.card),
-        boxShadow: hasShadow ? AppShadows.card : AppShadows.none,
+        border: Border.all(color: borderColor, width: 1),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadii.card),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(AppRadii.card),
-            child: Padding(
-              padding: padding,
-              child: child,
-            ),
-          ),
-        ),
-      ),
+      clipBehavior: Clip.antiAlias,
+      child: onTap != null
+          ? InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(AppRadii.card),
+              child: content,
+            )
+          : content,
     );
   }
 }

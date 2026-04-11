@@ -2,36 +2,33 @@ import 'package:flutter/foundation.dart';
 
 abstract class BaseViewModel extends ChangeNotifier {
   bool _isLoading = false;
-  String? _errorMessage;
   bool _isDisposed = false;
+  String? _errorMessage;
 
   bool get isLoading => _isLoading;
-  String? get errorMessage => _errorMessage;
   bool get hasError => _errorMessage != null;
+  String? get errorMessage => _errorMessage;
 
-  @protected
   void setLoading(bool value) {
-    if (_isLoading == value) return;
+    if (_isDisposed) return;
     _isLoading = value;
     notifyListeners();
   }
 
-  @protected
   void setError(String? message) {
+    if (_isDisposed) return;
     _errorMessage = message;
     notifyListeners();
   }
 
-  @protected
   void clearError() {
     if (_errorMessage == null) return;
     _errorMessage = null;
-    notifyListeners();
+    if (!_isDisposed) notifyListeners();
   }
 
-  @override
-  void notifyListeners() {
-    if (!_isDisposed) super.notifyListeners();
+  void safeNotify() {
+    if (!_isDisposed) notifyListeners();
   }
 
   @override

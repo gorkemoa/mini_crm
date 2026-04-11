@@ -1,162 +1,113 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/route_names.dart';
-import '../../core/utils/currency_utils.dart';
-import '../../core/utils/date_utils.dart';
-import '../../l10n/app_localizations.dart';
-import '../../models/project_model.dart';
+import 'package:provider/provider.dart';
+
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
-import '../widgets/badges.dart';
+import '../../viewmodels/projects_viewmodel.dart';
+import '../../core/utils/currency_utils.dart';
+import '../../core/utils/app_date_utils.dart';
+import '../widgets/app_card.dart';
 import '../widgets/info_row.dart';
-import '../widgets/primary_button.dart';
+import '../widgets/status_badge.dart';
+import '../widgets/confirm_dialog.dart';
 
-// ─── ViewModel for project detail (inline, reuses pattern from client_detail)
-// We need ProjectDetailViewModel — but it wasn't in the original list.
-// We'll use a simple FutureBuilder approach pulling from existing VM instead,
-// or pass the project model directly as argument.
-
-class ProjectDetailView extends StatefulWidget {
-  final ProjectModel project;
-
-  const ProjectDetailView({super.key, required this.project});
-
-  @override
-  State<ProjectDetailView> createState() => _ProjectDetailViewState();
-}
-
-class _ProjectDetailViewState extends State<ProjectDetailView> {
-  late ProjectModel _project;
-
-  @override
-  void initState() {
-    super.initState();
-    _project = widget.project;
-  }
-
+class ProjectDetailView extends StatelessWidget {
+  final String projectId;
+  const ProjectDetailView({super.key, required this.projectId});
 
   @override
   Widget build(BuildContext context) {
-    final p = _project;
-    final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: Text(p.title, style: AppTextStyles.navTitle),
-        backgroundColor: AppColors.surface,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit_outlined),
-            color: AppColors.primary,
-            onPressed: () async {
-              final changed = await Navigator.pushNamed(
-                context,
-                RouteNames.projectForm,
-                arguments: {'project': p},
-              );
-              if (changed == true && context.mounted) {
-                Navigator.pop(context, true);
-              }
-            },
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.only(bottom: AppSpacing.xxxl),
-          children: [
-            // Status banner
-            Container(
-              color: AppColors.surface,
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.screenPaddingH,
-                vertical: AppSpacing.cardPadding,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(p.title, style: AppTextStyles.title1),
-                        if (p.clientName != null) ...[
-                          const SizedBox(height: 4),
-                          Text(p.clientName!,
-                              style: AppTextStyles.subheadline.copyWith(
-                                  color: AppColors.textSecondary)),
-                        ],
-                      ],
-                    ),
-                  ),
-                  ProjectStatusBadge(status: p.status),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-
-            // Details
-            Container(
-              margin: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.screenPaddingH),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Column(
-                children: [
-                  if (p.budget != null)
-                    InfoRow(
-                      label: l10n.budget,
-                      value: CurrencyUtils.format(p.budget!, p.currency),
-                    ),
-                  if (p.startDate != null)
-                    InfoRow(
-                      label: l10n.startDate,
-                      value: AppDateUtils.toDisplay(p.startDate!),
-                    ),
-                  if (p.endDate != null)
-                    InfoRow(
-                      label: l10n.endDate,
-                      value: AppDateUtils.toDisplay(p.endDate!),
-                    ),
-                  if (p.description != null && p.description!.isNotEmpty)
-                    InfoRow(
-                      label: l10n.description,
-                      value: p.description!,
-                      isLast: true,
-                    ),
-                ],
-              ),
-            ),
-
-            if (p.description == null && p.budget == null)
-              const SizedBox(height: AppSpacing.md),
-
-            const SizedBox(height: AppSpacing.lg),
-
-            // Quick action
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.screenPaddingH),
-              child: PrimaryButton(
-                label: l10n.edit,
+    return Consumer<ProjectsViewModel>(
+      builder: (context, vm, _) {
+        final project = vm.projects.firstWhere((p) => p.id == projectId, orElse: () => vm.projects.first);
+        final client = vm.clientFor(project.clientId);
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Project Details'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.edit_rounded),
                 onPressed: () async {
-                  final changed = await Navigator.pushNamed(
+                  await Navigator.pushNamed(context, '/projects/form', arguments: project);
+                  if (context.mounted) vm.refresh();
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete_outline_rounded),
+                color: AppColors.error,
+                onPressed: () async {
+                  final confirmed = await showConfirmDialog(
                     context,
-                    RouteNames.projectForm,
-                    arguments: {'project': p},
+                    title: 'Delete Project',
+                    message: 'Delete "${project.title}"?',
                   );
-                  if (changed == true && context.mounted) {
-                    Navigator.pop(context, true);
+                  if (confirmed && context.mounted) {
+                    await vm.delete(project.id);
+                    if (context.mounted) Navigator.pop(context);
                   }
                 },
               ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+          body: ListView(
+            padding: AppSpacing.screenPaddingAll,
+            children: [
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(project.title, style: AppTextStyles.h2),
+                    const SizedBox(height: AppSpacing.sm),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        if (project.budget != null)
+                          Text(
+                            CurrencyUtils.format(project.budget!, project.currency),
+                            style: AppTextStyles.amount.copyWith(color: AppColors.primary),
+                          )
+                        else
+                          const Text('No budget set'),
+                        StatusBadge.fromProjectStatus(project.status),
+                      ],
+                    ),
+                    if (project.description != null) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(project.description!, style: AppTextStyles.bodyMedium),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              AppCard(
+                child: Column(
+                  children: [
+                    InfoRow(label: 'Client', value: client?.fullName ?? 'None'),
+                    InfoRow(label: 'Start Date', value: AppDateUtils.formatDate(project.startDate)),
+                    InfoRow(label: 'End Date', value: AppDateUtils.formatDate(project.endDate)),
+                    InfoRow(label: 'Currency', value: project.currency),
+                    InfoRow(label: 'Created', value: AppDateUtils.formatDate(project.createdAt), showDivider: false),
+                  ],
+                ),
+              ),
+              if (project.note != null) ...[
+                const SizedBox(height: AppSpacing.md),
+                AppCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Note', style: AppTextStyles.labelLarge),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(project.note!, style: AppTextStyles.bodyMedium),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 }
-
-// suppress unused import warning

@@ -1,5 +1,3 @@
-// ignore: unused_import
-import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -9,7 +7,12 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
-  String get appTitle => 'Mini CRM';
+  String get appTitle => 'मिनी CRM';
+
+  @override
+  String appVersion(String version) {
+    return 'Version $version';
+  }
 
   @override
   String get navDashboard => 'डैशबोर्ड';
@@ -18,586 +21,642 @@ class AppLocalizationsHi extends AppLocalizations {
   String get navClients => 'ग्राहक';
 
   @override
-  String get navDebts => 'बकाया';
+  String get navLeads => 'लीड्स';
 
   @override
-  String get navProjects => 'प्रोजेक्ट';
+  String get navDebts => 'ऋण';
+
+  @override
+  String get navProjects => 'परियोजनाएं';
+
+  @override
+  String get navIncome => 'आय';
+
+  @override
+  String get navReminders => 'रिमाइंडर';
+
+  @override
+  String get navSettings => 'सेटिंग्स';
 
   @override
   String get navMore => 'अधिक';
 
   @override
-  String get all => 'सभी';
+  String get navFinance => 'Finance';
 
   @override
-  String get edit => 'संपादित करें';
+  String get actionAdd => 'जोड़ें';
 
   @override
-  String get delete => 'हटाएं';
+  String get actionEdit => 'संपादित करें';
 
   @override
-  String get save => 'सहेजें';
+  String get actionDelete => 'हटाएं';
 
   @override
-  String get update => 'अपडेट करें';
+  String get actionSave => 'सहेजें';
 
   @override
-  String get cancel => 'रद्द करें';
+  String get actionCancel => 'रद्द करें';
 
   @override
-  String get add => 'जोड़ें';
+  String get actionBack => 'Back';
 
   @override
-  String get selectDate => 'चुनें';
+  String get actionSearch => 'Search';
 
   @override
-  String get status => 'स्थिति';
+  String get actionFilter => 'Filter';
 
   @override
-  String get note => 'नोट';
+  String get actionExport => 'Export';
 
   @override
-  String get additionalNotesHint => 'अतिरिक्त नोट्स...';
+  String get actionImport => 'Import';
 
   @override
-  String get amount => 'राशि';
+  String get actionClose => 'Close';
 
   @override
-  String get amountHint => '0.00';
+  String get actionConfirm => 'Confirm';
 
   @override
-  String get notes => 'नोट्स';
+  String get actionDone => 'Done';
 
   @override
-  String get email => 'ईमेल';
+  String get actionMarkComplete => 'Mark as Complete';
 
   @override
-  String get phone => 'फोन';
+  String get actionMarkIncomplete => 'Mark as Incomplete';
 
   @override
-  String get customer => 'ग्राहक';
+  String get actionViewAll => 'View All';
 
   @override
-  String get selectCustomerOptional => 'ग्राहक चुनें (वैकल्पिक)';
+  String get actionRefresh => 'Refresh';
 
   @override
-  String get noCustomer => '— कोई ग्राहक नहीं —';
+  String get labelName => 'Name';
 
   @override
-  String get budget => 'बजट';
+  String get labelTitle => 'Title';
 
   @override
-  String get description => 'विवरण';
+  String get labelStatus => 'Status';
 
   @override
-  String get startDate => 'शुरुआत';
+  String get labelDate => 'Date';
 
   @override
-  String get endDate => 'अंत';
+  String get labelAmount => 'Amount';
 
   @override
-  String get endDatePrefix => 'अंत: ';
+  String get labelCurrency => 'Currency';
 
   @override
-  String get fullName => 'पूरा नाम';
+  String get labelNote => 'Note';
 
   @override
-  String get notesOptional => 'नोट्स (वैकल्पिक)';
+  String get labelNotes => 'Notes';
 
   @override
-  String get notesHint => 'ग्राहक के बारे में नोट...';
+  String get labelEmail => 'Email';
 
   @override
-  String get errorOccurred => 'एक त्रुटि हुई';
+  String get labelPhone => 'Phone';
 
   @override
-  String get tryAgain => 'पुनः प्रयास करें';
+  String get labelCompany => 'Company';
 
   @override
-  String get seeAll => 'सभी';
+  String get labelSource => 'Source';
 
   @override
-  String get today => 'आज';
+  String get labelBudget => 'Budget';
 
   @override
-  String get upcoming => 'आगामी';
+  String get labelStartDate => 'Start Date';
 
   @override
-  String get past => 'बीता हुआ';
+  String get labelEndDate => 'End Date';
 
   @override
-  String get completed => 'पूर्ण';
+  String get labelDueDate => 'Due Date';
 
   @override
-  String get notSpecified => '— अनिर्दिष्ट —';
+  String get labelCreatedAt => 'Created';
 
   @override
-  String get dashboardSummarySection => 'सारांश';
+  String get labelDescription => 'Description';
 
   @override
-  String get pendingDebts => 'लंबित बकाया';
+  String get labelPlatform => 'Platform';
 
   @override
-  String get activeLead => 'सक्रिय लीड';
+  String get labelClient => 'Client';
 
   @override
-  String get thisMonthIncome => 'इस माह की आय';
+  String get labelSelectClient => 'Select Client';
 
   @override
-  String get todayReminders => 'आज के अनुस्मारक';
+  String get labelNoClient => 'No Client';
 
   @override
-  String get overdueDebts => 'अतिदेय बकाया';
+  String get labelOptional => 'Optional';
 
   @override
-  String get activeProjects => 'सक्रिय प्रोजेक्ट';
+  String get labelStage => 'Stage';
 
   @override
-  String get greetingMorning => 'सुप्रभात 👋';
+  String get labelFollowUpDate => 'Follow-up Date';
 
   @override
-  String get greetingAfternoon => 'नमस्ते 👋';
+  String get labelEstimatedBudget => 'Estimated Budget';
 
   @override
-  String get greetingEvening => 'शुभ संध्या 👋';
+  String get labelReminderDate => 'Reminder Date';
 
   @override
-  String get clientsTitle => 'ग्राहक';
+  String get labelRelatedTo => 'Related To';
 
   @override
-  String get noClientsYet => 'अभी तक कोई ग्राहक नहीं';
+  String get labelAll => 'All';
 
   @override
-  String get noClientsSubtitle => 'पहला ग्राहक जोड़कर शुरू करें।';
+  String get clientStatusActive => 'Active';
 
   @override
-  String get addClient => 'ग्राहक जोड़ें';
+  String get clientStatusInactive => 'Inactive';
 
   @override
-  String get deleteClient => 'ग्राहक हटाएं';
+  String get clientStatusArchived => 'Archived';
 
   @override
-  String get editClient => 'ग्राहक संपादित करें';
+  String get debtStatusPending => 'Pending';
 
   @override
-  String get newClient => 'नया ग्राहक';
+  String get debtStatusOverdue => 'Overdue';
 
   @override
-  String get debtsSection => 'बकाया';
+  String get debtStatusPaid => 'Paid';
 
   @override
-  String get projectsSection => 'प्रोजेक्ट';
+  String get debtStatusPartial => 'Partial';
 
   @override
-  String get noDebtsInline => 'अभी तक कोई बकाया नहीं।';
+  String get projectStatusPlanned => 'Planned';
 
   @override
-  String get noProjectsInline => 'अभी तक कोई प्रोजेक्ट नहीं।';
+  String get projectStatusStartingSoon => 'Starting Soon';
 
   @override
-  String get companyOptional => 'कंपनी (वैकल्पिक)';
+  String get projectStatusActive => 'Active';
 
   @override
-  String get companyHint => 'कंपनी का नाम';
+  String get projectStatusPaused => 'Paused';
 
   @override
-  String get emailOptional => 'ईमेल (वैकल्पिक)';
+  String get projectStatusCompleted => 'Completed';
 
   @override
-  String get emailHint => 'example@email.com';
+  String get projectStatusCancelled => 'Cancelled';
 
   @override
-  String get phoneOptional => 'फोन (वैकल्पिक)';
+  String get leadStageNew => 'New Lead';
 
   @override
-  String get phoneHint => '+91 98765 43210';
+  String get leadStageContacted => 'Contacted';
 
   @override
-  String get fullNameHint => 'राज कुमार';
+  String get leadStageProposalSent => 'Proposal Sent';
 
   @override
-  String get debtsTitle => 'बकाया';
+  String get leadStageNegotiating => 'Negotiating';
 
   @override
-  String get debtWaiting => 'प्रतीक्षा में';
+  String get leadStageWon => 'Won';
 
   @override
-  String get noDebtsYet => 'अभी तक कोई बकाया नहीं';
+  String get leadStageLost => 'Lost';
 
   @override
-  String get noDebtsSubtitle => 'पहला बकाया जोड़कर शुरू करें।';
+  String get dashboardTitle => 'Dashboard';
 
   @override
-  String get addDebt => 'बकाया जोड़ें';
+  String get dashboardPendingDebts => 'Pending Debts';
 
   @override
-  String get newDebt => 'नया बकाया';
+  String get dashboardOverdueDebts => 'Overdue';
 
   @override
-  String get editDebt => 'बकाया संपादित करें';
+  String get dashboardProjectsThisWeek => 'This Week';
 
   @override
-  String get debtTitleLabel => 'शीर्षक';
+  String get dashboardLeadsToFollow => 'Leads to Follow';
 
   @override
-  String get debtTitleHint => 'जैसे: प्रोजेक्ट डिलीवरी';
+  String get dashboardMonthlyIncome => 'This Month';
 
   @override
-  String get dueDate => 'देय तिथि';
+  String get dashboardTodayReminders => 'Today\'s Reminders';
 
   @override
-  String get projectsTitle => 'प्रोजेक्ट';
+  String get dashboardActiveClients => 'Active Clients';
 
   @override
-  String get noProjectsYet => 'अभी तक कोई प्रोजेक्ट नहीं';
+  String get dashboardActiveProjects => 'Active Projects';
 
   @override
-  String get noProjectsSubtitle => 'पहला प्रोजेक्ट जोड़कर शुरू करें।';
+  String get dashboardNoRemindersToday => 'No reminders for today';
 
   @override
-  String get addProject => 'प्रोजेक्ट जोड़ें';
+  String get dashboardGoodMorning => 'Good morning';
 
   @override
-  String get newProject => 'नया प्रोजेक्ट';
+  String get dashboardOverview => 'Here\'s your overview';
 
   @override
-  String get editProject => 'प्रोजेक्ट संपादित करें';
+  String get clientsTitle => 'Clients';
 
   @override
-  String get projectName => 'प्रोजेक्ट का नाम';
+  String get clientsEmpty => 'No clients yet';
 
   @override
-  String get projectNameHint => 'जैसे: वेबसाइट डिज़ाइन';
+  String get clientsEmptyDesc => 'Add your first client to get started';
 
   @override
-  String get projectDetails => 'प्रोजेक्ट विवरण...';
+  String get clientsSearchHint => 'Search clients...';
 
   @override
-  String get leadsTitle => 'लीड';
+  String get clientAddTitle => 'Add Client';
 
   @override
-  String get leadsActiveCount => 'सक्रिय';
+  String get clientEditTitle => 'Edit Client';
 
   @override
-  String get noLeadsYet => 'अभी तक कोई लीड नहीं';
+  String get clientDetailTitle => 'Client Details';
 
   @override
-  String get noLeadsSubtitle => 'यहाँ संभावित ग्राहक जोड़ें।';
+  String get clientFullName => 'Full Name';
 
   @override
-  String get addLead => 'लीड जोड़ें';
+  String get clientCompanyName => 'Company Name';
 
   @override
-  String get newLead => 'नई लीड';
+  String get clientDebts => 'Debts';
 
   @override
-  String get editLead => 'लीड संपादित करें';
+  String get clientProjects => 'Projects';
 
   @override
-  String get stage => 'चरण';
+  String get clientTotalDebt => 'Total Debt';
 
   @override
-  String get source => 'स्रोत';
+  String get clientActiveProjects => 'Active Projects';
 
   @override
-  String get selectSource => 'स्रोत चुनें';
+  String get debtsTitle => 'Debts';
 
   @override
-  String get estimatedBudget => 'अनुमानित बजट';
+  String get debtsEmpty => 'No debts yet';
 
   @override
-  String get followUpDate => 'फॉलो-अप तिथि';
+  String get debtsEmptyDesc => 'Add your first debt record';
 
   @override
-  String get meetingNotesHint => 'मीटिंग नोट्स...';
+  String get debtsSearchHint => 'Search debts...';
 
   @override
-  String get incomeTitle => 'आय';
+  String get debtsTotal => 'Total';
 
   @override
-  String get thisMonthPrefix => 'इस माह: ';
+  String get debtsOverdue => 'Overdue';
 
   @override
-  String get noIncomeYet => 'अभी तक कोई आय नहीं';
+  String get debtsPending => 'Pending';
 
   @override
-  String get noIncomeSubtitle => 'यहाँ अपने भुगतान जोड़ें।';
+  String get debtsPaid => 'Paid';
 
   @override
-  String get addIncome => 'आय जोड़ें';
+  String get debtsAddTitle => 'Add Debt';
 
   @override
-  String get newIncome => 'नई आय';
+  String get debtsEditTitle => 'Edit Debt';
 
   @override
-  String get editIncome => 'आय संपादित करें';
+  String get debtDetailTitle => 'Debt Details';
 
   @override
-  String get platform => 'प्लेटफ़ॉर्म';
+  String get debtsClient => 'Client';
 
   @override
-  String get selectPlatform => 'प्लेटफ़ॉर्म चुनें';
+  String get debtsTotalAmount => 'Total Amount';
 
   @override
-  String get receiptDate => 'प्राप्ति तिथि';
+  String get debtsFilterAll => 'All';
 
   @override
-  String get income => 'आय';
+  String get debtsFilterPending => 'Pending';
 
   @override
-  String get remindersTitle => 'अनुस्मारक';
+  String get debtsFilterOverdue => 'Overdue';
 
   @override
-  String get noRemindersYet => 'कोई अनुस्मारक नहीं';
+  String get debtsFilterPaid => 'Paid';
 
   @override
-  String get noRemindersSubtitle => 'यहाँ महत्वपूर्ण तिथियाँ और कार्य जोड़ें।';
+  String get projectsTitle => 'Projects';
 
   @override
-  String get addReminderTitle => 'अनुस्मारक जोड़ें';
+  String get projectsEmpty => 'No projects yet';
 
   @override
-  String get reminderTitleHint => 'अनुस्मारक शीर्षक...';
+  String get projectsEmptyDesc => 'Add your first project';
 
   @override
-  String get titleCannotBeEmpty => 'शीर्षक खाली नहीं हो सकता।';
+  String get projectsSearchHint => 'Search projects...';
 
   @override
-  String get markCompleted => 'पूर्ण';
+  String get projectsAddTitle => 'Add Project';
 
   @override
-  String get markIncomplete => 'अपूर्ण के रूप में चिह्नित करें';
+  String get projectsEditTitle => 'Edit Project';
 
   @override
-  String get settingsTitle => 'सेटिंग्स';
+  String get projectDetailTitle => 'Project Details';
 
   @override
-  String get sectionData => 'डेटा';
+  String get projectClient => 'Client';
 
   @override
-  String get sectionApp => 'ऐप';
+  String get projectBudget => 'Budget';
 
   @override
-  String get sectionLanguage => 'भाषा';
+  String get projectDuration => 'Duration';
 
   @override
-  String get exportData => 'डेटा निर्यात करें';
+  String get leadsTitle => 'Leads';
 
   @override
-  String get exportDataSubtitle => 'सभी डेटा JSON के रूप में साझा करें';
+  String get leadsEmpty => 'No leads yet';
 
   @override
-  String get importData => 'डेटा आयात करें';
+  String get leadsEmptyDesc => 'Start tracking potential clients';
 
   @override
-  String get importDataSubtitle => 'JSON फ़ाइल से लोड करें';
+  String get leadsSearchHint => 'Search leads...';
 
   @override
-  String get version => 'संस्करण';
+  String get leadsAddTitle => 'Add Lead';
 
   @override
-  String get exportDialogTitle => 'डेटा निर्यात करें';
+  String get leadsEditTitle => 'Edit Lead';
 
   @override
-  String get exportDialogContent =>
-      'सभी ग्राहक, ऋण, प्रोजेक्ट और आय डेटा JSON प्रारूप में निर्यात किया जाएगा और शेयर मेनू खुलेगा।';
+  String get leadDetailTitle => 'Lead Details';
 
   @override
-  String get importDialogTitle => 'डेटा आयात करें';
+  String get leadsConversionRate => 'Won Rate';
 
   @override
-  String get importDialogContent =>
-      'यह क्रिया मौजूदा डेटा को अधिलेखित नहीं करेगी; चयनित फ़ाइल के रिकॉर्ड जोड़े जाएंगे। क्या आप जारी रखना चाहते हैं?';
+  String get leadsTotal => 'Total Leads';
 
   @override
-  String get exportButton => 'निर्यात';
+  String get incomeTitle => 'Income';
 
   @override
-  String get importButton => 'आयात';
+  String get incomeEmpty => 'No income records yet';
 
   @override
-  String get language => 'भाषा';
+  String get incomeEmptyDesc => 'Start recording your income';
 
   @override
-  String get selectLanguage => 'भाषा चुनें';
+  String get incomeSearchHint => 'Search income...';
 
   @override
-  String get moreTitle => 'अधिक';
+  String get incomeAddTitle => 'Add Income';
 
   @override
-  String get sectionBusiness => 'व्यवसाय ट्रैकिंग';
+  String get incomeEditTitle => 'Edit Income';
 
   @override
-  String get sectionRemindersNav => 'अनुस्मारक';
+  String get incomeTotal => 'Total Income';
 
   @override
-  String get sectionAppNav => 'ऐप';
+  String get incomeThisMonth => 'This Month';
 
   @override
-  String get leadsMenuSubtitle => 'संभावित ग्राहकों को ट्रैक करें';
+  String get incomeDate => 'Income Date';
 
   @override
-  String get incomeMenuSubtitle => 'भुगतान और आय रिकॉर्ड';
+  String get remindersTitle => 'Reminders';
 
   @override
-  String get remindersMenuSubtitle => 'कार्य और कैलेंडर अनुस्मारक';
+  String get remindersEmpty => 'No reminders';
 
   @override
-  String get settingsMenuSubtitle => 'डेटा प्रबंधन और ऐप जानकारी';
+  String get remindersEmptyDesc => 'Set reminders for important tasks';
 
   @override
-  String get searchHint => 'खोजें...';
+  String get remindersAddTitle => 'Add Reminder';
 
   @override
-  String get statusActive => 'सक्रिय';
+  String get remindersEditTitle => 'Edit Reminder';
 
   @override
-  String get statusInactive => 'निष्क्रिय';
+  String get remindersToday => 'Today';
 
   @override
-  String get statusLost => 'खोया हुआ';
+  String get remindersUpcoming => 'Upcoming';
 
   @override
-  String get debtPending => 'लंबित';
+  String get remindersOverdue => 'Overdue';
 
   @override
-  String get debtOverdue => 'अतिदेय';
+  String get remindersCompleted => 'Completed';
 
   @override
-  String get debtPaid => 'भुगतान किया';
+  String get remindersAll => 'All';
 
   @override
-  String get debtPartial => 'आंशिक भुगतान';
+  String get settingsTitle => 'Settings';
 
   @override
-  String get projectPlanned => 'नियोजित';
+  String get settingsAppearance => 'Appearance';
 
   @override
-  String get projectStartingSoon => 'जल्द शुरू';
+  String get settingsTheme => 'Theme';
 
   @override
-  String get projectActive => 'सक्रिय';
+  String get settingsLanguage => 'Language';
 
   @override
-  String get projectPaused => 'रुका हुआ';
+  String get settingsData => 'Data Management';
 
   @override
-  String get projectCompleted => 'पूर्ण';
+  String get settingsExport => 'Export Data';
 
   @override
-  String get projectCancelled => 'रद्द';
+  String get settingsImport => 'Import Data';
 
   @override
-  String get leadNew => 'नई लीड';
+  String get settingsAbout => 'About';
 
   @override
-  String get leadContacted => 'संपर्क किया';
+  String get settingsVersion => 'App Version';
 
   @override
-  String get leadProposalSent => 'प्रस्ताव भेजा';
+  String get settingsExportDesc => 'Export all data as JSON file';
 
   @override
-  String get leadNegotiating => 'बातचीत में';
+  String get settingsImportDesc => 'Import data from a JSON file';
 
   @override
-  String get leadWon => 'जीता';
+  String get themeLight => 'Light';
 
   @override
-  String get leadLost => 'खोया';
+  String get themeDark => 'Dark';
 
   @override
-  String get errorDataLoad => 'डेटा लोड नहीं हो सका।';
+  String get themeSystem => 'System Default';
 
   @override
-  String get errorClientsLoad => 'ग्राहक लोड नहीं हो सके।';
+  String get exportTitle => 'Export Data';
 
   @override
-  String get errorClientDelete => 'ग्राहक हटाया नहीं जा सका।';
+  String get exportDesc => 'Your data will be exported as a JSON file. You can use this file to backup or restore your data.';
 
   @override
-  String get errorClientDetailLoad => 'ग्राहक विवरण लोड नहीं हो सका।';
+  String get exportSuccess => 'Data exported successfully';
 
   @override
-  String get errorClientSave => 'ग्राहक सहेजा नहीं जा सका।';
+  String get exportError => 'Export failed. Please try again.';
 
   @override
-  String get errorDebtsLoad => 'बकाया लोड नहीं हो सका।';
+  String get exportButton => 'Export JSON';
 
   @override
-  String get errorDebtDelete => 'बकाया हटाया नहीं जा सका।';
+  String get importTitle => 'Import Data';
 
   @override
-  String get errorDebtSave => 'बकाया सहेजा नहीं जा सका।';
+  String get importDesc => 'Select a Mini CRM JSON file to import your data.';
 
   @override
-  String get errorFormDataLoad => 'फ़ॉर्म डेटा लोड नहीं हो सका।';
+  String get importSuccess => 'Data imported successfully';
 
   @override
-  String get errorProjectsLoad => 'प्रोजेक्ट लोड नहीं हो सके।';
+  String get importError => 'Import failed. Invalid or corrupted file.';
 
   @override
-  String get errorProjectDelete => 'प्रोजेक्ट हटाया नहीं जा सका।';
+  String get importWarning => 'Importing will replace ALL existing data. This action cannot be undone.';
 
   @override
-  String get errorProjectSave => 'प्रोजेक्ट सहेजा नहीं जा सका।';
+  String get importButton => 'Select File';
 
   @override
-  String get errorLeadsLoad => 'लीड लोड नहीं हो सकीं।';
+  String get importReplace => 'Replace all existing data';
 
   @override
-  String get errorLeadDelete => 'लीड हटाई नहीं जा सकी।';
+  String get deleteConfirmTitle => 'Delete';
 
   @override
-  String get errorLeadSave => 'लीड सहेजी नहीं जा सकी।';
+  String get deleteConfirmMessage => 'Are you sure you want to delete this? This action cannot be undone.';
 
   @override
-  String get errorIncomeLoad => 'आय लोड नहीं हो सकी।';
+  String get deleteConfirmButton => 'Delete';
 
   @override
-  String get errorIncomeDelete => 'आय रिकॉर्ड हटाया नहीं जा सका।';
+  String get validationRequired => 'This field is required';
 
   @override
-  String get errorIncomeSave => 'आय रिकॉर्ड सहेजा नहीं जा सका।';
+  String get validationEmail => 'Please enter a valid email address';
 
   @override
-  String get errorRemindersLoad => 'अनुस्मारक लोड नहीं हो सके।';
+  String get validationAmount => 'Please enter a valid amount';
 
   @override
-  String get errorStatusUpdate => 'स्थिति अपडेट नहीं हो सकी।';
+  String get validationPositiveAmount => 'Amount must be greater than zero';
 
   @override
-  String get errorReminderDelete => 'अनुस्मारक हटाया नहीं जा सका।';
+  String get validationDateInvalid => 'Please select a valid date';
 
   @override
-  String get errorReminderAdd => 'अनुस्मारक जोड़ा नहीं जा सका।';
+  String get errorGeneric => 'Something went wrong. Please try again.';
 
   @override
-  String get errorExportFailed => 'निर्यात विफल हुआ।';
+  String get errorDatabase => 'Database error. Please restart the app.';
 
   @override
-  String get errorFileRead => 'फ़ाइल पढ़ी नहीं जा सकी।';
+  String get errorLoadFailed => 'Failed to load data';
 
   @override
-  String get errorImportFailed => 'आयात विफल रहा।';
+  String get errorSaveFailed => 'Failed to save';
 
   @override
-  String get validationRequired => 'यह फ़ील्ड आवश्यक है।';
+  String get errorDeleteFailed => 'Failed to delete';
 
   @override
-  String get validationEmail => 'एक वैध ईमेल पता दर्ज करें।';
+  String get currencyUSD => 'USD — US Dollar';
 
   @override
-  String get validationPhone => 'एक वैध फ़ोन नंबर दर्ज करें।';
+  String get currencyEUR => 'EUR — Euro';
 
   @override
-  String get validationAmountRequired => 'राशि आवश्यक है।';
+  String get currencyTRY => 'TRY — Turkish Lira';
 
   @override
-  String get validationAmountInvalid => 'एक वैध राशि दर्ज करें।';
+  String get currencyGBP => 'GBP — British Pound';
 
   @override
-  String get validationAmountPositive => 'राशि 0 से अधिक होनी चाहिए।';
+  String get currencyJPY => 'JPY — Japanese Yen';
 
   @override
-  String get validationSelectClient => 'कृपया एक ग्राहक चुनें।';
+  String get currencyCNY => 'CNY — Chinese Yuan';
+
+  @override
+  String get currencyINR => 'INR — Indian Rupee';
+
+  @override
+  String get currencyBRL => 'BRL — Brazilian Real';
+
+  @override
+  String get currencyAUD => 'AUD — Australian Dollar';
+
+  @override
+  String get currencyCAD => 'CAD — Canadian Dollar';
+
+  @override
+  String get reminderRelatedClient => 'Client';
+
+  @override
+  String get reminderRelatedDebt => 'Debt';
+
+  @override
+  String get reminderRelatedProject => 'Project';
+
+  @override
+  String get reminderRelatedLead => 'Lead';
+
+  @override
+  String get reminderRelatedIncome => 'Income';
+
+  @override
+  String get reminderRelatedGeneral => 'General';
+
+  @override
+  String daysOverdue(int days) {
+    return '$days day(s) overdue';
+  }
+
+  @override
+  String daysRemaining(int days) {
+    return '$days day(s) remaining';
+  }
+
+  @override
+  String get dueToday => 'Due today';
+
+  @override
+  String get dueTomorrow => 'Due tomorrow';
 }

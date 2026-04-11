@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/utils/date_utils.dart';
-import '../../l10n/app_localizations.dart';
-import '../../models/reminder_model.dart';
+
 import '../../themes/app_colors.dart';
-import '../../themes/app_radii.dart';
 import '../../themes/app_spacing.dart';
 import '../../themes/app_text_styles.dart';
+import '../../themes/app_radii.dart';
 import '../../viewmodels/reminders_viewmodel.dart';
+import '../../models/reminder_model.dart';
+import '../../core/utils/app_date_utils.dart';
 import '../widgets/empty_state.dart';
+import '../widgets/confirm_dialog.dart';
 
 class RemindersView extends StatefulWidget {
   const RemindersView({super.key});
@@ -28,446 +29,224 @@ class _RemindersViewState extends State<RemindersView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<RemindersViewModel>(
-      builder: (context, vm, _) {
-        final l10n = AppLocalizations.of(context)!;
-        return Scaffold(
-          backgroundColor: AppColors.background,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.primary),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
+      appBar: AppBar(
+        title: const Text('Reminders'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add_rounded),
+            onPressed: () async {
+              await Navigator.pushNamed(context, '/reminders/form');
+              if (context.mounted) context.read<RemindersViewModel>().refresh();
+            },
           ),
-          body: SafeArea(
+        ],
+      ),
+      body: Consumer<RemindersViewModel>(
+        builder: (context, vm, _) {
+          return RefreshIndicator(
+            onRefresh: vm.refresh,
             child: Column(
               children: [
-                // Header
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.screenPaddingH,
-                    AppSpacing.screenPaddingV,
-                    AppSpacing.screenPaddingH,
-                    0,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(l10n.remindersTitle,
-                          style: AppTextStyles.largeTitle),
-                      const Spacer(),
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        color: AppColors.primary,
-                        onPressed: () => _showAddSheet(context, vm),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Filter chips
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.screenPaddingH,
-                    AppSpacing.sm,
-                    AppSpacing.screenPaddingH,
-                    AppSpacing.sm,
-                  ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: ReminderFilter.values
-                          .map((f) => Padding(
-                                padding: const EdgeInsets.only(
-                                    right: AppSpacing.xs),
-                                child: _Chip(
-                                  label: switch (f) {
-                                    ReminderFilter.all => l10n.all,
-                                    ReminderFilter.today => l10n.today,
-                                    ReminderFilter.upcoming => l10n.upcoming,
-                                    ReminderFilter.overdue => l10n.past,
-                                    ReminderFilter.completed => l10n.completed,
-                                  },
-                                  isSelected: vm.filter == f,
-                                  onTap: () => vm.setFilter(f),
-                                ),
-                              ))
-                          .toList(),
-                    ),
-                  ),
-                ),
-
-                // List
+                _buildFilterRow(context, vm),
                 Expanded(
                   child: vm.isLoading
                       ? const Center(child: CircularProgressIndicator())
-                      : vm.items.isEmpty
+                      : vm.isEmpty
                           ? EmptyState(
-                              icon: Icons.notifications_none_outlined,
-                              title: l10n.noRemindersYet,
-                              subtitle: l10n.noRemindersSubtitle,
-                              actionLabel: l10n.add,
-                              onAction: () =>
-                                  _showAddSheet(context, vm),
+                              icon: Icons.alarm_outlined,
+                              title: 'No reminders',
+                              description: 'Add reminders for follow-ups and tasks',
+                              actionLabel: 'Add Reminder',
+                              onAction: () async {
+                                await Navigator.pushNamed(context, '/reminders/form');
+                                if (context.mounted) vm.refresh();
+                              },
                             )
-                          : RefreshIndicator(
-                              onRefresh: vm.refresh,
-                              color: AppColors.primary,
-                              child: ListView.separated(
-                                padding: const EdgeInsets.only(
-                                  left: AppSpacing.screenPaddingH,
-                                  right: AppSpacing.screenPaddingH,
-                                  bottom: AppSpacing.xxxl,
-                                ),
-                                itemCount: vm.items.length,
-                                separatorBuilder: (_, __) =>
-                                    const SizedBox(height: AppSpacing.xs),
-                                itemBuilder: (context, i) =>
-                                    _ReminderTile(
-                                  reminder: vm.items[i],
-                                  onToggle: () => vm.toggleComplete(
-                                      vm.items[i]),
-                                  onDelete: () =>
-                                      vm.delete(vm.items[i].id),
-                                ),
-                              ),
-                            ),
+                          : _buildList(context, vm),
                 ),
               ],
             ),
-          ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await Navigator.pushNamed(context, '/reminders/form');
+          if (context.mounted) context.read<RemindersViewModel>().refresh();
+        },
+        child: const Icon(Icons.add_rounded),
+      ),
+    );
+  }
+
+  Widget _buildFilterRow(BuildContext context, RemindersViewModel vm) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: ReminderFilter.values.map((f) {
+            final selected = vm.filter == f;
+            return Padding(
+              padding: const EdgeInsets.only(right: AppSpacing.xs),
+              child: GestureDetector(
+                onTap: () => vm.setFilter(f),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: selected ? AppColors.primary : Colors.transparent,
+                    borderRadius: BorderRadius.circular(AppRadii.chip),
+                    border: Border.all(color: selected ? AppColors.primary : AppColors.borderLight),
+                  ),
+                  child: Text(
+                    _filterLabel(f),
+                    style: AppTextStyles.labelSmall.copyWith(
+                      color: selected ? Colors.white : AppColors.textSecondaryLight,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildList(BuildContext context, RemindersViewModel vm) {
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+      itemCount: vm.reminders.length,
+      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+      itemBuilder: (context, i) {
+        final reminder = vm.reminders[i];
+        return _ReminderTile(
+          reminder: reminder,
+          onToggle: () => vm.toggleComplete(reminder),
+          onTap: () async {
+            await Navigator.pushNamed(context, '/reminders/form', arguments: reminder);
+            if (context.mounted) vm.refresh();
+          },
+          onDelete: () async {
+            final confirmed = await showConfirmDialog(
+              context,
+              title: 'Delete Reminder',
+              message: 'Delete "${reminder.title}"?',
+            );
+            if (confirmed && context.mounted) vm.delete(reminder.id);
+          },
         );
       },
     );
   }
 
-  void _showAddSheet(BuildContext context, RemindersViewModel vm) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => _AddReminderSheet(onAdd: (title, date) {
-        vm.addReminder(title: title, date: date);
-      }),
-    );
-  }
-}
-
-class _Chip extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-  const _Chip(
-      {required this.label,
-      required this.isSelected,
-      required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.sm + 4, vertical: AppSpacing.xs + 2),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.surface,
-          borderRadius: BorderRadius.circular(100),
-        ),
-        child: Text(
-          label,
-          style: AppTextStyles.caption1.copyWith(
-            color: isSelected ? Colors.white : AppColors.textSecondary,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-          ),
-        ),
-      ),
-    );
-  }
+  String _filterLabel(ReminderFilter f) => switch (f) {
+        ReminderFilter.all => 'All',
+        ReminderFilter.today => 'Today',
+        ReminderFilter.upcoming => 'Upcoming',
+        ReminderFilter.overdue => 'Overdue',
+        ReminderFilter.completed => 'Completed',
+      };
 }
 
 class _ReminderTile extends StatelessWidget {
   final ReminderModel reminder;
   final VoidCallback onToggle;
+  final VoidCallback onTap;
   final VoidCallback onDelete;
 
-  const _ReminderTile({
-    required this.reminder,
-    required this.onToggle,
-    required this.onDelete,
-  });
+  const _ReminderTile({required this.reminder, required this.onToggle, required this.onTap, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
-    final isOverdue = reminder.isOverdue;
-    final isCompleted = reminder.isCompleted;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isOverdue = reminder.isOverdue && !reminder.isCompleted;
+    final isToday = reminder.isToday && !reminder.isCompleted;
+    Color borderColor;
+    if (isOverdue) {
+      borderColor = AppColors.error.withValues(alpha: 0.5);
+    } else if (isToday) {
+      borderColor = AppColors.warning.withValues(alpha: 0.5);
+    } else {
+      borderColor = isDark ? AppColors.borderDark : AppColors.borderLight;
+    }
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(14),
+        color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        border: Border.all(color: borderColor),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(14),
-          onTap: onToggle,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.cardPadding,
-              vertical: AppSpacing.sm + 4,
-            ),
-            child: Row(
-              children: [
-                // Checkbox
-                GestureDetector(
-                  onTap: onToggle,
-                  child: Container(
-                    width: 24,
-                    height: 24,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: isCompleted
-                            ? AppColors.success
-                            : isOverdue
-                                ? AppColors.danger
-                                : AppColors.separator,
-                        width: 2,
-                      ),
-                      color: isCompleted
-                          ? AppColors.success
-                          : Colors.transparent,
-                    ),
-                    child: isCompleted
-                        ? const Icon(Icons.check,
-                            size: 14, color: Colors.white)
-                        : null,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-
-                // Content
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        reminder.title,
-                        style: AppTextStyles.subheadline.copyWith(
-                          fontWeight: FontWeight.w500,
-                          decoration: isCompleted
-                              ? TextDecoration.lineThrough
-                              : null,
-                          color: isCompleted
-                              ? AppColors.textTertiary
-                              : AppColors.textPrimary,
-                        ),
-                      ),
-                      if (reminder.note != null &&
-                          reminder.note!.isNotEmpty)
-                        Text(
-                          reminder.note!,
-                          style: AppTextStyles.caption1.copyWith(
-                              color: AppColors.textSecondary),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      Text(
-                        AppDateUtils.relativeLabel(reminder.reminderDate),
-                        style: AppTextStyles.caption2.copyWith(
-                          color: reminder.isOverdue && !reminder.isCompleted
-                              ? AppColors.danger
-                              : AppColors.textTertiary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Type pill
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 3),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        child: Padding(
+          padding: AppSpacing.cardPaddingAll,
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: onToggle,
+                child: Container(
+                  width: 24,
+                  height: 24,
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceSecondary,
-                    borderRadius: BorderRadius.circular(100),
+                    shape: BoxShape.circle,
+                    color: reminder.isCompleted ? AppColors.success : Colors.transparent,
+                    border: Border.all(
+                      color: reminder.isCompleted ? AppColors.success : AppColors.borderLight,
+                      width: 2,
+                    ),
                   ),
-                  child: Text(
-                    reminder.relatedType.label,
-                    style: AppTextStyles.caption2.copyWith(
-                        color: AppColors.textSecondary),
-                  ),
+                  child: reminder.isCompleted
+                      ? const Icon(Icons.check_rounded, size: 14, color: Colors.white)
+                      : null,
                 ),
-                const SizedBox(width: AppSpacing.xs),
-
-                PopupMenuButton<String>(
-                  icon: const Icon(Icons.more_horiz,
-                      color: AppColors.textTertiary, size: 20),
-                  itemBuilder: (_) => [
-                    PopupMenuItem(
-                      value: 'toggle',
-                      child: Text(reminder.isCompleted
-                          ? AppLocalizations.of(context)!.markIncomplete
-                          : AppLocalizations.of(context)!.markCompleted),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      reminder.title,
+                      style: AppTextStyles.labelLarge.copyWith(
+                        decoration: reminder.isCompleted ? TextDecoration.lineThrough : null,
+                        color: reminder.isCompleted ? AppColors.textTertiaryLight : null,
+                      ),
                     ),
-                    PopupMenuItem(
-                      value: 'delete',
-                      child: Text(AppLocalizations.of(context)!.delete,
-                          style: const TextStyle(color: AppColors.danger)),
+                    const SizedBox(height: 2),
+                    Text(
+                      AppDateUtils.formatDate(reminder.reminderDate),
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: isOverdue
+                            ? AppColors.error
+                            : isToday
+                                ? AppColors.warning
+                                : AppColors.textTertiaryLight,
+                      ),
                     ),
+                    if (reminder.note != null)
+                      Text(
+                        reminder.note!,
+                        style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondaryLight),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                   ],
-                  onSelected: (v) {
-                    if (v == 'toggle') onToggle();
-                    if (v == 'delete') onDelete();
-                  },
                 ),
-              ],
-            ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete_outline_rounded, size: 18),
+                color: AppColors.error,
+                onPressed: onDelete,
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 }
-
-// ─── Add reminder bottom sheet ────────────────────────────────────────────────
-
-class _AddReminderSheet extends StatefulWidget {
-  final void Function(String title, DateTime date) onAdd;
-
-  const _AddReminderSheet({required this.onAdd});
-
-  @override
-  State<_AddReminderSheet> createState() => _AddReminderSheetState();
-}
-
-class _AddReminderSheetState extends State<_AddReminderSheet> {
-  final _titleCtrl = TextEditingController();
-  DateTime _date = DateTime.now().add(const Duration(days: 1));
-  String? _error;
-
-  @override
-  void dispose() {
-    _titleCtrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final bottom = MediaQuery.of(context).viewInsets.bottom;
-    return Container(
-      margin: EdgeInsets.only(bottom: bottom),
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenPaddingH,
-        AppSpacing.md,
-        AppSpacing.screenPaddingH,
-        AppSpacing.lg,
-      ),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        borderRadius:
-            BorderRadius.vertical(top: Radius.circular(AppRadii.sheet)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Drag handle
-          Center(
-            child: Container(
-              width: 36,
-              height: 4,
-              margin: const EdgeInsets.only(bottom: AppSpacing.md),
-              decoration: BoxDecoration(
-                color: AppColors.separator,
-                borderRadius: BorderRadius.circular(100),
-              ),
-            ),
-          ),
-          Text(AppLocalizations.of(context)!.addReminderTitle, style: AppTextStyles.title3),
-          const SizedBox(height: AppSpacing.md),
-
-          // Title field
-          TextField(
-            controller: _titleCtrl,
-            autofocus: true,
-            style: AppTextStyles.body,
-            decoration: InputDecoration(
-              hintText: AppLocalizations.of(context)!.reminderTitleHint,
-              filled: true,
-              fillColor: AppColors.background,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppRadii.input),
-                borderSide: BorderSide.none,
-              ),
-            ),
-          ),
-
-          if (_error != null) ...[
-            const SizedBox(height: AppSpacing.xs),
-            Text(_error!,
-                style: AppTextStyles.footnote
-                    .copyWith(color: AppColors.danger)),
-          ],
-
-          const SizedBox(height: AppSpacing.sm),
-
-          // Date picker row
-          GestureDetector(
-            onTap: () async {
-              final d = await showDatePicker(
-                context: context,
-                initialDate: _date,
-                firstDate: DateTime.now(),
-                lastDate: DateTime(2030),
-              );
-              if (d != null) setState(() => _date = d);
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.sm + 4, vertical: AppSpacing.sm),
-              decoration: BoxDecoration(
-                color: AppColors.background,
-                borderRadius: BorderRadius.circular(AppRadii.input),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.calendar_today_outlined,
-                      size: 18, color: AppColors.primary),
-                  const SizedBox(width: AppSpacing.xs),
-                  Text(
-                    '${_date.day}.${_date.month}.${_date.year}',
-                    style: AppTextStyles.body
-                        .copyWith(color: AppColors.primary),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                final t = _titleCtrl.text.trim();
-                if (t.isEmpty) {
-                  setState(() => _error = AppLocalizations.of(context)!.titleCannotBeEmpty);
-                  return;
-                }
-                widget.onAdd(t, _date);
-                Navigator.pop(context);
-              },
-              child: Text(AppLocalizations.of(context)!.save),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// end of file

@@ -1,5 +1,3 @@
-// ignore: unused_import
-import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -12,10 +10,18 @@ class AppLocalizationsVi extends AppLocalizations {
   String get appTitle => 'Mini CRM';
 
   @override
-  String get navDashboard => 'Tổng quan';
+  String appVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get navDashboard => 'Bảng điều khiển';
 
   @override
   String get navClients => 'Khách hàng';
+
+  @override
+  String get navLeads => 'Tiềm năng';
 
   @override
   String get navDebts => 'Công nợ';
@@ -24,580 +30,633 @@ class AppLocalizationsVi extends AppLocalizations {
   String get navProjects => 'Dự án';
 
   @override
+  String get navIncome => 'Thu nhập';
+
+  @override
+  String get navReminders => 'Nhắc nhở';
+
+  @override
+  String get navSettings => 'Cài đặt';
+
+  @override
   String get navMore => 'Thêm';
 
   @override
-  String get all => 'Tất cả';
+  String get navFinance => 'Finance';
 
   @override
-  String get edit => 'Chỉnh sửa';
+  String get actionAdd => 'Thêm';
 
   @override
-  String get delete => 'Xóa';
+  String get actionEdit => 'Sửa';
 
   @override
-  String get save => 'Lưu';
+  String get actionDelete => 'Xóa';
 
   @override
-  String get update => 'Cập nhật';
+  String get actionSave => 'Lưu';
 
   @override
-  String get cancel => 'Hủy';
+  String get actionCancel => 'Hủy';
 
   @override
-  String get add => 'Thêm';
+  String get actionBack => 'Back';
 
   @override
-  String get selectDate => 'Chọn';
+  String get actionSearch => 'Search';
 
   @override
-  String get status => 'Trạng thái';
+  String get actionFilter => 'Filter';
 
   @override
-  String get note => 'Ghi chú';
+  String get actionExport => 'Export';
 
   @override
-  String get additionalNotesHint => 'Ghi chú thêm...';
+  String get actionImport => 'Import';
 
   @override
-  String get amount => 'Số tiền';
+  String get actionClose => 'Close';
 
   @override
-  String get amountHint => '0.00';
+  String get actionConfirm => 'Confirm';
 
   @override
-  String get notes => 'Ghi chú';
+  String get actionDone => 'Done';
 
   @override
-  String get email => 'Email';
+  String get actionMarkComplete => 'Mark as Complete';
 
   @override
-  String get phone => 'Điện thoại';
+  String get actionMarkIncomplete => 'Mark as Incomplete';
 
   @override
-  String get customer => 'Khách hàng';
+  String get actionViewAll => 'View All';
 
   @override
-  String get selectCustomerOptional => 'Chọn khách hàng (tùy chọn)';
+  String get actionRefresh => 'Refresh';
 
   @override
-  String get noCustomer => '— Không có khách hàng —';
+  String get labelName => 'Name';
 
   @override
-  String get budget => 'Ngân sách';
+  String get labelTitle => 'Title';
 
   @override
-  String get description => 'Mô tả';
+  String get labelStatus => 'Status';
 
   @override
-  String get startDate => 'Bắt đầu';
+  String get labelDate => 'Date';
 
   @override
-  String get endDate => 'Kết thúc';
+  String get labelAmount => 'Amount';
 
   @override
-  String get endDatePrefix => 'Kết thúc: ';
+  String get labelCurrency => 'Currency';
 
   @override
-  String get fullName => 'Họ và tên';
+  String get labelNote => 'Note';
 
   @override
-  String get notesOptional => 'Ghi chú (tùy chọn)';
+  String get labelNotes => 'Notes';
 
   @override
-  String get notesHint => 'Ghi chú về khách hàng...';
+  String get labelEmail => 'Email';
 
   @override
-  String get errorOccurred => 'Đã xảy ra lỗi';
+  String get labelPhone => 'Phone';
 
   @override
-  String get tryAgain => 'Thử lại';
+  String get labelCompany => 'Company';
 
   @override
-  String get seeAll => 'Tất cả';
+  String get labelSource => 'Source';
 
   @override
-  String get today => 'Hôm nay';
+  String get labelBudget => 'Budget';
 
   @override
-  String get upcoming => 'Sắp tới';
+  String get labelStartDate => 'Start Date';
 
   @override
-  String get past => 'Đã qua';
+  String get labelEndDate => 'End Date';
 
   @override
-  String get completed => 'Hoàn thành';
+  String get labelDueDate => 'Due Date';
 
   @override
-  String get notSpecified => '— Chưa xác định —';
+  String get labelCreatedAt => 'Created';
 
   @override
-  String get dashboardSummarySection => 'TÓM TẮT';
+  String get labelDescription => 'Description';
 
   @override
-  String get pendingDebts => 'Công nợ chờ xử lý';
+  String get labelPlatform => 'Platform';
 
   @override
-  String get activeLead => 'Khách hàng tiềm năng';
+  String get labelClient => 'Client';
 
   @override
-  String get thisMonthIncome => 'Thu nhập tháng này';
+  String get labelSelectClient => 'Select Client';
 
   @override
-  String get todayReminders => 'Nhắc nhở hôm nay';
+  String get labelNoClient => 'No Client';
 
   @override
-  String get overdueDebts => 'Công nợ quá hạn';
+  String get labelOptional => 'Optional';
 
   @override
-  String get activeProjects => 'Dự án đang thực hiện';
+  String get labelStage => 'Stage';
 
   @override
-  String get greetingMorning => 'Chào buổi sáng 👋';
+  String get labelFollowUpDate => 'Follow-up Date';
 
   @override
-  String get greetingAfternoon => 'Chào buổi chiều 👋';
+  String get labelEstimatedBudget => 'Estimated Budget';
 
   @override
-  String get greetingEvening => 'Chào buổi tối 👋';
+  String get labelReminderDate => 'Reminder Date';
 
   @override
-  String get clientsTitle => 'Khách hàng';
+  String get labelRelatedTo => 'Related To';
 
   @override
-  String get noClientsYet => 'Chưa có khách hàng';
+  String get labelAll => 'All';
 
   @override
-  String get noClientsSubtitle => 'Bắt đầu bằng cách thêm khách hàng đầu tiên.';
+  String get clientStatusActive => 'Active';
 
   @override
-  String get addClient => 'Thêm khách hàng';
+  String get clientStatusInactive => 'Inactive';
 
   @override
-  String get deleteClient => 'Xóa khách hàng';
+  String get clientStatusArchived => 'Archived';
 
   @override
-  String get editClient => 'Chỉnh sửa khách hàng';
+  String get debtStatusPending => 'Pending';
 
   @override
-  String get newClient => 'Khách hàng mới';
+  String get debtStatusOverdue => 'Overdue';
 
   @override
-  String get debtsSection => 'Công nợ';
+  String get debtStatusPaid => 'Paid';
 
   @override
-  String get projectsSection => 'Dự án';
+  String get debtStatusPartial => 'Partial';
 
   @override
-  String get noDebtsInline => 'Chưa có công nợ.';
+  String get projectStatusPlanned => 'Planned';
 
   @override
-  String get noProjectsInline => 'Chưa có dự án.';
+  String get projectStatusStartingSoon => 'Starting Soon';
 
   @override
-  String get companyOptional => 'Công ty (tùy chọn)';
+  String get projectStatusActive => 'Active';
 
   @override
-  String get companyHint => 'Tên công ty TNHH';
+  String get projectStatusPaused => 'Paused';
 
   @override
-  String get emailOptional => 'Email (tùy chọn)';
+  String get projectStatusCompleted => 'Completed';
 
   @override
-  String get emailHint => 'example@email.com';
+  String get projectStatusCancelled => 'Cancelled';
 
   @override
-  String get phoneOptional => 'Điện thoại (tùy chọn)';
+  String get leadStageNew => 'New Lead';
 
   @override
-  String get phoneHint => '+84 90 000 0000';
+  String get leadStageContacted => 'Contacted';
 
   @override
-  String get fullNameHint => 'Nguyễn Văn A';
+  String get leadStageProposalSent => 'Proposal Sent';
 
   @override
-  String get debtsTitle => 'Công nợ';
+  String get leadStageNegotiating => 'Negotiating';
 
   @override
-  String get debtWaiting => 'chờ xử lý';
+  String get leadStageWon => 'Won';
 
   @override
-  String get noDebtsYet => 'Chưa có công nợ';
+  String get leadStageLost => 'Lost';
 
   @override
-  String get noDebtsSubtitle => 'Bắt đầu bằng cách thêm công nợ đầu tiên.';
+  String get dashboardTitle => 'Dashboard';
 
   @override
-  String get addDebt => 'Thêm công nợ';
+  String get dashboardPendingDebts => 'Pending Debts';
 
   @override
-  String get newDebt => 'Công nợ mới';
+  String get dashboardOverdueDebts => 'Overdue';
 
   @override
-  String get editDebt => 'Chỉnh sửa công nợ';
+  String get dashboardProjectsThisWeek => 'This Week';
 
   @override
-  String get debtTitleLabel => 'Tiêu đề';
+  String get dashboardLeadsToFollow => 'Leads to Follow';
 
   @override
-  String get debtTitleHint => 'vd: Bàn giao dự án';
+  String get dashboardMonthlyIncome => 'This Month';
 
   @override
-  String get dueDate => 'Ngày đến hạn';
+  String get dashboardTodayReminders => 'Today\'s Reminders';
 
   @override
-  String get projectsTitle => 'Dự án';
+  String get dashboardActiveClients => 'Active Clients';
 
   @override
-  String get noProjectsYet => 'Chưa có dự án';
+  String get dashboardActiveProjects => 'Active Projects';
 
   @override
-  String get noProjectsSubtitle => 'Bắt đầu bằng cách thêm dự án đầu tiên.';
+  String get dashboardNoRemindersToday => 'No reminders for today';
 
   @override
-  String get addProject => 'Thêm dự án';
+  String get dashboardGoodMorning => 'Good morning';
 
   @override
-  String get newProject => 'Dự án mới';
+  String get dashboardOverview => 'Here\'s your overview';
 
   @override
-  String get editProject => 'Chỉnh sửa dự án';
+  String get clientsTitle => 'Clients';
 
   @override
-  String get projectName => 'Tên dự án';
+  String get clientsEmpty => 'No clients yet';
 
   @override
-  String get projectNameHint => 'vd: Thiết kế website';
+  String get clientsEmptyDesc => 'Add your first client to get started';
 
   @override
-  String get projectDetails => 'Chi tiết dự án...';
+  String get clientsSearchHint => 'Search clients...';
 
   @override
-  String get leadsTitle => 'Tiềm năng';
+  String get clientAddTitle => 'Add Client';
 
   @override
-  String get leadsActiveCount => 'đang hoạt động';
+  String get clientEditTitle => 'Edit Client';
 
   @override
-  String get noLeadsYet => 'Chưa có khách hàng tiềm năng';
+  String get clientDetailTitle => 'Client Details';
 
   @override
-  String get noLeadsSubtitle => 'Thêm khách hàng tiềm năng tại đây.';
+  String get clientFullName => 'Full Name';
 
   @override
-  String get addLead => 'Thêm tiềm năng';
+  String get clientCompanyName => 'Company Name';
 
   @override
-  String get newLead => 'Tiềm năng mới';
+  String get clientDebts => 'Debts';
 
   @override
-  String get editLead => 'Chỉnh sửa tiềm năng';
+  String get clientProjects => 'Projects';
 
   @override
-  String get stage => 'Giai đoạn';
+  String get clientTotalDebt => 'Total Debt';
 
   @override
-  String get source => 'Nguồn';
+  String get clientActiveProjects => 'Active Projects';
 
   @override
-  String get selectSource => 'Chọn nguồn';
+  String get debtsTitle => 'Debts';
 
   @override
-  String get estimatedBudget => 'Ngân sách ước tính';
+  String get debtsEmpty => 'No debts yet';
 
   @override
-  String get followUpDate => 'Ngày theo dõi';
+  String get debtsEmptyDesc => 'Add your first debt record';
 
   @override
-  String get meetingNotesHint => 'Ghi chú cuộc họp...';
+  String get debtsSearchHint => 'Search debts...';
 
   @override
-  String get incomeTitle => 'Thu nhập';
+  String get debtsTotal => 'Total';
 
   @override
-  String get thisMonthPrefix => 'Tháng này: ';
+  String get debtsOverdue => 'Overdue';
 
   @override
-  String get noIncomeYet => 'Chưa có thu nhập';
+  String get debtsPending => 'Pending';
 
   @override
-  String get noIncomeSubtitle => 'Thêm các khoản thanh toán tại đây.';
+  String get debtsPaid => 'Paid';
 
   @override
-  String get addIncome => 'Thêm thu nhập';
+  String get debtsAddTitle => 'Add Debt';
 
   @override
-  String get newIncome => 'Thu nhập mới';
+  String get debtsEditTitle => 'Edit Debt';
 
   @override
-  String get editIncome => 'Chỉnh sửa thu nhập';
+  String get debtDetailTitle => 'Debt Details';
 
   @override
-  String get platform => 'Nền tảng';
+  String get debtsClient => 'Client';
 
   @override
-  String get selectPlatform => 'Chọn nền tảng';
+  String get debtsTotalAmount => 'Total Amount';
 
   @override
-  String get receiptDate => 'Ngày nhận';
+  String get debtsFilterAll => 'All';
 
   @override
-  String get income => 'Thu nhập';
+  String get debtsFilterPending => 'Pending';
 
   @override
-  String get remindersTitle => 'Nhắc nhở';
+  String get debtsFilterOverdue => 'Overdue';
 
   @override
-  String get noRemindersYet => 'Không có nhắc nhở';
+  String get debtsFilterPaid => 'Paid';
 
   @override
-  String get noRemindersSubtitle => 'Thêm ngày và nhiệm vụ quan trọng tại đây.';
+  String get projectsTitle => 'Projects';
 
   @override
-  String get addReminderTitle => 'Thêm nhắc nhở';
+  String get projectsEmpty => 'No projects yet';
 
   @override
-  String get reminderTitleHint => 'Tiêu đề nhắc nhở...';
+  String get projectsEmptyDesc => 'Add your first project';
 
   @override
-  String get titleCannotBeEmpty => 'Tiêu đề không được để trống.';
+  String get projectsSearchHint => 'Search projects...';
 
   @override
-  String get markCompleted => 'Hoàn thành';
+  String get projectsAddTitle => 'Add Project';
 
   @override
-  String get markIncomplete => 'Đánh dấu chưa hoàn thành';
+  String get projectsEditTitle => 'Edit Project';
 
   @override
-  String get settingsTitle => 'Cài đặt';
+  String get projectDetailTitle => 'Project Details';
 
   @override
-  String get sectionData => 'DỮ LIỆU';
+  String get projectClient => 'Client';
 
   @override
-  String get sectionApp => 'ỨNG DỤNG';
+  String get projectBudget => 'Budget';
 
   @override
-  String get sectionLanguage => 'NGÔN NGỮ';
+  String get projectDuration => 'Duration';
 
   @override
-  String get exportData => 'Xuất dữ liệu';
+  String get leadsTitle => 'Leads';
 
   @override
-  String get exportDataSubtitle => 'Chia sẻ tất cả dữ liệu dưới dạng JSON';
+  String get leadsEmpty => 'No leads yet';
 
   @override
-  String get importData => 'Nhập dữ liệu';
+  String get leadsEmptyDesc => 'Start tracking potential clients';
 
   @override
-  String get importDataSubtitle => 'Tải từ tệp JSON';
+  String get leadsSearchHint => 'Search leads...';
 
   @override
-  String get version => 'Phiên bản';
+  String get leadsAddTitle => 'Add Lead';
 
   @override
-  String get exportDialogTitle => 'Xuất dữ liệu';
+  String get leadsEditTitle => 'Edit Lead';
 
   @override
-  String get exportDialogContent =>
-      'Tất cả dữ liệu khách hàng, công nợ, dự án và thu nhập sẽ được xuất dưới dạng JSON và menu chia sẻ sẽ mở.';
+  String get leadDetailTitle => 'Lead Details';
 
   @override
-  String get importDialogTitle => 'Nhập dữ liệu';
+  String get leadsConversionRate => 'Won Rate';
 
   @override
-  String get importDialogContent =>
-      'Hành động này sẽ không ghi đè dữ liệu hiện có; các bản ghi từ tệp đã chọn sẽ được thêm vào. Bạn có muốn tiếp tục không?';
+  String get leadsTotal => 'Total Leads';
 
   @override
-  String get exportButton => 'Xuất';
+  String get incomeTitle => 'Income';
 
   @override
-  String get importButton => 'Nhập';
+  String get incomeEmpty => 'No income records yet';
 
   @override
-  String get language => 'Ngôn ngữ';
+  String get incomeEmptyDesc => 'Start recording your income';
 
   @override
-  String get selectLanguage => 'Chọn ngôn ngữ';
+  String get incomeSearchHint => 'Search income...';
 
   @override
-  String get moreTitle => 'Thêm';
+  String get incomeAddTitle => 'Add Income';
 
   @override
-  String get sectionBusiness => 'QUẢN LÝ CÔNG VIỆC';
+  String get incomeEditTitle => 'Edit Income';
 
   @override
-  String get sectionRemindersNav => 'NHẮC NHỞ';
+  String get incomeTotal => 'Total Income';
 
   @override
-  String get sectionAppNav => 'ỨNG DỤNG';
+  String get incomeThisMonth => 'This Month';
 
   @override
-  String get leadsMenuSubtitle => 'Theo dõi khách hàng tiềm năng';
+  String get incomeDate => 'Income Date';
 
   @override
-  String get incomeMenuSubtitle => 'Hồ sơ thanh toán và thu nhập';
+  String get remindersTitle => 'Reminders';
 
   @override
-  String get remindersMenuSubtitle => 'Nhắc nhở công việc và lịch';
+  String get remindersEmpty => 'No reminders';
 
   @override
-  String get settingsMenuSubtitle => 'Quản lý dữ liệu và thông tin ứng dụng';
+  String get remindersEmptyDesc => 'Set reminders for important tasks';
 
   @override
-  String get searchHint => 'Tìm kiếm...';
+  String get remindersAddTitle => 'Add Reminder';
 
   @override
-  String get statusActive => 'Hoạt động';
+  String get remindersEditTitle => 'Edit Reminder';
 
   @override
-  String get statusInactive => 'Không hoạt động';
+  String get remindersToday => 'Today';
 
   @override
-  String get statusLost => 'Mất';
+  String get remindersUpcoming => 'Upcoming';
 
   @override
-  String get debtPending => 'Chờ xử lý';
+  String get remindersOverdue => 'Overdue';
 
   @override
-  String get debtOverdue => 'Quá hạn';
+  String get remindersCompleted => 'Completed';
 
   @override
-  String get debtPaid => 'Đã thanh toán';
+  String get remindersAll => 'All';
 
   @override
-  String get debtPartial => 'Thanh toán một phần';
+  String get settingsTitle => 'Settings';
 
   @override
-  String get projectPlanned => 'Đã lên kế hoạch';
+  String get settingsAppearance => 'Appearance';
 
   @override
-  String get projectStartingSoon => 'Sắp bắt đầu';
+  String get settingsTheme => 'Theme';
 
   @override
-  String get projectActive => 'Đang thực hiện';
+  String get settingsLanguage => 'Language';
 
   @override
-  String get projectPaused => 'Tạm dừng';
+  String get settingsData => 'Data Management';
 
   @override
-  String get projectCompleted => 'Hoàn thành';
+  String get settingsExport => 'Export Data';
 
   @override
-  String get projectCancelled => 'Đã hủy';
+  String get settingsImport => 'Import Data';
 
   @override
-  String get leadNew => 'Tiềm năng mới';
+  String get settingsAbout => 'About';
 
   @override
-  String get leadContacted => 'Đã liên hệ';
+  String get settingsVersion => 'App Version';
 
   @override
-  String get leadProposalSent => 'Đã gửi đề xuất';
+  String get settingsExportDesc => 'Export all data as JSON file';
 
   @override
-  String get leadNegotiating => 'Đang đàm phán';
+  String get settingsImportDesc => 'Import data from a JSON file';
 
   @override
-  String get leadWon => 'Thành công';
+  String get themeLight => 'Light';
 
   @override
-  String get leadLost => 'Thất bại';
+  String get themeDark => 'Dark';
 
   @override
-  String get errorDataLoad => 'Không thể tải dữ liệu.';
+  String get themeSystem => 'System Default';
 
   @override
-  String get errorClientsLoad => 'Không thể tải danh sách khách hàng.';
+  String get exportTitle => 'Export Data';
 
   @override
-  String get errorClientDelete => 'Không thể xóa khách hàng.';
+  String get exportDesc => 'Your data will be exported as a JSON file. You can use this file to backup or restore your data.';
 
   @override
-  String get errorClientDetailLoad => 'Không thể tải thông tin khách hàng.';
+  String get exportSuccess => 'Data exported successfully';
 
   @override
-  String get errorClientSave => 'Không thể lưu khách hàng.';
+  String get exportError => 'Export failed. Please try again.';
 
   @override
-  String get errorDebtsLoad => 'Không thể tải danh sách công nợ.';
+  String get exportButton => 'Export JSON';
 
   @override
-  String get errorDebtDelete => 'Không thể xóa công nợ.';
+  String get importTitle => 'Import Data';
 
   @override
-  String get errorDebtSave => 'Không thể lưu công nợ.';
+  String get importDesc => 'Select a Mini CRM JSON file to import your data.';
 
   @override
-  String get errorFormDataLoad => 'Không thể tải dữ liệu form.';
+  String get importSuccess => 'Data imported successfully';
 
   @override
-  String get errorProjectsLoad => 'Không thể tải danh sách dự án.';
+  String get importError => 'Import failed. Invalid or corrupted file.';
 
   @override
-  String get errorProjectDelete => 'Không thể xóa dự án.';
+  String get importWarning => 'Importing will replace ALL existing data. This action cannot be undone.';
 
   @override
-  String get errorProjectSave => 'Không thể lưu dự án.';
+  String get importButton => 'Select File';
 
   @override
-  String get errorLeadsLoad => 'Không thể tải danh sách tiềm năng.';
+  String get importReplace => 'Replace all existing data';
 
   @override
-  String get errorLeadDelete => 'Không thể xóa tiềm năng.';
+  String get deleteConfirmTitle => 'Delete';
 
   @override
-  String get errorLeadSave => 'Không thể lưu tiềm năng.';
+  String get deleteConfirmMessage => 'Are you sure you want to delete this? This action cannot be undone.';
 
   @override
-  String get errorIncomeLoad => 'Không thể tải thu nhập.';
+  String get deleteConfirmButton => 'Delete';
 
   @override
-  String get errorIncomeDelete => 'Không thể xóa bản ghi thu nhập.';
+  String get validationRequired => 'This field is required';
 
   @override
-  String get errorIncomeSave => 'Không thể lưu bản ghi thu nhập.';
+  String get validationEmail => 'Please enter a valid email address';
 
   @override
-  String get errorRemindersLoad => 'Không thể tải nhắc nhở.';
+  String get validationAmount => 'Please enter a valid amount';
 
   @override
-  String get errorStatusUpdate => 'Không thể cập nhật trạng thái.';
+  String get validationPositiveAmount => 'Amount must be greater than zero';
 
   @override
-  String get errorReminderDelete => 'Không thể xóa nhắc nhở.';
+  String get validationDateInvalid => 'Please select a valid date';
 
   @override
-  String get errorReminderAdd => 'Không thể thêm nhắc nhở.';
+  String get errorGeneric => 'Something went wrong. Please try again.';
 
   @override
-  String get errorExportFailed => 'Xuất thất bại.';
+  String get errorDatabase => 'Database error. Please restart the app.';
 
   @override
-  String get errorFileRead => 'Không thể đọc tệp.';
+  String get errorLoadFailed => 'Failed to load data';
 
   @override
-  String get errorImportFailed => 'Nhập thất bại.';
+  String get errorSaveFailed => 'Failed to save';
 
   @override
-  String get validationRequired => 'Trường này là bắt buộc.';
+  String get errorDeleteFailed => 'Failed to delete';
 
   @override
-  String get validationEmail => 'Nhập địa chỉ email hợp lệ.';
+  String get currencyUSD => 'USD — US Dollar';
 
   @override
-  String get validationPhone => 'Nhập số điện thoại hợp lệ.';
+  String get currencyEUR => 'EUR — Euro';
 
   @override
-  String get validationAmountRequired => 'Số tiền là bắt buộc.';
+  String get currencyTRY => 'TRY — Turkish Lira';
 
   @override
-  String get validationAmountInvalid => 'Nhập số tiền hợp lệ.';
+  String get currencyGBP => 'GBP — British Pound';
 
   @override
-  String get validationAmountPositive => 'Số tiền phải lớn hơn 0.';
+  String get currencyJPY => 'JPY — Japanese Yen';
 
   @override
-  String get validationSelectClient => 'Vui lòng chọn khách hàng.';
+  String get currencyCNY => 'CNY — Chinese Yuan';
+
+  @override
+  String get currencyINR => 'INR — Indian Rupee';
+
+  @override
+  String get currencyBRL => 'BRL — Brazilian Real';
+
+  @override
+  String get currencyAUD => 'AUD — Australian Dollar';
+
+  @override
+  String get currencyCAD => 'CAD — Canadian Dollar';
+
+  @override
+  String get reminderRelatedClient => 'Client';
+
+  @override
+  String get reminderRelatedDebt => 'Debt';
+
+  @override
+  String get reminderRelatedProject => 'Project';
+
+  @override
+  String get reminderRelatedLead => 'Lead';
+
+  @override
+  String get reminderRelatedIncome => 'Income';
+
+  @override
+  String get reminderRelatedGeneral => 'General';
+
+  @override
+  String daysOverdue(int days) {
+    return '$days day(s) overdue';
+  }
+
+  @override
+  String daysRemaining(int days) {
+    return '$days day(s) remaining';
+  }
+
+  @override
+  String get dueToday => 'Due today';
+
+  @override
+  String get dueTomorrow => 'Due tomorrow';
 }

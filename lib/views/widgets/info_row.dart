@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
 import '../../themes/app_colors.dart';
-import '../../themes/app_text_styles.dart';
 import '../../themes/app_spacing.dart';
+import '../../themes/app_text_styles.dart';
 
 class InfoRow extends StatelessWidget {
   final String label;
-  final String value;
-  final bool isLast;
-  final Widget? valueWidget;
+  final String? value;
+  final Widget? trailing;
+  final bool showDivider;
+  final Color? valueColor;
 
   const InfoRow({
     super.key,
     required this.label,
-    this.value = '',
-    this.isLast = false,
-    this.valueWidget,
+    this.value,
+    this.trailing,
+    this.showDivider = true,
+    this.valueColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: AppSpacing.tileVertical,
-          ),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -32,28 +33,27 @@ class InfoRow extends StatelessWidget {
                 width: 120,
                 child: Text(
                   label,
-                  style: AppTextStyles.subheadline.copyWith(
-                    color: AppColors.textSecondary,
+                  style: AppTextStyles.labelMedium.copyWith(
+                    color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
                   ),
                 ),
               ),
               Expanded(
-                child: valueWidget ??
+                child: trailing ??
                     Text(
-                      value,
-                      style: AppTextStyles.subheadline,
-                      textAlign: TextAlign.end,
+                      value ?? '—',
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: valueColor ?? (isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight),
+                      ),
                     ),
               ),
             ],
           ),
         ),
-        if (!isLast)
-          const Divider(
+        if (showDivider)
+          Divider(
             height: 1,
-            thickness: 0.5,
-            indent: 0,
-            endIndent: 0,
+            color: isDark ? AppColors.borderDark : AppColors.borderLight,
           ),
       ],
     );

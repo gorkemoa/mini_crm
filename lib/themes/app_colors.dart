@@ -1,82 +1,65 @@
 import 'package:flutter/material.dart';
 
 abstract class AppColors {
-  // ─── Backgrounds ───────────────────────────────────────────────────────────
-  static const Color background = Color(0xFFF2F2F7);
-  static const Color surface = Color(0xFFFFFFFF);
-  static const Color surfaceSecondary = Color(0xFFEFEFF4);
-  static const Color surfaceGrouped = Color(0xFFF2F2F7);
+  // Primary
+  static const Color primary = Color(0xFF4F46E5);
+  static const Color primaryDark = Color(0xFF3730A3);
+  static const Color primaryLight = Color(0xFF818CF8);
+  static const Color primaryContainer = Color(0xFFEEF2FF);
 
-  // ─── Text ──────────────────────────────────────────────────────────────────
-  static const Color textPrimary = Color(0xFF000000);
-  static const Color textSecondary = Color(0xFF6C6C70);
-  static const Color textTertiary = Color(0xFFAEAEB2);
-  static const Color textInverse = Color(0xFFFFFFFF);
-  static const Color textLink = Color(0xFF007AFF);
+  // Neutrals
+  static const Color backgroundLight = Color(0xFFF8FAFC);
+  static const Color backgroundDark = Color(0xFF0F172A);
+  static const Color surfaceLight = Color(0xFFFFFFFF);
+  static const Color surfaceDark = Color(0xFF1E293B);
+  static const Color surfaceVariantLight = Color(0xFFF1F5F9);
+  static const Color surfaceVariantDark = Color(0xFF263045);
 
-  // ─── Brand / Primary ───────────────────────────────────────────────────────
-  static const Color primary = Color(0xFF007AFF);
-  static const Color primaryMuted = Color(0xFFE5F1FF);
+  // Text - Light
+  static const Color textPrimaryLight = Color(0xFF0F172A);
+  static const Color textSecondaryLight = Color(0xFF475569);
+  static const Color textTertiaryLight = Color(0xFF94A3B8);
 
-  // ─── Semantic Status ───────────────────────────────────────────────────────
-  static const Color success = Color(0xFF34C759);
-  static const Color successMuted = Color(0xFFE6F9EC);
-  static const Color warning = Color(0xFFFF9500);
-  static const Color warningMuted = Color(0xFFFFF3E0);
-  static const Color danger = Color(0xFFFF3B30);
-  static const Color dangerMuted = Color(0xFFFFEBEA);
-  static const Color info = Color(0xFF5AC8FA);
-  static const Color infoMuted = Color(0xFFE3F5FD);
-  static const Color purple = Color(0xFFAF52DE);
-  static const Color purpleMuted = Color(0xFFF2E6FA);
+  // Text - Dark
+  static const Color textPrimaryDark = Color(0xFFF1F5F9);
+  static const Color textSecondaryDark = Color(0xFF94A3B8);
+  static const Color textTertiaryDark = Color(0xFF64748B);
 
-  // ─── Separators ────────────────────────────────────────────────────────────
-  static const Color separator = Color(0xFFE5E5EA);
-  static const Color separatorOpaque = Color(0xFFC6C6C8);
+  // Status
+  static const Color success = Color(0xFF10B981);
+  static const Color successBg = Color(0xFFECFDF5);
+  static const Color successDarkBg = Color(0xFF052E16);
 
-  // ─── Debt Status ───────────────────────────────────────────────────────────
-  static const Color debtPending = Color(0xFFFF9500);
-  static const Color debtPendingMuted = Color(0xFFFFF3E0);
-  static const Color debtOverdue = Color(0xFFFF3B30);
-  static const Color debtOverdueMuted = Color(0xFFFFEBEA);
-  static const Color debtPaid = Color(0xFF34C759);
-  static const Color debtPaidMuted = Color(0xFFE6F9EC);
-  static const Color debtPartial = Color(0xFF5AC8FA);
-  static const Color debtPartialMuted = Color(0xFFE3F5FD);
+  static const Color warning = Color(0xFFF59E0B);
+  static const Color warningBg = Color(0xFFFFFBEB);
+  static const Color warningDarkBg = Color(0xFF292524);
 
-  // ─── Project Status ────────────────────────────────────────────────────────
-  static const Color projectPlanned = Color(0xFF5AC8FA);
-  static const Color projectPlannedMuted = Color(0xFFE3F5FD);
-  static const Color projectStartingSoon = Color(0xFFFF9500);
-  static const Color projectStartingSoonMuted = Color(0xFFFFF3E0);
-  static const Color projectActive = Color(0xFF34C759);
-  static const Color projectActiveMuted = Color(0xFFE6F9EC);
-  static const Color projectPaused = Color(0xFFAEAEB2);
-  static const Color projectPausedMuted = Color(0xFFF2F2F7);
-  static const Color projectCompleted = Color(0xFF007AFF);
-  static const Color projectCompletedMuted = Color(0xFFE5F1FF);
-  static const Color projectCancelled = Color(0xFFFF3B30);
-  static const Color projectCancelledMuted = Color(0xFFFFEBEA);
+  static const Color error = Color(0xFFEF4444);
+  static const Color errorBg = Color(0xFFFEF2F2);
+  static const Color errorDarkBg = Color(0xFF2D0707);
 
-  // ─── Lead Stage ────────────────────────────────────────────────────────────
-  static const Color leadNew = Color(0xFF5AC8FA);
-  static const Color leadNewMuted = Color(0xFFE3F5FD);
-  static const Color leadContacted = Color(0xFF007AFF);
-  static const Color leadContactedMuted = Color(0xFFE5F1FF);
-  static const Color leadProposal = Color(0xFFFF9500);
-  static const Color leadProposalMuted = Color(0xFFFFF3E0);
-  static const Color leadNegotiating = Color(0xFFAF52DE);
-  static const Color leadNegotiatingMuted = Color(0xFFF2E6FA);
-  static const Color leadWon = Color(0xFF34C759);
-  static const Color leadWonMuted = Color(0xFFE6F9EC);
-  static const Color leadLost = Color(0xFFFF3B30);
-  static const Color leadLostMuted = Color(0xFFFFEBEA);
+  static const Color info = Color(0xFF3B82F6);
+  static const Color infoBg = Color(0xFFEFF6FF);
+  static const Color infoDarkBg = Color(0xFF0B1F3A);
 
-  // ─── Client Status ─────────────────────────────────────────────────────────
-  static const Color clientActive = Color(0xFF34C759);
-  static const Color clientActiveMuted = Color(0xFFE6F9EC);
-  static const Color clientInactive = Color(0xFFAEAEB2);
-  static const Color clientInactiveMuted = Color(0xFFF2F2F7);
-  static const Color clientLost = Color(0xFFFF3B30);
-  static const Color clientLostMuted = Color(0xFFFFEBEA);
+  // Overdue / Warning accent
+  static const Color overdue = Color(0xFFEF4444);
+  static const Color pending = Color(0xFFF59E0B);
+  static const Color paid = Color(0xFF10B981);
+
+  // Border
+  static const Color borderLight = Color(0xFFE2E8F0);
+  static const Color borderDark = Color(0xFF334155);
+
+  // Card shadow
+  static const Color shadowLight = Color(0x0A000000);
+  static const Color shadowDark = Color(0x40000000);
+
+  // Lead stage colors
+  static const Color leadNew = Color(0xFF6366F1);
+  static const Color leadContacted = Color(0xFF3B82F6);
+  static const Color leadProposal = Color(0xFFF59E0B);
+  static const Color leadNegotiating = Color(0xFFEF4444);
+  static const Color leadWon = Color(0xFF10B981);
+  static const Color leadLost = Color(0xFF94A3B8);
 }

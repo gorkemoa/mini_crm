@@ -1,38 +1,34 @@
 sealed class Result<T> {
   const Result();
-}
 
-final class Success<T> extends Result<T> {
-  final T data;
-  const Success(this.data);
-}
+  factory Result.success(T data) = SuccessResult<T>;
+  factory Result.failure(String error) = FailureResult<T>;
 
-final class Failure<T> extends Result<T> {
-  final String message;
-  final Object? error;
-  const Failure(this.message, {this.error});
-}
+  bool get isSuccess => this is SuccessResult<T>;
+  bool get isFailure => this is FailureResult<T>;
 
-extension ResultX<T> on Result<T> {
-  bool get isSuccess => this is Success<T>;
-  bool get isFailure => this is Failure<T>;
-
-  T? get dataOrNull => switch (this) {
-        Success<T> s => s.data,
-        _ => null,
-      };
-
-  String? get errorOrNull => switch (this) {
-        Failure<T> f => f.message,
-        _ => null,
-      };
+  T? get data => isSuccess ? (this as SuccessResult<T>).data : null;
+  String? get error => isFailure ? (this as FailureResult<T>).error : null;
 
   R fold<R>({
     required R Function(T data) onSuccess,
-    required R Function(String message) onFailure,
-  }) =>
-      switch (this) {
-        Success<T> s => onSuccess(s.data),
-        Failure<T> f => onFailure(f.message),
-      };
+    required R Function(String error) onFailure,
+  }) {
+    return switch (this) {
+      SuccessResult<T>(:final data) => onSuccess(data),
+      FailureResult<T>(:final error) => onFailure(error),
+    };
+  }
+}
+
+final class SuccessResult<T> extends Result<T> {
+  @override
+  final T data;
+  const SuccessResult(this.data);
+}
+
+final class FailureResult<T> extends Result<T> {
+  @override
+  final String error;
+  const FailureResult(this.error);
 }

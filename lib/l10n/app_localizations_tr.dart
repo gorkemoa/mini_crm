@@ -1,5 +1,3 @@
-// ignore: unused_import
-import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -12,10 +10,18 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appTitle => 'Mini CRM';
 
   @override
-  String get navDashboard => 'Panel';
+  String appVersion(String version) {
+    return 'Sürüm $version';
+  }
+
+  @override
+  String get navDashboard => 'Özet';
 
   @override
   String get navClients => 'Müşteriler';
+
+  @override
+  String get navLeads => 'Potansiyeller';
 
   @override
   String get navDebts => 'Alacaklar';
@@ -24,581 +30,633 @@ class AppLocalizationsTr extends AppLocalizations {
   String get navProjects => 'Projeler';
 
   @override
+  String get navIncome => 'Gelirler';
+
+  @override
+  String get navReminders => 'Hatırlatıcılar';
+
+  @override
+  String get navSettings => 'Ayarlar';
+
+  @override
   String get navMore => 'Daha Fazla';
 
   @override
-  String get all => 'Tümü';
+  String get navFinance => 'Finans';
 
   @override
-  String get edit => 'Düzenle';
+  String get actionAdd => 'Ekle';
 
   @override
-  String get delete => 'Sil';
+  String get actionEdit => 'Düzenle';
 
   @override
-  String get save => 'Kaydet';
+  String get actionDelete => 'Sil';
 
   @override
-  String get update => 'Güncelle';
+  String get actionSave => 'Kaydet';
 
   @override
-  String get cancel => 'İptal';
+  String get actionCancel => 'İptal';
 
   @override
-  String get add => 'Ekle';
+  String get actionBack => 'Geri';
 
   @override
-  String get selectDate => 'Seç';
+  String get actionSearch => 'Ara';
 
   @override
-  String get status => 'Durum';
+  String get actionFilter => 'Filtrele';
 
   @override
-  String get note => 'Not';
+  String get actionExport => 'Dışa Aktar';
 
   @override
-  String get additionalNotesHint => 'Ek notlar...';
+  String get actionImport => 'İçe Aktar';
 
   @override
-  String get amount => 'Tutar';
+  String get actionClose => 'Kapat';
 
   @override
-  String get amountHint => '0.00';
+  String get actionConfirm => 'Onayla';
 
   @override
-  String get notes => 'Notlar';
+  String get actionDone => 'Tamam';
 
   @override
-  String get email => 'E-posta';
+  String get actionMarkComplete => 'Tamamlandı Olarak İşaretle';
 
   @override
-  String get phone => 'Telefon';
+  String get actionMarkIncomplete => 'Tamamlanmadı Olarak İşaretle';
 
   @override
-  String get customer => 'Müşteri';
+  String get actionViewAll => 'Tümünü Gör';
 
   @override
-  String get selectCustomerOptional => 'Müşteri seç (isteğe bağlı)';
+  String get actionRefresh => 'Yenile';
 
   @override
-  String get noCustomer => '— Müşterisiz —';
+  String get labelName => 'Ad';
 
   @override
-  String get budget => 'Bütçe';
+  String get labelTitle => 'Başlık';
 
   @override
-  String get description => 'Açıklama';
+  String get labelStatus => 'Durum';
 
   @override
-  String get startDate => 'Başlangıç';
+  String get labelDate => 'Tarih';
 
   @override
-  String get endDate => 'Bitiş';
+  String get labelAmount => 'Tutar';
 
   @override
-  String get endDatePrefix => 'Bitiş: ';
+  String get labelCurrency => 'Para Birimi';
 
   @override
-  String get fullName => 'Ad Soyad';
+  String get labelNote => 'Not';
 
   @override
-  String get notesOptional => 'Notlar (opsiyonel)';
+  String get labelNotes => 'Notlar';
 
   @override
-  String get notesHint => 'Müşteri hakkında notlar...';
+  String get labelEmail => 'E-posta';
 
   @override
-  String get errorOccurred => 'Bir hata oluştu';
+  String get labelPhone => 'Telefon';
 
   @override
-  String get tryAgain => 'Tekrar Dene';
+  String get labelCompany => 'Şirket';
 
   @override
-  String get seeAll => 'Tümü';
+  String get labelSource => 'Kaynak';
 
   @override
-  String get today => 'Bugün';
+  String get labelBudget => 'Bütçe';
 
   @override
-  String get upcoming => 'Yaklaşan';
+  String get labelStartDate => 'Başlangıç Tarihi';
 
   @override
-  String get past => 'Geçmiş';
+  String get labelEndDate => 'Bitiş Tarihi';
 
   @override
-  String get completed => 'Tamamlanan';
+  String get labelDueDate => 'Son Ödeme Tarihi';
 
   @override
-  String get notSpecified => '— Belirtilmemiş —';
+  String get labelCreatedAt => 'Oluşturulma';
 
   @override
-  String get dashboardSummarySection => 'ÖZET';
+  String get labelDescription => 'Açıklama';
 
   @override
-  String get pendingDebts => 'Bekleyen Alacak';
+  String get labelPlatform => 'Platform';
 
   @override
-  String get activeLead => 'Aktif Lead';
+  String get labelClient => 'Müşteri';
 
   @override
-  String get thisMonthIncome => 'Bu Ay Gelir';
+  String get labelSelectClient => 'Müşteri Seç';
 
   @override
-  String get todayReminders => 'Bugün Hatırlatıcı';
+  String get labelNoClient => 'Müşteri Yok';
 
   @override
-  String get overdueDebts => 'Gecikmiş Alacaklar';
+  String get labelOptional => 'İsteğe Bağlı';
 
   @override
-  String get activeProjects => 'Aktif Projeler';
+  String get labelStage => 'Aşama';
 
   @override
-  String get greetingMorning => 'Günaydın 👋';
+  String get labelFollowUpDate => 'Takip Tarihi';
 
   @override
-  String get greetingAfternoon => 'İyi günler 👋';
+  String get labelEstimatedBudget => 'Tahmini Bütçe';
 
   @override
-  String get greetingEvening => 'İyi akşamlar 👋';
+  String get labelReminderDate => 'Hatırlatıcı Tarihi';
+
+  @override
+  String get labelRelatedTo => 'İlgili';
+
+  @override
+  String get labelAll => 'Tümü';
+
+  @override
+  String get clientStatusActive => 'Aktif';
+
+  @override
+  String get clientStatusInactive => 'Pasif';
+
+  @override
+  String get clientStatusArchived => 'Arşivlendi';
+
+  @override
+  String get debtStatusPending => 'Bekliyor';
+
+  @override
+  String get debtStatusOverdue => 'Gecikmiş';
+
+  @override
+  String get debtStatusPaid => 'Ödendi';
+
+  @override
+  String get debtStatusPartial => 'Kısmi';
+
+  @override
+  String get projectStatusPlanned => 'Planlandı';
+
+  @override
+  String get projectStatusStartingSoon => 'Yakında Başlıyor';
+
+  @override
+  String get projectStatusActive => 'Aktif';
+
+  @override
+  String get projectStatusPaused => 'Duraklatıldı';
+
+  @override
+  String get projectStatusCompleted => 'Tamamlandı';
+
+  @override
+  String get projectStatusCancelled => 'İptal Edildi';
+
+  @override
+  String get leadStageNew => 'Yeni Lead';
+
+  @override
+  String get leadStageContacted => 'İletişime Geçildi';
+
+  @override
+  String get leadStageProposalSent => 'Teklif Gönderildi';
+
+  @override
+  String get leadStageNegotiating => 'Görüşme Aşamasında';
+
+  @override
+  String get leadStageWon => 'Kazanıldı';
+
+  @override
+  String get leadStageLost => 'Kaybedildi';
+
+  @override
+  String get dashboardTitle => 'Özet';
+
+  @override
+  String get dashboardPendingDebts => 'Bekleyen Alacaklar';
+
+  @override
+  String get dashboardOverdueDebts => 'Gecikmiş';
+
+  @override
+  String get dashboardProjectsThisWeek => 'Bu Hafta';
+
+  @override
+  String get dashboardLeadsToFollow => 'Takip Bekleyen';
+
+  @override
+  String get dashboardMonthlyIncome => 'Bu Ay';
+
+  @override
+  String get dashboardTodayReminders => 'Bugünün Hatırlatıcıları';
+
+  @override
+  String get dashboardActiveClients => 'Aktif Müşteriler';
+
+  @override
+  String get dashboardActiveProjects => 'Aktif Projeler';
+
+  @override
+  String get dashboardNoRemindersToday => 'Bugün hatırlatıcı yok';
+
+  @override
+  String get dashboardGoodMorning => 'Günaydın';
+
+  @override
+  String get dashboardOverview => 'İşte genel durumunuz';
 
   @override
   String get clientsTitle => 'Müşteriler';
 
   @override
-  String get noClientsYet => 'Henüz müşteri yok';
+  String get clientsEmpty => 'Henüz müşteri yok';
 
   @override
-  String get noClientsSubtitle => 'İlk müşteriyi ekleyerek başla.';
+  String get clientsEmptyDesc => 'Başlamak için ilk müşterinizi ekleyin';
 
   @override
-  String get addClient => 'Müşteri Ekle';
+  String get clientsSearchHint => 'Müşteri ara...';
 
   @override
-  String get deleteClient => 'Müşteriyi Sil';
+  String get clientAddTitle => 'Müşteri Ekle';
 
   @override
-  String get editClient => 'Müşteriyi Düzenle';
+  String get clientEditTitle => 'Müşteri Düzenle';
 
   @override
-  String get newClient => 'Yeni Müşteri';
+  String get clientDetailTitle => 'Müşteri Detayı';
 
   @override
-  String get debtsSection => 'Alacaklar';
+  String get clientFullName => 'Ad Soyad';
 
   @override
-  String get projectsSection => 'Projeler';
+  String get clientCompanyName => 'Şirket Adı';
 
   @override
-  String get noDebtsInline => 'Henüz alacak kaydı yok.';
+  String get clientDebts => 'Alacaklar';
 
   @override
-  String get noProjectsInline => 'Henüz proje yok.';
+  String get clientProjects => 'Projeler';
 
   @override
-  String get companyOptional => 'Şirket (opsiyonel)';
+  String get clientTotalDebt => 'Toplam Alacak';
 
   @override
-  String get companyHint => 'Şirket Adı A.Ş.';
-
-  @override
-  String get emailOptional => 'E-posta (opsiyonel)';
-
-  @override
-  String get emailHint => 'ornek@mail.com';
-
-  @override
-  String get phoneOptional => 'Telefon (opsiyonel)';
-
-  @override
-  String get phoneHint => '0555 555 55 55';
-
-  @override
-  String get fullNameHint => 'Ahmet Yılmaz';
+  String get clientActiveProjects => 'Aktif Projeler';
 
   @override
   String get debtsTitle => 'Alacaklar';
 
   @override
-  String get debtWaiting => 'bekliyor';
+  String get debtsEmpty => 'Henüz alacak yok';
 
   @override
-  String get noDebtsYet => 'Henüz alacak yok';
+  String get debtsEmptyDesc => 'İlk alacak kaydınızı ekleyin';
 
   @override
-  String get noDebtsSubtitle => 'İlk alacağını ekleyerek başla.';
+  String get debtsSearchHint => 'Alacak ara...';
 
   @override
-  String get addDebt => 'Alacak Ekle';
+  String get debtsTotal => 'Toplam';
 
   @override
-  String get newDebt => 'Yeni Alacak';
+  String get debtsOverdue => 'Gecikmiş';
 
   @override
-  String get editDebt => 'Alacağı Düzenle';
+  String get debtsPending => 'Bekliyor';
 
   @override
-  String get debtTitleLabel => 'Başlık';
+  String get debtsPaid => 'Ödendi';
 
   @override
-  String get debtTitleHint => 'ör. Proje teslimi';
+  String get debtsAddTitle => 'Alacak Ekle';
 
   @override
-  String get dueDate => 'Vade Tarihi';
+  String get debtsEditTitle => 'Alacak Düzenle';
+
+  @override
+  String get debtDetailTitle => 'Alacak Detayı';
+
+  @override
+  String get debtsClient => 'Müşteri';
+
+  @override
+  String get debtsTotalAmount => 'Toplam Tutar';
+
+  @override
+  String get debtsFilterAll => 'Tümü';
+
+  @override
+  String get debtsFilterPending => 'Bekleyenler';
+
+  @override
+  String get debtsFilterOverdue => 'Gecikenler';
+
+  @override
+  String get debtsFilterPaid => 'Ödenenler';
 
   @override
   String get projectsTitle => 'Projeler';
 
   @override
-  String get noProjectsYet => 'Henüz proje yok';
+  String get projectsEmpty => 'Henüz proje yok';
 
   @override
-  String get noProjectsSubtitle => 'İlk projeyi ekleyerek başla.';
+  String get projectsEmptyDesc => 'İlk projenizi ekleyin';
 
   @override
-  String get addProject => 'Proje Ekle';
+  String get projectsSearchHint => 'Proje ara...';
 
   @override
-  String get newProject => 'Yeni Proje';
+  String get projectsAddTitle => 'Proje Ekle';
 
   @override
-  String get editProject => 'Projeyi Düzenle';
+  String get projectsEditTitle => 'Proje Düzenle';
 
   @override
-  String get projectName => 'Proje Adı';
+  String get projectDetailTitle => 'Proje Detayı';
 
   @override
-  String get projectNameHint => 'ör. Web sitesi tasarımı';
+  String get projectClient => 'Müşteri';
 
   @override
-  String get projectDetails => 'Proje detayları...';
+  String get projectBudget => 'Bütçe';
 
   @override
-  String get leadsTitle => 'Adaylar';
+  String get projectDuration => 'Süre';
 
   @override
-  String get leadsActiveCount => 'aktif';
+  String get leadsTitle => 'Potansiyel Müşteriler';
 
   @override
-  String get noLeadsYet => 'Henüz aday yok';
+  String get leadsEmpty => 'Henüz lead yok';
 
   @override
-  String get noLeadsSubtitle => 'Potansiyel müşterileri buraya ekle.';
+  String get leadsEmptyDesc => 'Potansiyel müşteri takibine başlayın';
 
   @override
-  String get addLead => 'Aday Ekle';
+  String get leadsSearchHint => 'Lead ara...';
 
   @override
-  String get newLead => 'Yeni Aday';
+  String get leadsAddTitle => 'Lead Ekle';
 
   @override
-  String get editLead => 'Adayı Düzenle';
+  String get leadsEditTitle => 'Lead Düzenle';
 
   @override
-  String get stage => 'Aşama';
+  String get leadDetailTitle => 'Lead Detayı';
 
   @override
-  String get source => 'Kaynak';
+  String get leadsConversionRate => 'Kazanma Oranı';
 
   @override
-  String get selectSource => 'Kaynak seç';
-
-  @override
-  String get estimatedBudget => 'Tahmini Bütçe';
-
-  @override
-  String get followUpDate => 'Takip Tarihi';
-
-  @override
-  String get meetingNotesHint => 'Görüşme notları...';
+  String get leadsTotal => 'Toplam Lead';
 
   @override
   String get incomeTitle => 'Gelirler';
 
   @override
-  String get thisMonthPrefix => 'Bu ay: ';
+  String get incomeEmpty => 'Henüz gelir kaydı yok';
 
   @override
-  String get noIncomeYet => 'Henüz gelir yok';
+  String get incomeEmptyDesc => 'Gelirinizi kaydetmeye başlayın';
 
   @override
-  String get noIncomeSubtitle => 'Aldığın ödemeleri buraya ekle.';
+  String get incomeSearchHint => 'Gelir ara...';
 
   @override
-  String get addIncome => 'Gelir Ekle';
+  String get incomeAddTitle => 'Gelir Ekle';
 
   @override
-  String get newIncome => 'Yeni Gelir';
+  String get incomeEditTitle => 'Gelir Düzenle';
 
   @override
-  String get editIncome => 'Geliri Düzenle';
+  String get incomeTotal => 'Toplam Gelir';
 
   @override
-  String get platform => 'Platform';
+  String get incomeThisMonth => 'Bu Ay';
 
   @override
-  String get selectPlatform => 'Platform seç';
-
-  @override
-  String get receiptDate => 'Alınma Tarihi';
-
-  @override
-  String get income => 'Gelir';
+  String get incomeDate => 'Gelir Tarihi';
 
   @override
   String get remindersTitle => 'Hatırlatıcılar';
 
   @override
-  String get noRemindersYet => 'Hatırlatıcı yok';
+  String get remindersEmpty => 'Hatırlatıcı yok';
 
   @override
-  String get noRemindersSubtitle =>
-      'Önemli tarihleri ve görevleri buraya ekle.';
+  String get remindersEmptyDesc => 'Önemli görevler için hatırlatıcı ekleyin';
 
   @override
-  String get addReminderTitle => 'Hatırlatıcı Ekle';
+  String get remindersAddTitle => 'Hatırlatıcı Ekle';
 
   @override
-  String get reminderTitleHint => 'Hatırlatıcı başlığı...';
+  String get remindersEditTitle => 'Hatırlatıcı Düzenle';
 
   @override
-  String get titleCannotBeEmpty => 'Başlık boş olamaz.';
+  String get remindersToday => 'Bugün';
 
   @override
-  String get markCompleted => 'Tamamlandı';
+  String get remindersUpcoming => 'Yaklaşan';
 
   @override
-  String get markIncomplete => 'Tamamlanmadı olarak işaretle';
+  String get remindersOverdue => 'Gecikmiş';
+
+  @override
+  String get remindersCompleted => 'Tamamlanan';
+
+  @override
+  String get remindersAll => 'Tümü';
 
   @override
   String get settingsTitle => 'Ayarlar';
 
   @override
-  String get sectionData => 'VERİ';
+  String get settingsAppearance => 'Görünüm';
 
   @override
-  String get sectionApp => 'UYGULAMA';
+  String get settingsTheme => 'Tema';
 
   @override
-  String get sectionLanguage => 'DİL';
+  String get settingsLanguage => 'Dil';
 
   @override
-  String get exportData => 'Veriyi Dışa Aktar';
+  String get settingsData => 'Veri Yönetimi';
 
   @override
-  String get exportDataSubtitle => 'Tüm veriyi JSON olarak paylaş';
+  String get settingsExport => 'Veriyi Dışa Aktar';
 
   @override
-  String get importData => 'Veriyi İçe Aktar';
+  String get settingsImport => 'Veri İçe Aktar';
 
   @override
-  String get importDataSubtitle => 'JSON dosyasından yükle';
+  String get settingsAbout => 'Hakkında';
 
   @override
-  String get version => 'Sürüm';
+  String get settingsVersion => 'Uygulama Sürümü';
 
   @override
-  String get exportDialogTitle => 'Veriyi Dışa Aktar';
+  String get settingsExportDesc => 'Tüm verileri JSON dosyası olarak dışa aktar';
 
   @override
-  String get exportDialogContent =>
-      'Tüm müşteri, borç, proje ve gelir verileri JSON formatında dışa aktarılacak ve paylaşım menüsü açılacak.';
+  String get settingsImportDesc => 'JSON dosyasından veri içe aktar';
 
   @override
-  String get importDialogTitle => 'Veriyi İçe Aktar';
+  String get themeLight => 'Açık';
 
   @override
-  String get importDialogContent =>
-      'Bu işlem mevcut verilerin üzerine yazmaz; seçilen dosyadaki kayıtlar eklenir. Devam etmek istiyor musun?';
+  String get themeDark => 'Koyu';
 
   @override
-  String get exportButton => 'Aktar';
+  String get themeSystem => 'Sistem Varsayılanı';
 
   @override
-  String get importButton => 'İçe Aktar';
+  String get exportTitle => 'Veriyi Dışa Aktar';
 
   @override
-  String get language => 'Dil';
+  String get exportDesc => 'Verileriniz JSON dosyası olarak dışa aktarılacak. Bu dosyayı yedekleme veya geri yükleme için kullanabilirsiniz.';
 
   @override
-  String get selectLanguage => 'Dil Seç';
+  String get exportSuccess => 'Veriler başarıyla dışa aktarıldı';
 
   @override
-  String get moreTitle => 'Daha Fazla';
+  String get exportError => 'Dışa aktarma başarısız. Lütfen tekrar deneyin.';
 
   @override
-  String get sectionBusiness => 'İŞ TAKİBİ';
+  String get exportButton => 'JSON Olarak Aktar';
 
   @override
-  String get sectionRemindersNav => 'HATIRLATICILAR';
+  String get importTitle => 'Veri İçe Aktar';
 
   @override
-  String get sectionAppNav => 'UYGULAMA';
+  String get importDesc => 'Mini CRM JSON dosyası seçin.';
 
   @override
-  String get leadsMenuSubtitle => 'Potansiyel müşterileri takip et';
+  String get importSuccess => 'Veriler başarıyla içe aktarıldı';
 
   @override
-  String get incomeMenuSubtitle => 'Ödeme ve gelir kayıtları';
+  String get importError => 'İçe aktarma başarısız. Geçersiz veya bozuk dosya.';
 
   @override
-  String get remindersMenuSubtitle => 'Görev ve takvim hatırlatmaları';
+  String get importWarning => 'İçe aktarma TÜM mevcut verilerin üzerine yazacak. Bu işlem geri alınamaz.';
 
   @override
-  String get settingsMenuSubtitle => 'Veri yönetimi ve uygulama bilgisi';
+  String get importButton => 'Dosya Seç';
 
   @override
-  String get searchHint => 'Ara...';
+  String get importReplace => 'Mevcut tüm verilerin üzerine yaz';
 
   @override
-  String get statusActive => 'Aktif';
+  String get deleteConfirmTitle => 'Sil';
 
   @override
-  String get statusInactive => 'Pasif';
+  String get deleteConfirmMessage => 'Bu kaydı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.';
 
   @override
-  String get statusLost => 'Kaybedildi';
+  String get deleteConfirmButton => 'Sil';
 
   @override
-  String get debtPending => 'Bekliyor';
+  String get validationRequired => 'Bu alan zorunludur';
 
   @override
-  String get debtOverdue => 'Gecikmiş';
+  String get validationEmail => 'Geçerli bir e-posta adresi girin';
 
   @override
-  String get debtPaid => 'Ödendi';
+  String get validationAmount => 'Geçerli bir tutar girin';
 
   @override
-  String get debtPartial => 'Kısmi Ödeme';
+  String get validationPositiveAmount => 'Tutar sıfırdan büyük olmalıdır';
 
   @override
-  String get projectPlanned => 'Planlandı';
+  String get validationDateInvalid => 'Geçerli bir tarih seçin';
 
   @override
-  String get projectStartingSoon => 'Yakında Başlıyor';
+  String get errorGeneric => 'Bir şeyler yanlış gitti. Lütfen tekrar deneyin.';
 
   @override
-  String get projectActive => 'Aktif';
+  String get errorDatabase => 'Veritabanı hatası. Lütfen uygulamayı yeniden başlatın.';
 
   @override
-  String get projectPaused => 'Duraklatıldı';
+  String get errorLoadFailed => 'Veriler yüklenemedi';
 
   @override
-  String get projectCompleted => 'Tamamlandı';
+  String get errorSaveFailed => 'Kaydetme başarısız';
 
   @override
-  String get projectCancelled => 'İptal Edildi';
+  String get errorDeleteFailed => 'Silme başarısız';
 
   @override
-  String get leadNew => 'Yeni Lead';
+  String get currencyUSD => 'USD — Amerikan Doları';
 
   @override
-  String get leadContacted => 'İletişime Geçildi';
+  String get currencyEUR => 'EUR — Euro';
 
   @override
-  String get leadProposalSent => 'Teklif Gönderildi';
+  String get currencyTRY => 'TRY — Türk Lirası';
 
   @override
-  String get leadNegotiating => 'Görüşmede';
+  String get currencyGBP => 'GBP — İngiliz Sterlini';
 
   @override
-  String get leadWon => 'Kazanıldı';
+  String get currencyJPY => 'JPY — Japon Yeni';
 
   @override
-  String get leadLost => 'Kaybedildi';
+  String get currencyCNY => 'CNY — Çin Yuanı';
 
   @override
-  String get errorDataLoad => 'Veriler yüklenemedi.';
+  String get currencyINR => 'INR — Hint Rupisi';
 
   @override
-  String get errorClientsLoad => 'Müşteriler yüklenemedi.';
+  String get currencyBRL => 'BRL — Brezilya Reali';
 
   @override
-  String get errorClientDelete => 'Müşteri silinemedi.';
+  String get currencyAUD => 'AUD — Avustralya Doları';
 
   @override
-  String get errorClientDetailLoad => 'Müşteri detayı yüklenemedi.';
+  String get currencyCAD => 'CAD — Kanada Doları';
 
   @override
-  String get errorClientSave => 'Müşteri kaydedilemedi.';
+  String get reminderRelatedClient => 'Müşteri';
 
   @override
-  String get errorDebtsLoad => 'Alacaklar yüklenemedi.';
+  String get reminderRelatedDebt => 'Alacak';
 
   @override
-  String get errorDebtDelete => 'Alacak silinemedi.';
+  String get reminderRelatedProject => 'Proje';
 
   @override
-  String get errorDebtSave => 'Alacak kaydedilemedi.';
+  String get reminderRelatedLead => 'Lead';
 
   @override
-  String get errorFormDataLoad => 'Form verileri yüklenemedi.';
+  String get reminderRelatedIncome => 'Gelir';
 
   @override
-  String get errorProjectsLoad => 'Projeler yüklenemedi.';
+  String get reminderRelatedGeneral => 'Genel';
 
   @override
-  String get errorProjectDelete => 'Proje silinemedi.';
+  String daysOverdue(int days) {
+    return '$days gün gecikmiş';
+  }
 
   @override
-  String get errorProjectSave => 'Proje kaydedilemedi.';
+  String daysRemaining(int days) {
+    return '$days gün kaldı';
+  }
 
   @override
-  String get errorLeadsLoad => 'Leadler yüklenemedi.';
+  String get dueToday => 'Bugün son gün';
 
   @override
-  String get errorLeadDelete => 'Lead silinemedi.';
-
-  @override
-  String get errorLeadSave => 'Lead kaydedilemedi.';
-
-  @override
-  String get errorIncomeLoad => 'Gelirler yüklenemedi.';
-
-  @override
-  String get errorIncomeDelete => 'Gelir silinemedi.';
-
-  @override
-  String get errorIncomeSave => 'Gelir kaydedilemedi.';
-
-  @override
-  String get errorRemindersLoad => 'Hatırlatıcılar yüklenemedi.';
-
-  @override
-  String get errorStatusUpdate => 'Durum güncellenemedi.';
-
-  @override
-  String get errorReminderDelete => 'Hatırlatıcı silinemedi.';
-
-  @override
-  String get errorReminderAdd => 'Hatırlatıcı eklenemedi.';
-
-  @override
-  String get errorExportFailed => 'Dışa aktarma başarısız.';
-
-  @override
-  String get errorFileRead => 'Dosya okunamadı.';
-
-  @override
-  String get errorImportFailed => 'İçe aktarma başarısız.';
-
-  @override
-  String get validationRequired => 'Bu alan zorunludur.';
-
-  @override
-  String get validationEmail => 'Geçerli bir e-posta adresi girin.';
-
-  @override
-  String get validationPhone => 'Geçerli bir telefon numarası girin.';
-
-  @override
-  String get validationAmountRequired => 'Tutar zorunludur.';
-
-  @override
-  String get validationAmountInvalid => 'Geçerli bir tutar girin.';
-
-  @override
-  String get validationAmountPositive => 'Tutar 0\'dan büyük olmalıdır.';
-
-  @override
-  String get validationSelectClient => 'Lütfen bir müşteri seçin.';
+  String get dueTomorrow => 'Yarın son gün';
 }

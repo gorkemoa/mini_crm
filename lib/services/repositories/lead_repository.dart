@@ -1,81 +1,105 @@
 import 'package:sqflite/sqflite.dart';
+
+import '../../core/base/result.dart';
 import '../../models/lead_model.dart';
-import '../../core/utils/id_utils.dart';
+import '../../models/enums.dart';
 import '../database/local_database_service.dart';
 
 class LeadRepository {
-  final LocalDatabaseService _dbService;
+  final LocalDatabaseService _db;
+  LeadRepository(this._db);
 
-  LeadRepository(this._dbService);
-
-  Database get _db => _dbService.db;
-
-  Future<List<LeadModel>> getAll() async {
-    final rows = await _db.query(
-      'leads',
-      orderBy: 'created_at DESC',
-    );
-    return rows.map(LeadModel.fromMap).toList();
+  Future<Result<List<LeadModel>>> getAll({LeadStage? stage}) async {
+    try {
+      final db = await _db.database;
+      final maps = await db.query(
+        'leads',
+        where: stage != null ? 'stage = ?' : null,
+        whereArgs: stage != null ? [stage.name] : null,
+        orderBy: 'next_follow_up_date ASC, created_at DESC',
+      );
+      return Result.success(maps.map(LeadModel.fromMap).toList());
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<LeadModel?> getById(String id) async {
-    final rows = await _db.query(
-      'leads',
-      where: 'id = ?',
-      whereArgs: [id],
-      limit: 1,
-    );
-    if (rows.isEmpty) return null;
-    return LeadModel.fromMap(rows.first);
+  Future<Result<LeadModel?>> getById(String id) async {
+    try {
+      final db = await _db.database;
+      final maps = await db.query('leads', where: 'id = ?', whereArgs: [id]);
+      if (maps.isEmpty) return Result.success(null);
+      return Result.success(LeadModel.fromMap(maps.first));
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<List<LeadModel>> getByStage(LeadStage stage) async {
-    final rows = await _db.query(
-      'leads',
-      where: 'stage = ?',
-      whereArgs: [stage.name],
-      orderBy: 'created_at DESC',
-    );
-    return rows.map(LeadModel.fromMap).toList();
+  Future<Result<LeadModel>> create(LeadModel lead) async {
+    try {
+      final db = await _db.database;
+      await db.insert('leads', lead.toMap(), conflictAlgorithm: ConflictAlgorithm.fail);
+      return Result.success(lead);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<List<LeadModel>> getActive() async {
-    final rows = await _db.rawQuery(
-      "SELECT * FROM leads WHERE stage NOT IN ('won', 'lost') ORDER BY next_follow_up_date ASC",
-    );
-    return rows.map(LeadModel.fromMap).toList();
+  Future<Result<LeadModel>> update(LeadModel lead) async {
+    try {
+      final db = await _db.database;
+      await db.update('leads', lead.toMap(), where: 'id = ?', whereArgs: [lead.id]);
+      return Result.success(lead);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<int> countActive() async {
-    final result = await _db.rawQuery(
-      "SELECT COUNT(*) as count FROM leads WHERE stage NOT IN ('won', 'lost')",
-    );
-    return (result.first['count'] as int?) ?? 0;
+  Future<Result<void>> delete(String id) async {
+    try {
+      final db = await _db.database;
+      await db.delete('leads', where: 'id = ?', whereArgs: [id]);
+      return Result.success(null);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<LeadModel> create(LeadModel lead) async {
-    final now = DateTime.now();
-    final model = lead.copyWith(
-      id: IdUtils.generate(),
-      createdAt: now,
-      updatedAt: now,
-    );
-    await _db.insert('leads', model.toMap());
-    return model;
+  Future<Result<int>> getFollowUpCount() async {
+    try {
+      final db = await _db.database;
+      final now = DateTime.now().toIso8601String();
+      final result = await db.rawQuery(
+        "SELECT COUNT(*) as count FROM leads WHERE next_follow_up_date <= ? AND stage NOT IN ('won','lost')",
+        [now],
+      );
+      return Result.success(Sqflite.firstIntValue(result) ?? 0);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<LeadModel> update(LeadModel lead) async {
-    final model = lead.copyWith(updatedAt: DateTime.now());
-    await _db.update(
-      'leads',
-      model.toMap(),
-      where: 'id = ?',
-      whereArgs: [model.id],
-    );
-    return model;
+  Future<Result<void>> insertAll(List<LeadModel> leads) async {
+    try {
+      final db = await _db.database;
+      final batch = db.batch();
+      for (final l in leads) {
+        batch.insert('leads', l.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+      }
+      await batch.commit(noResult: true);
+      return Result.success(null);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 
-  Future<void> delete(String id) async {
-    await _db.delete('leads', where: 'id = ?', whereArgs: [id]);
+  Future<Result<void>> deleteAll() async {
+    try {
+      final db = await _db.database;
+      await db.delete('leads');
+      return Result.success(null);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
   }
 }

@@ -80,17 +80,15 @@ import 'app_localizations_zh.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
-  static AppLocalizations? of(BuildContext context) {
-    return Localizations.of<AppLocalizations>(context, AppLocalizations);
+  static AppLocalizations of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -102,36 +100,35 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
-    Locale('en'),
-    Locale('tr'),
     Locale('ar'),
-    Locale('zh'),
-    Locale('es'),
-    Locale('hi'),
-    Locale('pt'),
-    Locale('fr'),
-    Locale('id'),
-    Locale('ja'),
-    Locale('de'),
-    Locale('ru'),
-    Locale('ko'),
     Locale('bn'),
+    Locale('de'),
+    Locale('en'),
+    Locale('es'),
+    Locale('fa'),
+    Locale('fr'),
+    Locale('hi'),
+    Locale('id'),
+    Locale('it'),
+    Locale('ja'),
+    Locale('ko'),
+    Locale('pl'),
+    Locale('pt'),
+    Locale('ru'),
+    Locale('th'),
+    Locale('tr'),
     Locale('ur'),
     Locale('vi'),
-    Locale('it'),
-    Locale('fa'),
-    Locale('pl'),
-    Locale('th'),
+    Locale('zh')
   ];
 
   /// No description provided for @appTitle.
@@ -139,6 +136,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Mini CRM'**
   String get appTitle;
+
+  /// No description provided for @appVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String appVersion(String version);
 
   /// No description provided for @navDashboard.
   ///
@@ -152,6 +155,12 @@ abstract class AppLocalizations {
   /// **'Clients'**
   String get navClients;
 
+  /// No description provided for @navLeads.
+  ///
+  /// In en, this message translates to:
+  /// **'Leads'**
+  String get navLeads;
+
   /// No description provided for @navDebts.
   ///
   /// In en, this message translates to:
@@ -164,281 +173,497 @@ abstract class AppLocalizations {
   /// **'Projects'**
   String get navProjects;
 
+  /// No description provided for @navIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get navIncome;
+
+  /// No description provided for @navReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get navReminders;
+
+  /// No description provided for @navSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get navSettings;
+
   /// No description provided for @navMore.
   ///
   /// In en, this message translates to:
   /// **'More'**
   String get navMore;
 
-  /// No description provided for @all.
+  /// No description provided for @navFinance.
   ///
   /// In en, this message translates to:
-  /// **'All'**
-  String get all;
+  /// **'Finance'**
+  String get navFinance;
 
-  /// No description provided for @edit.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit'**
-  String get edit;
-
-  /// No description provided for @delete.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete'**
-  String get delete;
-
-  /// No description provided for @save.
-  ///
-  /// In en, this message translates to:
-  /// **'Save'**
-  String get save;
-
-  /// No description provided for @update.
-  ///
-  /// In en, this message translates to:
-  /// **'Update'**
-  String get update;
-
-  /// No description provided for @cancel.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get cancel;
-
-  /// No description provided for @add.
+  /// No description provided for @actionAdd.
   ///
   /// In en, this message translates to:
   /// **'Add'**
-  String get add;
+  String get actionAdd;
 
-  /// No description provided for @selectDate.
+  /// No description provided for @actionEdit.
   ///
   /// In en, this message translates to:
-  /// **'Select'**
-  String get selectDate;
+  /// **'Edit'**
+  String get actionEdit;
 
-  /// No description provided for @status.
+  /// No description provided for @actionDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get actionDelete;
+
+  /// No description provided for @actionSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get actionSave;
+
+  /// No description provided for @actionCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get actionCancel;
+
+  /// No description provided for @actionBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get actionBack;
+
+  /// No description provided for @actionSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get actionSearch;
+
+  /// No description provided for @actionFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get actionFilter;
+
+  /// No description provided for @actionExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get actionExport;
+
+  /// No description provided for @actionImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get actionImport;
+
+  /// No description provided for @actionClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get actionClose;
+
+  /// No description provided for @actionConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get actionConfirm;
+
+  /// No description provided for @actionDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get actionDone;
+
+  /// No description provided for @actionMarkComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Complete'**
+  String get actionMarkComplete;
+
+  /// No description provided for @actionMarkIncomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Incomplete'**
+  String get actionMarkIncomplete;
+
+  /// No description provided for @actionViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get actionViewAll;
+
+  /// No description provided for @actionRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get actionRefresh;
+
+  /// No description provided for @labelName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get labelName;
+
+  /// No description provided for @labelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get labelTitle;
+
+  /// No description provided for @labelStatus.
   ///
   /// In en, this message translates to:
   /// **'Status'**
-  String get status;
+  String get labelStatus;
 
-  /// No description provided for @note.
+  /// No description provided for @labelDate.
   ///
   /// In en, this message translates to:
-  /// **'Note'**
-  String get note;
+  /// **'Date'**
+  String get labelDate;
 
-  /// No description provided for @additionalNotesHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Additional notes...'**
-  String get additionalNotesHint;
-
-  /// No description provided for @amount.
+  /// No description provided for @labelAmount.
   ///
   /// In en, this message translates to:
   /// **'Amount'**
-  String get amount;
+  String get labelAmount;
 
-  /// No description provided for @amountHint.
+  /// No description provided for @labelCurrency.
   ///
   /// In en, this message translates to:
-  /// **'0.00'**
-  String get amountHint;
+  /// **'Currency'**
+  String get labelCurrency;
 
-  /// No description provided for @notes.
+  /// No description provided for @labelNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get labelNote;
+
+  /// No description provided for @labelNotes.
   ///
   /// In en, this message translates to:
   /// **'Notes'**
-  String get notes;
+  String get labelNotes;
 
-  /// No description provided for @email.
+  /// No description provided for @labelEmail.
   ///
   /// In en, this message translates to:
   /// **'Email'**
-  String get email;
+  String get labelEmail;
 
-  /// No description provided for @phone.
+  /// No description provided for @labelPhone.
   ///
   /// In en, this message translates to:
   /// **'Phone'**
-  String get phone;
+  String get labelPhone;
 
-  /// No description provided for @customer.
+  /// No description provided for @labelCompany.
   ///
   /// In en, this message translates to:
-  /// **'Client'**
-  String get customer;
+  /// **'Company'**
+  String get labelCompany;
 
-  /// No description provided for @selectCustomerOptional.
+  /// No description provided for @labelSource.
   ///
   /// In en, this message translates to:
-  /// **'Select client (optional)'**
-  String get selectCustomerOptional;
+  /// **'Source'**
+  String get labelSource;
 
-  /// No description provided for @noCustomer.
-  ///
-  /// In en, this message translates to:
-  /// **'— No Client —'**
-  String get noCustomer;
-
-  /// No description provided for @budget.
+  /// No description provided for @labelBudget.
   ///
   /// In en, this message translates to:
   /// **'Budget'**
-  String get budget;
+  String get labelBudget;
 
-  /// No description provided for @description.
+  /// No description provided for @labelStartDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Date'**
+  String get labelStartDate;
+
+  /// No description provided for @labelEndDate.
+  ///
+  /// In en, this message translates to:
+  /// **'End Date'**
+  String get labelEndDate;
+
+  /// No description provided for @labelDueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Due Date'**
+  String get labelDueDate;
+
+  /// No description provided for @labelCreatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get labelCreatedAt;
+
+  /// No description provided for @labelDescription.
   ///
   /// In en, this message translates to:
   /// **'Description'**
-  String get description;
+  String get labelDescription;
 
-  /// No description provided for @startDate.
+  /// No description provided for @labelPlatform.
   ///
   /// In en, this message translates to:
-  /// **'Start'**
-  String get startDate;
+  /// **'Platform'**
+  String get labelPlatform;
 
-  /// No description provided for @endDate.
+  /// No description provided for @labelClient.
   ///
   /// In en, this message translates to:
-  /// **'End'**
-  String get endDate;
+  /// **'Client'**
+  String get labelClient;
 
-  /// No description provided for @endDatePrefix.
+  /// No description provided for @labelSelectClient.
   ///
   /// In en, this message translates to:
-  /// **'End: '**
-  String get endDatePrefix;
+  /// **'Select Client'**
+  String get labelSelectClient;
 
-  /// No description provided for @fullName.
+  /// No description provided for @labelNoClient.
   ///
   /// In en, this message translates to:
-  /// **'Full Name'**
-  String get fullName;
+  /// **'No Client'**
+  String get labelNoClient;
 
-  /// No description provided for @notesOptional.
+  /// No description provided for @labelOptional.
   ///
   /// In en, this message translates to:
-  /// **'Notes (optional)'**
-  String get notesOptional;
+  /// **'Optional'**
+  String get labelOptional;
 
-  /// No description provided for @notesHint.
+  /// No description provided for @labelStage.
   ///
   /// In en, this message translates to:
-  /// **'Notes about client...'**
-  String get notesHint;
+  /// **'Stage'**
+  String get labelStage;
 
-  /// No description provided for @errorOccurred.
+  /// No description provided for @labelFollowUpDate.
   ///
   /// In en, this message translates to:
-  /// **'An error occurred'**
-  String get errorOccurred;
+  /// **'Follow-up Date'**
+  String get labelFollowUpDate;
 
-  /// No description provided for @tryAgain.
+  /// No description provided for @labelEstimatedBudget.
   ///
   /// In en, this message translates to:
-  /// **'Try Again'**
-  String get tryAgain;
+  /// **'Estimated Budget'**
+  String get labelEstimatedBudget;
 
-  /// No description provided for @seeAll.
+  /// No description provided for @labelReminderDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder Date'**
+  String get labelReminderDate;
+
+  /// No description provided for @labelRelatedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Related To'**
+  String get labelRelatedTo;
+
+  /// No description provided for @labelAll.
   ///
   /// In en, this message translates to:
   /// **'All'**
-  String get seeAll;
+  String get labelAll;
 
-  /// No description provided for @today.
+  /// No description provided for @clientStatusActive.
   ///
   /// In en, this message translates to:
-  /// **'Today'**
-  String get today;
+  /// **'Active'**
+  String get clientStatusActive;
 
-  /// No description provided for @upcoming.
+  /// No description provided for @clientStatusInactive.
   ///
   /// In en, this message translates to:
-  /// **'Upcoming'**
-  String get upcoming;
+  /// **'Inactive'**
+  String get clientStatusInactive;
 
-  /// No description provided for @past.
+  /// No description provided for @clientStatusArchived.
   ///
   /// In en, this message translates to:
-  /// **'Past'**
-  String get past;
+  /// **'Archived'**
+  String get clientStatusArchived;
 
-  /// No description provided for @completed.
+  /// No description provided for @debtStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get debtStatusPending;
+
+  /// No description provided for @debtStatusOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get debtStatusOverdue;
+
+  /// No description provided for @debtStatusPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get debtStatusPaid;
+
+  /// No description provided for @debtStatusPartial.
+  ///
+  /// In en, this message translates to:
+  /// **'Partial'**
+  String get debtStatusPartial;
+
+  /// No description provided for @projectStatusPlanned.
+  ///
+  /// In en, this message translates to:
+  /// **'Planned'**
+  String get projectStatusPlanned;
+
+  /// No description provided for @projectStatusStartingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting Soon'**
+  String get projectStatusStartingSoon;
+
+  /// No description provided for @projectStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get projectStatusActive;
+
+  /// No description provided for @projectStatusPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get projectStatusPaused;
+
+  /// No description provided for @projectStatusCompleted.
   ///
   /// In en, this message translates to:
   /// **'Completed'**
-  String get completed;
+  String get projectStatusCompleted;
 
-  /// No description provided for @notSpecified.
+  /// No description provided for @projectStatusCancelled.
   ///
   /// In en, this message translates to:
-  /// **'— Not Specified —'**
-  String get notSpecified;
+  /// **'Cancelled'**
+  String get projectStatusCancelled;
 
-  /// No description provided for @dashboardSummarySection.
+  /// No description provided for @leadStageNew.
   ///
   /// In en, this message translates to:
-  /// **'SUMMARY'**
-  String get dashboardSummarySection;
+  /// **'New Lead'**
+  String get leadStageNew;
 
-  /// No description provided for @pendingDebts.
+  /// No description provided for @leadStageContacted.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacted'**
+  String get leadStageContacted;
+
+  /// No description provided for @leadStageProposalSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Proposal Sent'**
+  String get leadStageProposalSent;
+
+  /// No description provided for @leadStageNegotiating.
+  ///
+  /// In en, this message translates to:
+  /// **'Negotiating'**
+  String get leadStageNegotiating;
+
+  /// No description provided for @leadStageWon.
+  ///
+  /// In en, this message translates to:
+  /// **'Won'**
+  String get leadStageWon;
+
+  /// No description provided for @leadStageLost.
+  ///
+  /// In en, this message translates to:
+  /// **'Lost'**
+  String get leadStageLost;
+
+  /// No description provided for @dashboardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get dashboardTitle;
+
+  /// No description provided for @dashboardPendingDebts.
   ///
   /// In en, this message translates to:
   /// **'Pending Debts'**
-  String get pendingDebts;
+  String get dashboardPendingDebts;
 
-  /// No description provided for @activeLead.
+  /// No description provided for @dashboardOverdueDebts.
   ///
   /// In en, this message translates to:
-  /// **'Active Leads'**
-  String get activeLead;
+  /// **'Overdue'**
+  String get dashboardOverdueDebts;
 
-  /// No description provided for @thisMonthIncome.
+  /// No description provided for @dashboardProjectsThisWeek.
   ///
   /// In en, this message translates to:
-  /// **'This Month Income'**
-  String get thisMonthIncome;
+  /// **'This Week'**
+  String get dashboardProjectsThisWeek;
 
-  /// No description provided for @todayReminders.
+  /// No description provided for @dashboardLeadsToFollow.
+  ///
+  /// In en, this message translates to:
+  /// **'Leads to Follow'**
+  String get dashboardLeadsToFollow;
+
+  /// No description provided for @dashboardMonthlyIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'This Month'**
+  String get dashboardMonthlyIncome;
+
+  /// No description provided for @dashboardTodayReminders.
   ///
   /// In en, this message translates to:
   /// **'Today\'s Reminders'**
-  String get todayReminders;
+  String get dashboardTodayReminders;
 
-  /// No description provided for @overdueDebts.
+  /// No description provided for @dashboardActiveClients.
   ///
   /// In en, this message translates to:
-  /// **'Overdue Debts'**
-  String get overdueDebts;
+  /// **'Active Clients'**
+  String get dashboardActiveClients;
 
-  /// No description provided for @activeProjects.
+  /// No description provided for @dashboardActiveProjects.
   ///
   /// In en, this message translates to:
   /// **'Active Projects'**
-  String get activeProjects;
+  String get dashboardActiveProjects;
 
-  /// No description provided for @greetingMorning.
+  /// No description provided for @dashboardNoRemindersToday.
   ///
   /// In en, this message translates to:
-  /// **'Good morning 👋'**
-  String get greetingMorning;
+  /// **'No reminders for today'**
+  String get dashboardNoRemindersToday;
 
-  /// No description provided for @greetingAfternoon.
+  /// No description provided for @dashboardGoodMorning.
   ///
   /// In en, this message translates to:
-  /// **'Good afternoon 👋'**
-  String get greetingAfternoon;
+  /// **'Good morning'**
+  String get dashboardGoodMorning;
 
-  /// No description provided for @greetingEvening.
+  /// No description provided for @dashboardOverview.
   ///
   /// In en, this message translates to:
-  /// **'Good evening 👋'**
-  String get greetingEvening;
+  /// **'Here\'s your overview'**
+  String get dashboardOverview;
 
   /// No description provided for @clientsTitle.
   ///
@@ -446,107 +671,77 @@ abstract class AppLocalizations {
   /// **'Clients'**
   String get clientsTitle;
 
-  /// No description provided for @noClientsYet.
+  /// No description provided for @clientsEmpty.
   ///
   /// In en, this message translates to:
   /// **'No clients yet'**
-  String get noClientsYet;
+  String get clientsEmpty;
 
-  /// No description provided for @noClientsSubtitle.
+  /// No description provided for @clientsEmptyDesc.
   ///
   /// In en, this message translates to:
-  /// **'Start by adding your first client.'**
-  String get noClientsSubtitle;
+  /// **'Add your first client to get started'**
+  String get clientsEmptyDesc;
 
-  /// No description provided for @addClient.
+  /// No description provided for @clientsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search clients...'**
+  String get clientsSearchHint;
+
+  /// No description provided for @clientAddTitle.
   ///
   /// In en, this message translates to:
   /// **'Add Client'**
-  String get addClient;
+  String get clientAddTitle;
 
-  /// No description provided for @deleteClient.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete Client'**
-  String get deleteClient;
-
-  /// No description provided for @editClient.
+  /// No description provided for @clientEditTitle.
   ///
   /// In en, this message translates to:
   /// **'Edit Client'**
-  String get editClient;
+  String get clientEditTitle;
 
-  /// No description provided for @newClient.
+  /// No description provided for @clientDetailTitle.
   ///
   /// In en, this message translates to:
-  /// **'New Client'**
-  String get newClient;
+  /// **'Client Details'**
+  String get clientDetailTitle;
 
-  /// No description provided for @debtsSection.
+  /// No description provided for @clientFullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get clientFullName;
+
+  /// No description provided for @clientCompanyName.
+  ///
+  /// In en, this message translates to:
+  /// **'Company Name'**
+  String get clientCompanyName;
+
+  /// No description provided for @clientDebts.
   ///
   /// In en, this message translates to:
   /// **'Debts'**
-  String get debtsSection;
+  String get clientDebts;
 
-  /// No description provided for @projectsSection.
+  /// No description provided for @clientProjects.
   ///
   /// In en, this message translates to:
   /// **'Projects'**
-  String get projectsSection;
+  String get clientProjects;
 
-  /// No description provided for @noDebtsInline.
+  /// No description provided for @clientTotalDebt.
   ///
   /// In en, this message translates to:
-  /// **'No debts yet.'**
-  String get noDebtsInline;
+  /// **'Total Debt'**
+  String get clientTotalDebt;
 
-  /// No description provided for @noProjectsInline.
+  /// No description provided for @clientActiveProjects.
   ///
   /// In en, this message translates to:
-  /// **'No projects yet.'**
-  String get noProjectsInline;
-
-  /// No description provided for @companyOptional.
-  ///
-  /// In en, this message translates to:
-  /// **'Company (optional)'**
-  String get companyOptional;
-
-  /// No description provided for @companyHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Company Name LLC.'**
-  String get companyHint;
-
-  /// No description provided for @emailOptional.
-  ///
-  /// In en, this message translates to:
-  /// **'Email (optional)'**
-  String get emailOptional;
-
-  /// No description provided for @emailHint.
-  ///
-  /// In en, this message translates to:
-  /// **'example@email.com'**
-  String get emailHint;
-
-  /// No description provided for @phoneOptional.
-  ///
-  /// In en, this message translates to:
-  /// **'Phone (optional)'**
-  String get phoneOptional;
-
-  /// No description provided for @phoneHint.
-  ///
-  /// In en, this message translates to:
-  /// **'+1 555 555 55 55'**
-  String get phoneHint;
-
-  /// No description provided for @fullNameHint.
-  ///
-  /// In en, this message translates to:
-  /// **'John Smith'**
-  String get fullNameHint;
+  /// **'Active Projects'**
+  String get clientActiveProjects;
 
   /// No description provided for @debtsTitle.
   ///
@@ -554,59 +749,101 @@ abstract class AppLocalizations {
   /// **'Debts'**
   String get debtsTitle;
 
-  /// No description provided for @debtWaiting.
-  ///
-  /// In en, this message translates to:
-  /// **'waiting'**
-  String get debtWaiting;
-
-  /// No description provided for @noDebtsYet.
+  /// No description provided for @debtsEmpty.
   ///
   /// In en, this message translates to:
   /// **'No debts yet'**
-  String get noDebtsYet;
+  String get debtsEmpty;
 
-  /// No description provided for @noDebtsSubtitle.
+  /// No description provided for @debtsEmptyDesc.
   ///
   /// In en, this message translates to:
-  /// **'Start by adding your first debt.'**
-  String get noDebtsSubtitle;
+  /// **'Add your first debt record'**
+  String get debtsEmptyDesc;
 
-  /// No description provided for @addDebt.
+  /// No description provided for @debtsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search debts...'**
+  String get debtsSearchHint;
+
+  /// No description provided for @debtsTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get debtsTotal;
+
+  /// No description provided for @debtsOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get debtsOverdue;
+
+  /// No description provided for @debtsPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get debtsPending;
+
+  /// No description provided for @debtsPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get debtsPaid;
+
+  /// No description provided for @debtsAddTitle.
   ///
   /// In en, this message translates to:
   /// **'Add Debt'**
-  String get addDebt;
+  String get debtsAddTitle;
 
-  /// No description provided for @newDebt.
-  ///
-  /// In en, this message translates to:
-  /// **'New Debt'**
-  String get newDebt;
-
-  /// No description provided for @editDebt.
+  /// No description provided for @debtsEditTitle.
   ///
   /// In en, this message translates to:
   /// **'Edit Debt'**
-  String get editDebt;
+  String get debtsEditTitle;
 
-  /// No description provided for @debtTitleLabel.
+  /// No description provided for @debtDetailTitle.
   ///
   /// In en, this message translates to:
-  /// **'Title'**
-  String get debtTitleLabel;
+  /// **'Debt Details'**
+  String get debtDetailTitle;
 
-  /// No description provided for @debtTitleHint.
+  /// No description provided for @debtsClient.
   ///
   /// In en, this message translates to:
-  /// **'e.g. Project delivery'**
-  String get debtTitleHint;
+  /// **'Client'**
+  String get debtsClient;
 
-  /// No description provided for @dueDate.
+  /// No description provided for @debtsTotalAmount.
   ///
   /// In en, this message translates to:
-  /// **'Due Date'**
-  String get dueDate;
+  /// **'Total Amount'**
+  String get debtsTotalAmount;
+
+  /// No description provided for @debtsFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get debtsFilterAll;
+
+  /// No description provided for @debtsFilterPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get debtsFilterPending;
+
+  /// No description provided for @debtsFilterOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get debtsFilterOverdue;
+
+  /// No description provided for @debtsFilterPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get debtsFilterPaid;
 
   /// No description provided for @projectsTitle.
   ///
@@ -614,53 +851,59 @@ abstract class AppLocalizations {
   /// **'Projects'**
   String get projectsTitle;
 
-  /// No description provided for @noProjectsYet.
+  /// No description provided for @projectsEmpty.
   ///
   /// In en, this message translates to:
   /// **'No projects yet'**
-  String get noProjectsYet;
+  String get projectsEmpty;
 
-  /// No description provided for @noProjectsSubtitle.
+  /// No description provided for @projectsEmptyDesc.
   ///
   /// In en, this message translates to:
-  /// **'Start by adding your first project.'**
-  String get noProjectsSubtitle;
+  /// **'Add your first project'**
+  String get projectsEmptyDesc;
 
-  /// No description provided for @addProject.
+  /// No description provided for @projectsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search projects...'**
+  String get projectsSearchHint;
+
+  /// No description provided for @projectsAddTitle.
   ///
   /// In en, this message translates to:
   /// **'Add Project'**
-  String get addProject;
+  String get projectsAddTitle;
 
-  /// No description provided for @newProject.
-  ///
-  /// In en, this message translates to:
-  /// **'New Project'**
-  String get newProject;
-
-  /// No description provided for @editProject.
+  /// No description provided for @projectsEditTitle.
   ///
   /// In en, this message translates to:
   /// **'Edit Project'**
-  String get editProject;
+  String get projectsEditTitle;
 
-  /// No description provided for @projectName.
+  /// No description provided for @projectDetailTitle.
   ///
   /// In en, this message translates to:
-  /// **'Project Name'**
-  String get projectName;
+  /// **'Project Details'**
+  String get projectDetailTitle;
 
-  /// No description provided for @projectNameHint.
+  /// No description provided for @projectClient.
   ///
   /// In en, this message translates to:
-  /// **'e.g. Website design'**
-  String get projectNameHint;
+  /// **'Client'**
+  String get projectClient;
 
-  /// No description provided for @projectDetails.
+  /// No description provided for @projectBudget.
   ///
   /// In en, this message translates to:
-  /// **'Project details...'**
-  String get projectDetails;
+  /// **'Budget'**
+  String get projectBudget;
+
+  /// No description provided for @projectDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get projectDuration;
 
   /// No description provided for @leadsTitle.
   ///
@@ -668,77 +911,53 @@ abstract class AppLocalizations {
   /// **'Leads'**
   String get leadsTitle;
 
-  /// No description provided for @leadsActiveCount.
-  ///
-  /// In en, this message translates to:
-  /// **'active'**
-  String get leadsActiveCount;
-
-  /// No description provided for @noLeadsYet.
+  /// No description provided for @leadsEmpty.
   ///
   /// In en, this message translates to:
   /// **'No leads yet'**
-  String get noLeadsYet;
+  String get leadsEmpty;
 
-  /// No description provided for @noLeadsSubtitle.
+  /// No description provided for @leadsEmptyDesc.
   ///
   /// In en, this message translates to:
-  /// **'Add potential clients here.'**
-  String get noLeadsSubtitle;
+  /// **'Start tracking potential clients'**
+  String get leadsEmptyDesc;
 
-  /// No description provided for @addLead.
+  /// No description provided for @leadsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search leads...'**
+  String get leadsSearchHint;
+
+  /// No description provided for @leadsAddTitle.
   ///
   /// In en, this message translates to:
   /// **'Add Lead'**
-  String get addLead;
+  String get leadsAddTitle;
 
-  /// No description provided for @newLead.
-  ///
-  /// In en, this message translates to:
-  /// **'New Lead'**
-  String get newLead;
-
-  /// No description provided for @editLead.
+  /// No description provided for @leadsEditTitle.
   ///
   /// In en, this message translates to:
   /// **'Edit Lead'**
-  String get editLead;
+  String get leadsEditTitle;
 
-  /// No description provided for @stage.
+  /// No description provided for @leadDetailTitle.
   ///
   /// In en, this message translates to:
-  /// **'Stage'**
-  String get stage;
+  /// **'Lead Details'**
+  String get leadDetailTitle;
 
-  /// No description provided for @source.
+  /// No description provided for @leadsConversionRate.
   ///
   /// In en, this message translates to:
-  /// **'Source'**
-  String get source;
+  /// **'Won Rate'**
+  String get leadsConversionRate;
 
-  /// No description provided for @selectSource.
+  /// No description provided for @leadsTotal.
   ///
   /// In en, this message translates to:
-  /// **'Select source'**
-  String get selectSource;
-
-  /// No description provided for @estimatedBudget.
-  ///
-  /// In en, this message translates to:
-  /// **'Estimated Budget'**
-  String get estimatedBudget;
-
-  /// No description provided for @followUpDate.
-  ///
-  /// In en, this message translates to:
-  /// **'Follow-up Date'**
-  String get followUpDate;
-
-  /// No description provided for @meetingNotesHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Meeting notes...'**
-  String get meetingNotesHint;
+  /// **'Total Leads'**
+  String get leadsTotal;
 
   /// No description provided for @incomeTitle.
   ///
@@ -746,65 +965,53 @@ abstract class AppLocalizations {
   /// **'Income'**
   String get incomeTitle;
 
-  /// No description provided for @thisMonthPrefix.
+  /// No description provided for @incomeEmpty.
   ///
   /// In en, this message translates to:
-  /// **'This month: '**
-  String get thisMonthPrefix;
+  /// **'No income records yet'**
+  String get incomeEmpty;
 
-  /// No description provided for @noIncomeYet.
+  /// No description provided for @incomeEmptyDesc.
   ///
   /// In en, this message translates to:
-  /// **'No income yet'**
-  String get noIncomeYet;
+  /// **'Start recording your income'**
+  String get incomeEmptyDesc;
 
-  /// No description provided for @noIncomeSubtitle.
+  /// No description provided for @incomeSearchHint.
   ///
   /// In en, this message translates to:
-  /// **'Add your payments here.'**
-  String get noIncomeSubtitle;
+  /// **'Search income...'**
+  String get incomeSearchHint;
 
-  /// No description provided for @addIncome.
+  /// No description provided for @incomeAddTitle.
   ///
   /// In en, this message translates to:
   /// **'Add Income'**
-  String get addIncome;
+  String get incomeAddTitle;
 
-  /// No description provided for @newIncome.
-  ///
-  /// In en, this message translates to:
-  /// **'New Income'**
-  String get newIncome;
-
-  /// No description provided for @editIncome.
+  /// No description provided for @incomeEditTitle.
   ///
   /// In en, this message translates to:
   /// **'Edit Income'**
-  String get editIncome;
+  String get incomeEditTitle;
 
-  /// No description provided for @platform.
+  /// No description provided for @incomeTotal.
   ///
   /// In en, this message translates to:
-  /// **'Platform'**
-  String get platform;
+  /// **'Total Income'**
+  String get incomeTotal;
 
-  /// No description provided for @selectPlatform.
+  /// No description provided for @incomeThisMonth.
   ///
   /// In en, this message translates to:
-  /// **'Select platform'**
-  String get selectPlatform;
+  /// **'This Month'**
+  String get incomeThisMonth;
 
-  /// No description provided for @receiptDate.
+  /// No description provided for @incomeDate.
   ///
   /// In en, this message translates to:
-  /// **'Receipt Date'**
-  String get receiptDate;
-
-  /// No description provided for @income.
-  ///
-  /// In en, this message translates to:
-  /// **'Income'**
-  String get income;
+  /// **'Income Date'**
+  String get incomeDate;
 
   /// No description provided for @remindersTitle.
   ///
@@ -812,47 +1019,59 @@ abstract class AppLocalizations {
   /// **'Reminders'**
   String get remindersTitle;
 
-  /// No description provided for @noRemindersYet.
+  /// No description provided for @remindersEmpty.
   ///
   /// In en, this message translates to:
   /// **'No reminders'**
-  String get noRemindersYet;
+  String get remindersEmpty;
 
-  /// No description provided for @noRemindersSubtitle.
+  /// No description provided for @remindersEmptyDesc.
   ///
   /// In en, this message translates to:
-  /// **'Add important dates and tasks here.'**
-  String get noRemindersSubtitle;
+  /// **'Set reminders for important tasks'**
+  String get remindersEmptyDesc;
 
-  /// No description provided for @addReminderTitle.
+  /// No description provided for @remindersAddTitle.
   ///
   /// In en, this message translates to:
   /// **'Add Reminder'**
-  String get addReminderTitle;
+  String get remindersAddTitle;
 
-  /// No description provided for @reminderTitleHint.
+  /// No description provided for @remindersEditTitle.
   ///
   /// In en, this message translates to:
-  /// **'Reminder title...'**
-  String get reminderTitleHint;
+  /// **'Edit Reminder'**
+  String get remindersEditTitle;
 
-  /// No description provided for @titleCannotBeEmpty.
+  /// No description provided for @remindersToday.
   ///
   /// In en, this message translates to:
-  /// **'Title cannot be empty.'**
-  String get titleCannotBeEmpty;
+  /// **'Today'**
+  String get remindersToday;
 
-  /// No description provided for @markCompleted.
+  /// No description provided for @remindersUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get remindersUpcoming;
+
+  /// No description provided for @remindersOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get remindersOverdue;
+
+  /// No description provided for @remindersCompleted.
   ///
   /// In en, this message translates to:
   /// **'Completed'**
-  String get markCompleted;
+  String get remindersCompleted;
 
-  /// No description provided for @markIncomplete.
+  /// No description provided for @remindersAll.
   ///
   /// In en, this message translates to:
-  /// **'Mark as incomplete'**
-  String get markIncomplete;
+  /// **'All'**
+  String get remindersAll;
 
   /// No description provided for @settingsTitle.
   ///
@@ -860,465 +1079,356 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settingsTitle;
 
-  /// No description provided for @sectionData.
+  /// No description provided for @settingsAppearance.
   ///
   /// In en, this message translates to:
-  /// **'DATA'**
-  String get sectionData;
+  /// **'Appearance'**
+  String get settingsAppearance;
 
-  /// No description provided for @sectionApp.
+  /// No description provided for @settingsTheme.
   ///
   /// In en, this message translates to:
-  /// **'APPLICATION'**
-  String get sectionApp;
+  /// **'Theme'**
+  String get settingsTheme;
 
-  /// No description provided for @sectionLanguage.
+  /// No description provided for @settingsLanguage.
   ///
   /// In en, this message translates to:
-  /// **'LANGUAGE'**
-  String get sectionLanguage;
+  /// **'Language'**
+  String get settingsLanguage;
 
-  /// No description provided for @exportData.
+  /// No description provided for @settingsData.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Management'**
+  String get settingsData;
+
+  /// No description provided for @settingsExport.
   ///
   /// In en, this message translates to:
   /// **'Export Data'**
-  String get exportData;
+  String get settingsExport;
 
-  /// No description provided for @exportDataSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Share all data as JSON'**
-  String get exportDataSubtitle;
-
-  /// No description provided for @importData.
+  /// No description provided for @settingsImport.
   ///
   /// In en, this message translates to:
   /// **'Import Data'**
-  String get importData;
+  String get settingsImport;
 
-  /// No description provided for @importDataSubtitle.
+  /// No description provided for @settingsAbout.
   ///
   /// In en, this message translates to:
-  /// **'Load from JSON file'**
-  String get importDataSubtitle;
+  /// **'About'**
+  String get settingsAbout;
 
-  /// No description provided for @version.
+  /// No description provided for @settingsVersion.
   ///
   /// In en, this message translates to:
-  /// **'Version'**
-  String get version;
+  /// **'App Version'**
+  String get settingsVersion;
 
-  /// No description provided for @exportDialogTitle.
+  /// No description provided for @settingsExportDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Export all data as JSON file'**
+  String get settingsExportDesc;
+
+  /// No description provided for @settingsImportDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Import data from a JSON file'**
+  String get settingsImportDesc;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeDark;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System Default'**
+  String get themeSystem;
+
+  /// No description provided for @exportTitle.
   ///
   /// In en, this message translates to:
   /// **'Export Data'**
-  String get exportDialogTitle;
+  String get exportTitle;
 
-  /// No description provided for @exportDialogContent.
+  /// No description provided for @exportDesc.
   ///
   /// In en, this message translates to:
-  /// **'All client, debt, project and income data will be exported as JSON and the share menu will open.'**
-  String get exportDialogContent;
+  /// **'Your data will be exported as a JSON file. You can use this file to backup or restore your data.'**
+  String get exportDesc;
 
-  /// No description provided for @importDialogTitle.
+  /// No description provided for @exportSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Import Data'**
-  String get importDialogTitle;
+  /// **'Data exported successfully'**
+  String get exportSuccess;
 
-  /// No description provided for @importDialogContent.
+  /// No description provided for @exportError.
   ///
   /// In en, this message translates to:
-  /// **'This action will not overwrite existing data; records from the selected file will be added. Do you want to continue?'**
-  String get importDialogContent;
+  /// **'Export failed. Please try again.'**
+  String get exportError;
 
   /// No description provided for @exportButton.
   ///
   /// In en, this message translates to:
-  /// **'Export'**
+  /// **'Export JSON'**
   String get exportButton;
+
+  /// No description provided for @importTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Data'**
+  String get importTitle;
+
+  /// No description provided for @importDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a Mini CRM JSON file to import your data.'**
+  String get importDesc;
+
+  /// No description provided for @importSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Data imported successfully'**
+  String get importSuccess;
+
+  /// No description provided for @importError.
+  ///
+  /// In en, this message translates to:
+  /// **'Import failed. Invalid or corrupted file.'**
+  String get importError;
+
+  /// No description provided for @importWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Importing will replace ALL existing data. This action cannot be undone.'**
+  String get importWarning;
 
   /// No description provided for @importButton.
   ///
   /// In en, this message translates to:
-  /// **'Import'**
+  /// **'Select File'**
   String get importButton;
 
-  /// No description provided for @language.
+  /// No description provided for @importReplace.
   ///
   /// In en, this message translates to:
-  /// **'Language'**
-  String get language;
+  /// **'Replace all existing data'**
+  String get importReplace;
 
-  /// No description provided for @selectLanguage.
+  /// No description provided for @deleteConfirmTitle.
   ///
   /// In en, this message translates to:
-  /// **'Select Language'**
-  String get selectLanguage;
+  /// **'Delete'**
+  String get deleteConfirmTitle;
 
-  /// No description provided for @moreTitle.
+  /// No description provided for @deleteConfirmMessage.
   ///
   /// In en, this message translates to:
-  /// **'More'**
-  String get moreTitle;
+  /// **'Are you sure you want to delete this? This action cannot be undone.'**
+  String get deleteConfirmMessage;
 
-  /// No description provided for @sectionBusiness.
+  /// No description provided for @deleteConfirmButton.
   ///
   /// In en, this message translates to:
-  /// **'BUSINESS TRACKING'**
-  String get sectionBusiness;
-
-  /// No description provided for @sectionRemindersNav.
-  ///
-  /// In en, this message translates to:
-  /// **'REMINDERS'**
-  String get sectionRemindersNav;
-
-  /// No description provided for @sectionAppNav.
-  ///
-  /// In en, this message translates to:
-  /// **'APPLICATION'**
-  String get sectionAppNav;
-
-  /// No description provided for @leadsMenuSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Track potential clients'**
-  String get leadsMenuSubtitle;
-
-  /// No description provided for @incomeMenuSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Payment and income records'**
-  String get incomeMenuSubtitle;
-
-  /// No description provided for @remindersMenuSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Task and calendar reminders'**
-  String get remindersMenuSubtitle;
-
-  /// No description provided for @settingsMenuSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Data management and app info'**
-  String get settingsMenuSubtitle;
-
-  /// No description provided for @searchHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Search...'**
-  String get searchHint;
-
-  /// No description provided for @statusActive.
-  ///
-  /// In en, this message translates to:
-  /// **'Active'**
-  String get statusActive;
-
-  /// No description provided for @statusInactive.
-  ///
-  /// In en, this message translates to:
-  /// **'Inactive'**
-  String get statusInactive;
-
-  /// No description provided for @statusLost.
-  ///
-  /// In en, this message translates to:
-  /// **'Lost'**
-  String get statusLost;
-
-  /// No description provided for @debtPending.
-  ///
-  /// In en, this message translates to:
-  /// **'Pending'**
-  String get debtPending;
-
-  /// No description provided for @debtOverdue.
-  ///
-  /// In en, this message translates to:
-  /// **'Overdue'**
-  String get debtOverdue;
-
-  /// No description provided for @debtPaid.
-  ///
-  /// In en, this message translates to:
-  /// **'Paid'**
-  String get debtPaid;
-
-  /// No description provided for @debtPartial.
-  ///
-  /// In en, this message translates to:
-  /// **'Partial Payment'**
-  String get debtPartial;
-
-  /// No description provided for @projectPlanned.
-  ///
-  /// In en, this message translates to:
-  /// **'Planned'**
-  String get projectPlanned;
-
-  /// No description provided for @projectStartingSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Starting Soon'**
-  String get projectStartingSoon;
-
-  /// No description provided for @projectActive.
-  ///
-  /// In en, this message translates to:
-  /// **'Active'**
-  String get projectActive;
-
-  /// No description provided for @projectPaused.
-  ///
-  /// In en, this message translates to:
-  /// **'Paused'**
-  String get projectPaused;
-
-  /// No description provided for @projectCompleted.
-  ///
-  /// In en, this message translates to:
-  /// **'Completed'**
-  String get projectCompleted;
-
-  /// No description provided for @projectCancelled.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancelled'**
-  String get projectCancelled;
-
-  /// No description provided for @leadNew.
-  ///
-  /// In en, this message translates to:
-  /// **'New Lead'**
-  String get leadNew;
-
-  /// No description provided for @leadContacted.
-  ///
-  /// In en, this message translates to:
-  /// **'Contacted'**
-  String get leadContacted;
-
-  /// No description provided for @leadProposalSent.
-  ///
-  /// In en, this message translates to:
-  /// **'Proposal Sent'**
-  String get leadProposalSent;
-
-  /// No description provided for @leadNegotiating.
-  ///
-  /// In en, this message translates to:
-  /// **'Negotiating'**
-  String get leadNegotiating;
-
-  /// No description provided for @leadWon.
-  ///
-  /// In en, this message translates to:
-  /// **'Won'**
-  String get leadWon;
-
-  /// No description provided for @leadLost.
-  ///
-  /// In en, this message translates to:
-  /// **'Lost'**
-  String get leadLost;
-
-  /// No description provided for @errorDataLoad.
-  ///
-  /// In en, this message translates to:
-  /// **'Data could not be loaded.'**
-  String get errorDataLoad;
-
-  /// No description provided for @errorClientsLoad.
-  ///
-  /// In en, this message translates to:
-  /// **'Clients could not be loaded.'**
-  String get errorClientsLoad;
-
-  /// No description provided for @errorClientDelete.
-  ///
-  /// In en, this message translates to:
-  /// **'Client could not be deleted.'**
-  String get errorClientDelete;
-
-  /// No description provided for @errorClientDetailLoad.
-  ///
-  /// In en, this message translates to:
-  /// **'Client details could not be loaded.'**
-  String get errorClientDetailLoad;
-
-  /// No description provided for @errorClientSave.
-  ///
-  /// In en, this message translates to:
-  /// **'Client could not be saved.'**
-  String get errorClientSave;
-
-  /// No description provided for @errorDebtsLoad.
-  ///
-  /// In en, this message translates to:
-  /// **'Debts could not be loaded.'**
-  String get errorDebtsLoad;
-
-  /// No description provided for @errorDebtDelete.
-  ///
-  /// In en, this message translates to:
-  /// **'Debt could not be deleted.'**
-  String get errorDebtDelete;
-
-  /// No description provided for @errorDebtSave.
-  ///
-  /// In en, this message translates to:
-  /// **'Debt could not be saved.'**
-  String get errorDebtSave;
-
-  /// No description provided for @errorFormDataLoad.
-  ///
-  /// In en, this message translates to:
-  /// **'Form data could not be loaded.'**
-  String get errorFormDataLoad;
-
-  /// No description provided for @errorProjectsLoad.
-  ///
-  /// In en, this message translates to:
-  /// **'Projects could not be loaded.'**
-  String get errorProjectsLoad;
-
-  /// No description provided for @errorProjectDelete.
-  ///
-  /// In en, this message translates to:
-  /// **'Project could not be deleted.'**
-  String get errorProjectDelete;
-
-  /// No description provided for @errorProjectSave.
-  ///
-  /// In en, this message translates to:
-  /// **'Project could not be saved.'**
-  String get errorProjectSave;
-
-  /// No description provided for @errorLeadsLoad.
-  ///
-  /// In en, this message translates to:
-  /// **'Leads could not be loaded.'**
-  String get errorLeadsLoad;
-
-  /// No description provided for @errorLeadDelete.
-  ///
-  /// In en, this message translates to:
-  /// **'Lead could not be deleted.'**
-  String get errorLeadDelete;
-
-  /// No description provided for @errorLeadSave.
-  ///
-  /// In en, this message translates to:
-  /// **'Lead could not be saved.'**
-  String get errorLeadSave;
-
-  /// No description provided for @errorIncomeLoad.
-  ///
-  /// In en, this message translates to:
-  /// **'Income could not be loaded.'**
-  String get errorIncomeLoad;
-
-  /// No description provided for @errorIncomeDelete.
-  ///
-  /// In en, this message translates to:
-  /// **'Income record could not be deleted.'**
-  String get errorIncomeDelete;
-
-  /// No description provided for @errorIncomeSave.
-  ///
-  /// In en, this message translates to:
-  /// **'Income record could not be saved.'**
-  String get errorIncomeSave;
-
-  /// No description provided for @errorRemindersLoad.
-  ///
-  /// In en, this message translates to:
-  /// **'Reminders could not be loaded.'**
-  String get errorRemindersLoad;
-
-  /// No description provided for @errorStatusUpdate.
-  ///
-  /// In en, this message translates to:
-  /// **'Status could not be updated.'**
-  String get errorStatusUpdate;
-
-  /// No description provided for @errorReminderDelete.
-  ///
-  /// In en, this message translates to:
-  /// **'Reminder could not be deleted.'**
-  String get errorReminderDelete;
-
-  /// No description provided for @errorReminderAdd.
-  ///
-  /// In en, this message translates to:
-  /// **'Reminder could not be added.'**
-  String get errorReminderAdd;
-
-  /// No description provided for @errorExportFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Export failed.'**
-  String get errorExportFailed;
-
-  /// No description provided for @errorFileRead.
-  ///
-  /// In en, this message translates to:
-  /// **'File could not be read.'**
-  String get errorFileRead;
-
-  /// No description provided for @errorImportFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Import failed.'**
-  String get errorImportFailed;
+  /// **'Delete'**
+  String get deleteConfirmButton;
 
   /// No description provided for @validationRequired.
   ///
   /// In en, this message translates to:
-  /// **'This field is required.'**
+  /// **'This field is required'**
   String get validationRequired;
 
   /// No description provided for @validationEmail.
   ///
   /// In en, this message translates to:
-  /// **'Enter a valid email address.'**
+  /// **'Please enter a valid email address'**
   String get validationEmail;
 
-  /// No description provided for @validationPhone.
+  /// No description provided for @validationAmount.
   ///
   /// In en, this message translates to:
-  /// **'Enter a valid phone number.'**
-  String get validationPhone;
+  /// **'Please enter a valid amount'**
+  String get validationAmount;
 
-  /// No description provided for @validationAmountRequired.
+  /// No description provided for @validationPositiveAmount.
   ///
   /// In en, this message translates to:
-  /// **'Amount is required.'**
-  String get validationAmountRequired;
+  /// **'Amount must be greater than zero'**
+  String get validationPositiveAmount;
 
-  /// No description provided for @validationAmountInvalid.
+  /// No description provided for @validationDateInvalid.
   ///
   /// In en, this message translates to:
-  /// **'Enter a valid amount.'**
-  String get validationAmountInvalid;
+  /// **'Please select a valid date'**
+  String get validationDateInvalid;
 
-  /// No description provided for @validationAmountPositive.
+  /// No description provided for @errorGeneric.
   ///
   /// In en, this message translates to:
-  /// **'Amount must be greater than 0.'**
-  String get validationAmountPositive;
+  /// **'Something went wrong. Please try again.'**
+  String get errorGeneric;
 
-  /// No description provided for @validationSelectClient.
+  /// No description provided for @errorDatabase.
   ///
   /// In en, this message translates to:
-  /// **'Please select a client.'**
-  String get validationSelectClient;
+  /// **'Database error. Please restart the app.'**
+  String get errorDatabase;
+
+  /// No description provided for @errorLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load data'**
+  String get errorLoadFailed;
+
+  /// No description provided for @errorSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save'**
+  String get errorSaveFailed;
+
+  /// No description provided for @errorDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete'**
+  String get errorDeleteFailed;
+
+  /// No description provided for @currencyUSD.
+  ///
+  /// In en, this message translates to:
+  /// **'USD — US Dollar'**
+  String get currencyUSD;
+
+  /// No description provided for @currencyEUR.
+  ///
+  /// In en, this message translates to:
+  /// **'EUR — Euro'**
+  String get currencyEUR;
+
+  /// No description provided for @currencyTRY.
+  ///
+  /// In en, this message translates to:
+  /// **'TRY — Turkish Lira'**
+  String get currencyTRY;
+
+  /// No description provided for @currencyGBP.
+  ///
+  /// In en, this message translates to:
+  /// **'GBP — British Pound'**
+  String get currencyGBP;
+
+  /// No description provided for @currencyJPY.
+  ///
+  /// In en, this message translates to:
+  /// **'JPY — Japanese Yen'**
+  String get currencyJPY;
+
+  /// No description provided for @currencyCNY.
+  ///
+  /// In en, this message translates to:
+  /// **'CNY — Chinese Yuan'**
+  String get currencyCNY;
+
+  /// No description provided for @currencyINR.
+  ///
+  /// In en, this message translates to:
+  /// **'INR — Indian Rupee'**
+  String get currencyINR;
+
+  /// No description provided for @currencyBRL.
+  ///
+  /// In en, this message translates to:
+  /// **'BRL — Brazilian Real'**
+  String get currencyBRL;
+
+  /// No description provided for @currencyAUD.
+  ///
+  /// In en, this message translates to:
+  /// **'AUD — Australian Dollar'**
+  String get currencyAUD;
+
+  /// No description provided for @currencyCAD.
+  ///
+  /// In en, this message translates to:
+  /// **'CAD — Canadian Dollar'**
+  String get currencyCAD;
+
+  /// No description provided for @reminderRelatedClient.
+  ///
+  /// In en, this message translates to:
+  /// **'Client'**
+  String get reminderRelatedClient;
+
+  /// No description provided for @reminderRelatedDebt.
+  ///
+  /// In en, this message translates to:
+  /// **'Debt'**
+  String get reminderRelatedDebt;
+
+  /// No description provided for @reminderRelatedProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get reminderRelatedProject;
+
+  /// No description provided for @reminderRelatedLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Lead'**
+  String get reminderRelatedLead;
+
+  /// No description provided for @reminderRelatedIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get reminderRelatedIncome;
+
+  /// No description provided for @reminderRelatedGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get reminderRelatedGeneral;
+
+  /// No description provided for @daysOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} day(s) overdue'**
+  String daysOverdue(int days);
+
+  /// No description provided for @daysRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} day(s) remaining'**
+  String daysRemaining(int days);
+
+  /// No description provided for @dueToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Due today'**
+  String get dueToday;
+
+  /// No description provided for @dueTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Due tomorrow'**
+  String get dueTomorrow;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -1327,82 +1437,43 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) => <String>[
-    'ar',
-    'bn',
-    'de',
-    'en',
-    'es',
-    'fa',
-    'fr',
-    'hi',
-    'id',
-    'it',
-    'ja',
-    'ko',
-    'pl',
-    'pt',
-    'ru',
-    'th',
-    'tr',
-    'ur',
-    'vi',
-    'zh',
-  ].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['ar', 'bn', 'de', 'en', 'es', 'fa', 'fr', 'hi', 'id', 'it', 'ja', 'ko', 'pl', 'pt', 'ru', 'th', 'tr', 'ur', 'vi', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'ar':
-      return AppLocalizationsAr();
-    case 'bn':
-      return AppLocalizationsBn();
-    case 'de':
-      return AppLocalizationsDe();
-    case 'en':
-      return AppLocalizationsEn();
-    case 'es':
-      return AppLocalizationsEs();
-    case 'fa':
-      return AppLocalizationsFa();
-    case 'fr':
-      return AppLocalizationsFr();
-    case 'hi':
-      return AppLocalizationsHi();
-    case 'id':
-      return AppLocalizationsId();
-    case 'it':
-      return AppLocalizationsIt();
-    case 'ja':
-      return AppLocalizationsJa();
-    case 'ko':
-      return AppLocalizationsKo();
-    case 'pl':
-      return AppLocalizationsPl();
-    case 'pt':
-      return AppLocalizationsPt();
-    case 'ru':
-      return AppLocalizationsRu();
-    case 'th':
-      return AppLocalizationsTh();
-    case 'tr':
-      return AppLocalizationsTr();
-    case 'ur':
-      return AppLocalizationsUr();
-    case 'vi':
-      return AppLocalizationsVi();
-    case 'zh':
-      return AppLocalizationsZh();
+    case 'ar': return AppLocalizationsAr();
+    case 'bn': return AppLocalizationsBn();
+    case 'de': return AppLocalizationsDe();
+    case 'en': return AppLocalizationsEn();
+    case 'es': return AppLocalizationsEs();
+    case 'fa': return AppLocalizationsFa();
+    case 'fr': return AppLocalizationsFr();
+    case 'hi': return AppLocalizationsHi();
+    case 'id': return AppLocalizationsId();
+    case 'it': return AppLocalizationsIt();
+    case 'ja': return AppLocalizationsJa();
+    case 'ko': return AppLocalizationsKo();
+    case 'pl': return AppLocalizationsPl();
+    case 'pt': return AppLocalizationsPt();
+    case 'ru': return AppLocalizationsRu();
+    case 'th': return AppLocalizationsTh();
+    case 'tr': return AppLocalizationsTr();
+    case 'ur': return AppLocalizationsUr();
+    case 'vi': return AppLocalizationsVi();
+    case 'zh': return AppLocalizationsZh();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
+    'that was used.'
   );
 }

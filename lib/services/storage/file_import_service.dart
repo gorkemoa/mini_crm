@@ -1,6 +1,9 @@
 import 'dart:convert';
-import 'package:file_selector/file_selector.dart';
-import '../../core/errors/app_exceptions.dart';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
+
+import '../../core/base/result.dart';
 import '../../models/export_bundle_model.dart';
 import '../repositories/client_repository.dart';
 import '../repositories/debt_repository.dart';
@@ -10,89 +13,88 @@ import '../repositories/income_repository.dart';
 import '../repositories/reminder_repository.dart';
 
 class FileImportService {
-  final ClientRepository _clientRepo;
-  final DebtRepository _debtRepo;
-  final ProjectRepository _projectRepo;
-  final LeadRepository _leadRepo;
-  final IncomeRepository _incomeRepo;
-  final ReminderRepository _reminderRepo;
+  final ClientRepository _clients;
+  final DebtRepository _debts;
+  final ProjectRepository _projects;
+  final LeadRepository _leads;
+  final IncomeRepository _incomes;
+  final ReminderRepository _reminders;
 
   FileImportService({
-    required ClientRepository clientRepository,
-    required DebtRepository debtRepository,
-    required ProjectRepository projectRepository,
-    required LeadRepository leadRepository,
-    required IncomeRepository incomeRepository,
-    required ReminderRepository reminderRepository,
-  })  : _clientRepo = clientRepository,
-        _debtRepo = debtRepository,
-        _projectRepo = projectRepository,
-        _leadRepo = leadRepository,
-        _incomeRepo = incomeRepository,
-        _reminderRepo = reminderRepository;
+    required ClientRepository clients,
+    required DebtRepository debts,
+    required ProjectRepository projects,
+    required LeadRepository leads,
+    required IncomeRepository incomes,
+    required ReminderRepository reminders,
+  })  : _clients = clients,
+        _debts = debts,
+        _projects = projects,
+        _leads = leads,
+        _incomes = incomes,
+        _reminders = reminders;
 
-  Future<ExportBundleModel?> pickAndParse() async {
+  Future<Result<ExportBundleModel?>> pickAndPreview() async {
     try {
-      const XTypeGroup typeGroup = XTypeGroup(
-        label: 'JSON',
-        extensions: ['json'],
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+        withData: true,
       );
-      final XFile? file = await openFile(acceptedTypeGroups: [typeGroup]);
-      if (file == null) return null;
+      if (result == null || result.files.isEmpty) return Result.success(null);
 
-      final content = await file.readAsString();
-      return _parse(content);
-    } on ImportException {
-      rethrow;
+      final file = result.files.first;
+      final bytes = file.bytes ?? (file.path != null ? await File(file.path!).readAsBytes() : null);
+      if (bytes == null) return Result.failure('Could not read file');
+
+      final jsonStr = utf8.decode(bytes);
+      final json = jsonDecode(jsonStr) as Map<String, dynamic>;
+      final bundle = ExportBundleModel.fromJson(json);
+      return Result.success(bundle);
     } catch (e) {
-      throw ImportException('Dosya okunamadı: $e');
+      return Result.failure('Invalid or corrupted file: ${e.toString()}');
     }
   }
 
-  ExportBundleModel _parse(String content) {
+  Future<Result<void>> importBundle(ExportBundleModel bundle) async {
     try {
-      final json = jsonDecode(content) as Map<String, dynamic>;
-      _validateVersion(json);
-      return ExportBundleModel.fromJson(json);
-    } on ImportException {
-      rethrow;
-    } catch (e) {
-      throw ImportException('Dosya formatı geçersiz: $e');
-    }
-  }
+      // Clear all data first
+      await _reminders.deleteAll();
+      await _incomes.deleteAll();
+      await _leads.deleteAll();
+      await _projects.deleteAll();
+      await _debts.deleteAll();
+      await _clients.deleteAll();
 
-  void _validateVersion(Map<String, dynamic> json) {
-    final version = json['export_version'] as String?;
-    if (version == null || version.isEmpty) {
-      throw const ImportException('Yedek dosyası sürümü bulunamadı.');
-    }
-  }
+      // Insert new data
+      if (bundle.clients.isNotEmpty) {
+        final r = await _clients.insertAll(bundle.clients);
+        if (r.isFailure) return Result.failure(r.error!);
+      }
+      if (bundle.debts.isNotEmpty) {
+        final r = await _debts.insertAll(bundle.debts);
+        if (r.isFailure) return Result.failure(r.error!);
+      }
+      if (bundle.projects.isNotEmpty) {
+        final r = await _projects.insertAll(bundle.projects);
+        if (r.isFailure) return Result.failure(r.error!);
+      }
+      if (bundle.leads.isNotEmpty) {
+        final r = await _leads.insertAll(bundle.leads);
+        if (r.isFailure) return Result.failure(r.error!);
+      }
+      if (bundle.incomes.isNotEmpty) {
+        final r = await _incomes.insertAll(bundle.incomes);
+        if (r.isFailure) return Result.failure(r.error!);
+      }
+      if (bundle.reminders.isNotEmpty) {
+        final r = await _reminders.insertAll(bundle.reminders);
+        if (r.isFailure) return Result.failure(r.error!);
+      }
 
-  Future<void> importBundle(
-    ExportBundleModel bundle, {
-    bool replace = false,
-  }) async {
-    try {
-      for (final client in bundle.clients) {
-        await _clientRepo.create(client);
-      }
-      for (final debt in bundle.debts) {
-        await _debtRepo.create(debt);
-      }
-      for (final project in bundle.projects) {
-        await _projectRepo.create(project);
-      }
-      for (final lead in bundle.leads) {
-        await _leadRepo.create(lead);
-      }
-      for (final income in bundle.incomes) {
-        await _incomeRepo.create(income);
-      }
-      for (final reminder in bundle.reminders) {
-        await _reminderRepo.create(reminder);
-      }
+      return Result.success(null);
     } catch (e) {
-      throw ImportException('İçe aktarma sırasında hata: $e');
+      return Result.failure(e.toString());
     }
   }
 }

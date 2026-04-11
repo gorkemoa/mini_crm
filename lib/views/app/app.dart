@@ -1,183 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../l10n/app_localizations.dart';
-import '../../services/database/local_database_service.dart';
-import '../../services/repositories/client_repository.dart';
-import '../../services/repositories/debt_repository.dart';
-import '../../services/repositories/income_repository.dart';
-import '../../services/repositories/lead_repository.dart';
-import '../../services/repositories/project_repository.dart';
-import '../../services/repositories/reminder_repository.dart';
-import '../../services/storage/file_export_service.dart';
-import '../../services/storage/file_import_service.dart';
-import '../../themes/app_theme.dart';
-import '../../viewmodels/client_detail_viewmodel.dart';
-import '../../viewmodels/client_form_viewmodel.dart';
-import '../../viewmodels/clients_viewmodel.dart';
-import '../../viewmodels/dashboard_viewmodel.dart';
-import '../../viewmodels/debt_form_viewmodel.dart';
-import '../../viewmodels/debts_viewmodel.dart';
-import '../../viewmodels/income_form_viewmodel.dart';
-import '../../viewmodels/income_viewmodel.dart';
-import '../../viewmodels/lead_form_viewmodel.dart';
-import '../../viewmodels/leads_viewmodel.dart';
-import '../../viewmodels/project_form_viewmodel.dart';
-import '../../viewmodels/projects_viewmodel.dart';
-import '../../viewmodels/reminders_viewmodel.dart';
-import '../../viewmodels/settings_viewmodel.dart';
-import '../clients/clients_view.dart';
+
+import '../../themes/app_colors.dart';
 import '../dashboard/dashboard_view.dart';
+import '../clients/clients_view.dart';
+import '../leads/leads_view.dart';
 import '../debts/debts_view.dart';
-import '../more/more_view.dart';
-import '../projects/projects_view.dart';
-import 'app_router.dart';
-
-class App extends StatelessWidget {
-  final LocalDatabaseService dbService;
-
-  const App({super.key, required this.dbService});
-
-  @override
-  Widget build(BuildContext context) {
-    // ── Build repositories ──────────────────────────────────
-    final clientRepo = ClientRepository(dbService);
-    final debtRepo = DebtRepository(dbService);
-    final projectRepo = ProjectRepository(dbService);
-    final leadRepo = LeadRepository(dbService);
-    final incomeRepo = IncomeRepository(dbService);
-    final reminderRepo = ReminderRepository(dbService);
-
-    final exportService = FileExportService(
-      clientRepository: clientRepo,
-      debtRepository: debtRepo,
-      projectRepository: projectRepo,
-      leadRepository: leadRepo,
-      incomeRepository: incomeRepo,
-      reminderRepository: reminderRepo,
-    );
-
-    final importService = FileImportService(
-      clientRepository: clientRepo,
-      debtRepository: debtRepo,
-      projectRepository: projectRepo,
-      leadRepository: leadRepo,
-      incomeRepository: incomeRepo,
-      reminderRepository: reminderRepo,
-    );
-
-    return MultiProvider(
-      providers: [
-        // ── Dashboard
-        ChangeNotifierProvider(
-          create: (_) => DashboardViewModel(
-            debtRepository: debtRepo,
-            projectRepository: projectRepo,
-            leadRepository: leadRepo,
-            incomeRepository: incomeRepo,
-            reminderRepository: reminderRepo,
-          ),
-        ),
-
-        // ── Clients
-        ChangeNotifierProvider(
-          create: (_) => ClientsViewModel(clientRepository: clientRepo),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => ClientDetailViewModel(
-            clientRepository: clientRepo,
-            debtRepository: debtRepo,
-            projectRepository: projectRepo,
-          ),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => ClientFormViewModel(clientRepository: clientRepo),
-        ),
-
-        // ── Debts
-        ChangeNotifierProvider(
-          create: (_) => DebtsViewModel(debtRepository: debtRepo),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => DebtFormViewModel(
-            debtRepository: debtRepo,
-            clientRepository: clientRepo,
-          ),
-        ),
-
-        // ── Projects
-        ChangeNotifierProvider(
-          create: (_) => ProjectsViewModel(projectRepository: projectRepo),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => ProjectFormViewModel(
-            projectRepository: projectRepo,
-            clientRepository: clientRepo,
-          ),
-        ),
-
-        // ── Leads
-        ChangeNotifierProvider(
-          create: (_) => LeadsViewModel(leadRepository: leadRepo),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => LeadFormViewModel(leadRepository: leadRepo),
-        ),
-
-        // ── Income
-        ChangeNotifierProvider(
-          create: (_) => IncomeViewModel(incomeRepository: incomeRepo),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => IncomeFormViewModel(
-            incomeRepository: incomeRepo,
-            clientRepository: clientRepo,
-          ),
-        ),
-
-        // ── Reminders
-        ChangeNotifierProvider(
-          create: (_) =>
-              RemindersViewModel(reminderRepository: reminderRepo),
-        ),
-
-        // ── Settings (loads saved locale on creation)
-        ChangeNotifierProvider(
-          create: (_) {
-            final vm = SettingsViewModel(
-              exportService: exportService,
-              importService: importService,
-            );
-            vm.loadLocale();
-            return vm;
-          },
-        ),
-      ],
-      child: Consumer<SettingsViewModel>(
-        builder: (context, settingsVm, _) {
-          return MaterialApp(
-            title: 'Mini CRM',
-            debugShowCheckedModeBanner: false,
-            theme: AppTheme.light,
-            locale: settingsVm.locale,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            localeResolutionCallback: (locale, supported) {
-              if (locale == null) return supported.first;
-              for (final sl in supported) {
-                if (sl.languageCode == locale.languageCode) return sl;
-              }
-              return supported.first;
-            },
-            onGenerateRoute: AppRouter.generateRoute,
-            home: const AppShell(),
-          );
-        },
-      ),
-    );
-  }
-}
-
-// ─── Bottom navigation shell ──────────────────────────────────────────────────
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -189,53 +16,156 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0;
 
-  final List<Widget> _tabs = const [
+  static const List<Widget> _tabs = [
     DashboardView(),
     ClientsView(),
+    LeadsView(),
     DebtsView(),
-    ProjectsView(),
-    MoreView(),
+    _MoreView(),
   ];
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
         children: _tabs,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: (i) => setState(() => _selectedIndex = i),
-        type: BottomNavigationBarType.fixed,
-        items: [
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.grid_view_outlined),
-            activeIcon: const Icon(Icons.grid_view),
-            label: l10n.navDashboard,
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: (i) => setState(() => _selectedIndex = i),
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.dashboard_outlined),
+            selectedIcon: Icon(Icons.dashboard_rounded),
+            label: 'Dashboard',
           ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.people_outline),
-            activeIcon: const Icon(Icons.people),
-            label: l10n.navClients,
+          NavigationDestination(
+            icon: Icon(Icons.people_outline_rounded),
+            selectedIcon: Icon(Icons.people_rounded),
+            label: 'Clients',
           ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.account_balance_wallet_outlined),
-            activeIcon: const Icon(Icons.account_balance_wallet),
-            label: l10n.navDebts,
+          NavigationDestination(
+            icon: Icon(Icons.person_search_outlined),
+            selectedIcon: Icon(Icons.person_search_rounded),
+            label: 'Leads',
           ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.work_outline),
-            activeIcon: const Icon(Icons.work),
-            label: l10n.navProjects,
+          NavigationDestination(
+            icon: Icon(Icons.account_balance_wallet_outlined),
+            selectedIcon: Icon(Icons.account_balance_wallet_rounded),
+            label: 'Debts',
           ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.more_horiz),
-            activeIcon: const Icon(Icons.more_horiz),
-            label: l10n.navMore,
+          NavigationDestination(
+            icon: Icon(Icons.grid_view_outlined),
+            selectedIcon: Icon(Icons.grid_view_rounded),
+            label: 'More',
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _MoreView extends StatelessWidget {
+  const _MoreView();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
+      appBar: AppBar(title: const Text('More')),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          _MoreTile(
+            icon: Icons.work_outline_rounded,
+            color: AppColors.info,
+            title: 'Projects',
+            subtitle: 'Manage your projects',
+            onTap: () => Navigator.pushNamed(context, '/projects'),
+          ),
+          const SizedBox(height: 8),
+          _MoreTile(
+            icon: Icons.attach_money_rounded,
+            color: AppColors.success,
+            title: 'Income',
+            subtitle: 'Track income records',
+            onTap: () => Navigator.pushNamed(context, '/income'),
+          ),
+          const SizedBox(height: 8),
+          _MoreTile(
+            icon: Icons.alarm_rounded,
+            color: AppColors.warning,
+            title: 'Reminders',
+            subtitle: 'Follow-ups & tasks',
+            onTap: () => Navigator.pushNamed(context, '/reminders'),
+          ),
+          const SizedBox(height: 8),
+          _MoreTile(
+            icon: Icons.settings_outlined,
+            color: AppColors.textSecondaryLight,
+            title: 'Settings',
+            subtitle: 'Theme, language, data',
+            onTap: () => Navigator.pushNamed(context, '/settings'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MoreTile extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const _MoreTile({
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Material(
+      color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, color: color, size: 22),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+                    Text(subtitle, style: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight)),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right_rounded, color: AppColors.textTertiaryLight),
+            ],
+          ),
+        ),
       ),
     );
   }

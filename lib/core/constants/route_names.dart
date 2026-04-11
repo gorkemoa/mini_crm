@@ -15,6 +15,7 @@ abstract class RouteNames {
   static const String income = '/income';
   static const String incomeForm = '/income/form';
   static const String reminders = '/reminders';
+  static const String reminderForm = '/reminders/form';
   static const String settings = '/settings';
   static const String exportData = '/settings/export';
   static const String importData = '/settings/import';

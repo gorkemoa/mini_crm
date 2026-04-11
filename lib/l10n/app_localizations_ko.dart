@@ -1,5 +1,3 @@
-// ignore: unused_import
-import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -9,7 +7,12 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
-  String get appTitle => 'Mini CRM';
+  String get appTitle => '미니 CRM';
+
+  @override
+  String appVersion(String version) {
+    return 'Version $version';
+  }
 
   @override
   String get navDashboard => '대시보드';
@@ -18,586 +21,642 @@ class AppLocalizationsKo extends AppLocalizations {
   String get navClients => '고객';
 
   @override
-  String get navDebts => '미수금';
+  String get navLeads => '잠재 고객';
+
+  @override
+  String get navDebts => '채무';
 
   @override
   String get navProjects => '프로젝트';
 
   @override
+  String get navIncome => '수입';
+
+  @override
+  String get navReminders => '알림';
+
+  @override
+  String get navSettings => '설정';
+
+  @override
   String get navMore => '더보기';
 
   @override
-  String get all => '전체';
+  String get navFinance => 'Finance';
 
   @override
-  String get edit => '편집';
+  String get actionAdd => '추가';
 
   @override
-  String get delete => '삭제';
+  String get actionEdit => '편집';
 
   @override
-  String get save => '저장';
+  String get actionDelete => '삭제';
 
   @override
-  String get update => '업데이트';
+  String get actionSave => '저장';
 
   @override
-  String get cancel => '취소';
+  String get actionCancel => '취소';
 
   @override
-  String get add => '추가';
+  String get actionBack => 'Back';
 
   @override
-  String get selectDate => '선택';
+  String get actionSearch => 'Search';
 
   @override
-  String get status => '상태';
+  String get actionFilter => 'Filter';
 
   @override
-  String get note => '메모';
+  String get actionExport => 'Export';
 
   @override
-  String get additionalNotesHint => '추가 메모...';
+  String get actionImport => 'Import';
 
   @override
-  String get amount => '금액';
+  String get actionClose => 'Close';
 
   @override
-  String get amountHint => '0.00';
+  String get actionConfirm => 'Confirm';
 
   @override
-  String get notes => '메모';
+  String get actionDone => 'Done';
 
   @override
-  String get email => '이메일';
+  String get actionMarkComplete => 'Mark as Complete';
 
   @override
-  String get phone => '전화';
+  String get actionMarkIncomplete => 'Mark as Incomplete';
 
   @override
-  String get customer => '고객';
+  String get actionViewAll => 'View All';
 
   @override
-  String get selectCustomerOptional => '고객 선택 (선택사항)';
+  String get actionRefresh => 'Refresh';
 
   @override
-  String get noCustomer => '— 고객 없음 —';
+  String get labelName => 'Name';
 
   @override
-  String get budget => '예산';
+  String get labelTitle => 'Title';
 
   @override
-  String get description => '설명';
+  String get labelStatus => 'Status';
 
   @override
-  String get startDate => '시작';
+  String get labelDate => 'Date';
 
   @override
-  String get endDate => '종료';
+  String get labelAmount => 'Amount';
 
   @override
-  String get endDatePrefix => '종료: ';
+  String get labelCurrency => 'Currency';
 
   @override
-  String get fullName => '성명';
+  String get labelNote => 'Note';
 
   @override
-  String get notesOptional => '메모 (선택사항)';
+  String get labelNotes => 'Notes';
 
   @override
-  String get notesHint => '고객에 대한 메모...';
+  String get labelEmail => 'Email';
 
   @override
-  String get errorOccurred => '오류가 발생했습니다';
+  String get labelPhone => 'Phone';
 
   @override
-  String get tryAgain => '다시 시도';
+  String get labelCompany => 'Company';
 
   @override
-  String get seeAll => '전체';
+  String get labelSource => 'Source';
 
   @override
-  String get today => '오늘';
+  String get labelBudget => 'Budget';
 
   @override
-  String get upcoming => '예정';
+  String get labelStartDate => 'Start Date';
 
   @override
-  String get past => '지난';
+  String get labelEndDate => 'End Date';
 
   @override
-  String get completed => '완료';
+  String get labelDueDate => 'Due Date';
 
   @override
-  String get notSpecified => '— 미지정 —';
+  String get labelCreatedAt => 'Created';
 
   @override
-  String get dashboardSummarySection => '요약';
+  String get labelDescription => 'Description';
 
   @override
-  String get pendingDebts => '미수금';
+  String get labelPlatform => 'Platform';
 
   @override
-  String get activeLead => '활성 리드';
+  String get labelClient => 'Client';
 
   @override
-  String get thisMonthIncome => '이번 달 수익';
+  String get labelSelectClient => 'Select Client';
 
   @override
-  String get todayReminders => '오늘 알림';
+  String get labelNoClient => 'No Client';
 
   @override
-  String get overdueDebts => '연체 미수금';
+  String get labelOptional => 'Optional';
 
   @override
-  String get activeProjects => '진행 중 프로젝트';
+  String get labelStage => 'Stage';
 
   @override
-  String get greetingMorning => '좋은 아침입니다 👋';
+  String get labelFollowUpDate => 'Follow-up Date';
 
   @override
-  String get greetingAfternoon => '안녕하세요 👋';
+  String get labelEstimatedBudget => 'Estimated Budget';
 
   @override
-  String get greetingEvening => '좋은 저녁입니다 👋';
+  String get labelReminderDate => 'Reminder Date';
 
   @override
-  String get clientsTitle => '고객';
+  String get labelRelatedTo => 'Related To';
 
   @override
-  String get noClientsYet => '고객이 없습니다';
+  String get labelAll => 'All';
 
   @override
-  String get noClientsSubtitle => '첫 번째 고객을 추가해보세요.';
+  String get clientStatusActive => 'Active';
 
   @override
-  String get addClient => '고객 추가';
+  String get clientStatusInactive => 'Inactive';
 
   @override
-  String get deleteClient => '고객 삭제';
+  String get clientStatusArchived => 'Archived';
 
   @override
-  String get editClient => '고객 편집';
+  String get debtStatusPending => 'Pending';
 
   @override
-  String get newClient => '새 고객';
+  String get debtStatusOverdue => 'Overdue';
 
   @override
-  String get debtsSection => '미수금';
+  String get debtStatusPaid => 'Paid';
 
   @override
-  String get projectsSection => '프로젝트';
+  String get debtStatusPartial => 'Partial';
 
   @override
-  String get noDebtsInline => '미수금이 없습니다.';
+  String get projectStatusPlanned => 'Planned';
 
   @override
-  String get noProjectsInline => '프로젝트가 없습니다.';
+  String get projectStatusStartingSoon => 'Starting Soon';
 
   @override
-  String get companyOptional => '회사 (선택사항)';
+  String get projectStatusActive => 'Active';
 
   @override
-  String get companyHint => '회사명 주식회사';
+  String get projectStatusPaused => 'Paused';
 
   @override
-  String get emailOptional => '이메일 (선택사항)';
+  String get projectStatusCompleted => 'Completed';
 
   @override
-  String get emailHint => 'example@email.com';
+  String get projectStatusCancelled => 'Cancelled';
 
   @override
-  String get phoneOptional => '전화 (선택사항)';
+  String get leadStageNew => 'New Lead';
 
   @override
-  String get phoneHint => '+82 10 0000 0000';
+  String get leadStageContacted => 'Contacted';
 
   @override
-  String get fullNameHint => '홍길동';
+  String get leadStageProposalSent => 'Proposal Sent';
 
   @override
-  String get debtsTitle => '미수금';
+  String get leadStageNegotiating => 'Negotiating';
 
   @override
-  String get debtWaiting => '대기 중';
+  String get leadStageWon => 'Won';
 
   @override
-  String get noDebtsYet => '미수금이 없습니다';
+  String get leadStageLost => 'Lost';
 
   @override
-  String get noDebtsSubtitle => '첫 번째 미수금을 추가해보세요.';
+  String get dashboardTitle => 'Dashboard';
 
   @override
-  String get addDebt => '미수금 추가';
+  String get dashboardPendingDebts => 'Pending Debts';
 
   @override
-  String get newDebt => '새 미수금';
+  String get dashboardOverdueDebts => 'Overdue';
 
   @override
-  String get editDebt => '미수금 편집';
+  String get dashboardProjectsThisWeek => 'This Week';
 
   @override
-  String get debtTitleLabel => '제목';
+  String get dashboardLeadsToFollow => 'Leads to Follow';
 
   @override
-  String get debtTitleHint => '예: 프로젝트 납품';
+  String get dashboardMonthlyIncome => 'This Month';
 
   @override
-  String get dueDate => '납부 기한';
+  String get dashboardTodayReminders => 'Today\'s Reminders';
 
   @override
-  String get projectsTitle => '프로젝트';
+  String get dashboardActiveClients => 'Active Clients';
 
   @override
-  String get noProjectsYet => '프로젝트가 없습니다';
+  String get dashboardActiveProjects => 'Active Projects';
 
   @override
-  String get noProjectsSubtitle => '첫 번째 프로젝트를 추가해보세요.';
+  String get dashboardNoRemindersToday => 'No reminders for today';
 
   @override
-  String get addProject => '프로젝트 추가';
+  String get dashboardGoodMorning => 'Good morning';
 
   @override
-  String get newProject => '새 프로젝트';
+  String get dashboardOverview => 'Here\'s your overview';
 
   @override
-  String get editProject => '프로젝트 편집';
+  String get clientsTitle => 'Clients';
 
   @override
-  String get projectName => '프로젝트 이름';
+  String get clientsEmpty => 'No clients yet';
 
   @override
-  String get projectNameHint => '예: 웹사이트 디자인';
+  String get clientsEmptyDesc => 'Add your first client to get started';
 
   @override
-  String get projectDetails => '프로젝트 상세...';
+  String get clientsSearchHint => 'Search clients...';
 
   @override
-  String get leadsTitle => '리드';
+  String get clientAddTitle => 'Add Client';
 
   @override
-  String get leadsActiveCount => '활성';
+  String get clientEditTitle => 'Edit Client';
 
   @override
-  String get noLeadsYet => '리드가 없습니다';
+  String get clientDetailTitle => 'Client Details';
 
   @override
-  String get noLeadsSubtitle => '잠재 고객을 여기에 추가하세요.';
+  String get clientFullName => 'Full Name';
 
   @override
-  String get addLead => '리드 추가';
+  String get clientCompanyName => 'Company Name';
 
   @override
-  String get newLead => '새 리드';
+  String get clientDebts => 'Debts';
 
   @override
-  String get editLead => '리드 편집';
+  String get clientProjects => 'Projects';
 
   @override
-  String get stage => '단계';
+  String get clientTotalDebt => 'Total Debt';
 
   @override
-  String get source => '출처';
+  String get clientActiveProjects => 'Active Projects';
 
   @override
-  String get selectSource => '출처 선택';
+  String get debtsTitle => 'Debts';
 
   @override
-  String get estimatedBudget => '예상 예산';
+  String get debtsEmpty => 'No debts yet';
 
   @override
-  String get followUpDate => '후속 조치 날짜';
+  String get debtsEmptyDesc => 'Add your first debt record';
 
   @override
-  String get meetingNotesHint => '미팅 메모...';
+  String get debtsSearchHint => 'Search debts...';
 
   @override
-  String get incomeTitle => '수익';
+  String get debtsTotal => 'Total';
 
   @override
-  String get thisMonthPrefix => '이번 달: ';
+  String get debtsOverdue => 'Overdue';
 
   @override
-  String get noIncomeYet => '수익이 없습니다';
+  String get debtsPending => 'Pending';
 
   @override
-  String get noIncomeSubtitle => '결제 내역을 여기에 추가하세요.';
+  String get debtsPaid => 'Paid';
 
   @override
-  String get addIncome => '수익 추가';
+  String get debtsAddTitle => 'Add Debt';
 
   @override
-  String get newIncome => '새 수익';
+  String get debtsEditTitle => 'Edit Debt';
 
   @override
-  String get editIncome => '수익 편집';
+  String get debtDetailTitle => 'Debt Details';
 
   @override
-  String get platform => '플랫폼';
+  String get debtsClient => 'Client';
 
   @override
-  String get selectPlatform => '플랫폼 선택';
+  String get debtsTotalAmount => 'Total Amount';
 
   @override
-  String get receiptDate => '수령일';
+  String get debtsFilterAll => 'All';
 
   @override
-  String get income => '수익';
+  String get debtsFilterPending => 'Pending';
 
   @override
-  String get remindersTitle => '알림';
+  String get debtsFilterOverdue => 'Overdue';
 
   @override
-  String get noRemindersYet => '알림이 없습니다';
+  String get debtsFilterPaid => 'Paid';
 
   @override
-  String get noRemindersSubtitle => '중요한 날짜와 업무를 여기에 추가하세요.';
+  String get projectsTitle => 'Projects';
 
   @override
-  String get addReminderTitle => '알림 추가';
+  String get projectsEmpty => 'No projects yet';
 
   @override
-  String get reminderTitleHint => '알림 제목...';
+  String get projectsEmptyDesc => 'Add your first project';
 
   @override
-  String get titleCannotBeEmpty => '제목을 입력해주세요.';
+  String get projectsSearchHint => 'Search projects...';
 
   @override
-  String get markCompleted => '완료';
+  String get projectsAddTitle => 'Add Project';
 
   @override
-  String get markIncomplete => '미완료로 표시';
+  String get projectsEditTitle => 'Edit Project';
 
   @override
-  String get settingsTitle => '설정';
+  String get projectDetailTitle => 'Project Details';
 
   @override
-  String get sectionData => '데이터';
+  String get projectClient => 'Client';
 
   @override
-  String get sectionApp => '앱';
+  String get projectBudget => 'Budget';
 
   @override
-  String get sectionLanguage => '언어';
+  String get projectDuration => 'Duration';
 
   @override
-  String get exportData => '데이터 내보내기';
+  String get leadsTitle => 'Leads';
 
   @override
-  String get exportDataSubtitle => '모든 데이터를 JSON으로 공유';
+  String get leadsEmpty => 'No leads yet';
 
   @override
-  String get importData => '데이터 가져오기';
+  String get leadsEmptyDesc => 'Start tracking potential clients';
 
   @override
-  String get importDataSubtitle => 'JSON 파일에서 불러오기';
+  String get leadsSearchHint => 'Search leads...';
 
   @override
-  String get version => '버전';
+  String get leadsAddTitle => 'Add Lead';
 
   @override
-  String get exportDialogTitle => '데이터 내보내기';
+  String get leadsEditTitle => 'Edit Lead';
 
   @override
-  String get exportDialogContent =>
-      '모든 고객, 미수금, 프로젝트, 수익 데이터가 JSON 형식으로 내보내지고 공유 메뉴가 열립니다.';
+  String get leadDetailTitle => 'Lead Details';
 
   @override
-  String get importDialogTitle => '데이터 가져오기';
+  String get leadsConversionRate => 'Won Rate';
 
   @override
-  String get importDialogContent =>
-      '이 작업은 기존 데이터를 덮어쓰지 않습니다; 선택한 파일의 기록이 추가됩니다. 계속하시겠습니까?';
+  String get leadsTotal => 'Total Leads';
 
   @override
-  String get exportButton => '내보내기';
+  String get incomeTitle => 'Income';
 
   @override
-  String get importButton => '가져오기';
+  String get incomeEmpty => 'No income records yet';
 
   @override
-  String get language => '언어';
+  String get incomeEmptyDesc => 'Start recording your income';
 
   @override
-  String get selectLanguage => '언어 선택';
+  String get incomeSearchHint => 'Search income...';
 
   @override
-  String get moreTitle => '더보기';
+  String get incomeAddTitle => 'Add Income';
 
   @override
-  String get sectionBusiness => '비즈니스 관리';
+  String get incomeEditTitle => 'Edit Income';
 
   @override
-  String get sectionRemindersNav => '알림';
+  String get incomeTotal => 'Total Income';
 
   @override
-  String get sectionAppNav => '앱';
+  String get incomeThisMonth => 'This Month';
 
   @override
-  String get leadsMenuSubtitle => '잠재 고객 추적';
+  String get incomeDate => 'Income Date';
 
   @override
-  String get incomeMenuSubtitle => '결제 및 수익 기록';
+  String get remindersTitle => 'Reminders';
 
   @override
-  String get remindersMenuSubtitle => '업무 및 일정 알림';
+  String get remindersEmpty => 'No reminders';
 
   @override
-  String get settingsMenuSubtitle => '데이터 관리 및 앱 정보';
+  String get remindersEmptyDesc => 'Set reminders for important tasks';
 
   @override
-  String get searchHint => '검색...';
+  String get remindersAddTitle => 'Add Reminder';
 
   @override
-  String get statusActive => '활성';
+  String get remindersEditTitle => 'Edit Reminder';
 
   @override
-  String get statusInactive => '비활성';
+  String get remindersToday => 'Today';
 
   @override
-  String get statusLost => '이탈';
+  String get remindersUpcoming => 'Upcoming';
 
   @override
-  String get debtPending => '대기 중';
+  String get remindersOverdue => 'Overdue';
 
   @override
-  String get debtOverdue => '연체';
+  String get remindersCompleted => 'Completed';
 
   @override
-  String get debtPaid => '지불됨';
+  String get remindersAll => 'All';
 
   @override
-  String get debtPartial => '부분 지불';
+  String get settingsTitle => 'Settings';
 
   @override
-  String get projectPlanned => '계획됨';
+  String get settingsAppearance => 'Appearance';
 
   @override
-  String get projectStartingSoon => '곧 시작';
+  String get settingsTheme => 'Theme';
 
   @override
-  String get projectActive => '진행 중';
+  String get settingsLanguage => 'Language';
 
   @override
-  String get projectPaused => '일시 중지';
+  String get settingsData => 'Data Management';
 
   @override
-  String get projectCompleted => '완료';
+  String get settingsExport => 'Export Data';
 
   @override
-  String get projectCancelled => '취소됨';
+  String get settingsImport => 'Import Data';
 
   @override
-  String get leadNew => '새 리드';
+  String get settingsAbout => 'About';
 
   @override
-  String get leadContacted => '연락됨';
+  String get settingsVersion => 'App Version';
 
   @override
-  String get leadProposalSent => '제안 전송됨';
+  String get settingsExportDesc => 'Export all data as JSON file';
 
   @override
-  String get leadNegotiating => '협상 중';
+  String get settingsImportDesc => 'Import data from a JSON file';
 
   @override
-  String get leadWon => '수주';
+  String get themeLight => 'Light';
 
   @override
-  String get leadLost => '실패';
+  String get themeDark => 'Dark';
 
   @override
-  String get errorDataLoad => '데이터를 불러올 수 없습니다.';
+  String get themeSystem => 'System Default';
 
   @override
-  String get errorClientsLoad => '고객을 불러올 수 없습니다.';
+  String get exportTitle => 'Export Data';
 
   @override
-  String get errorClientDelete => '고객을 삭제할 수 없습니다.';
+  String get exportDesc => 'Your data will be exported as a JSON file. You can use this file to backup or restore your data.';
 
   @override
-  String get errorClientDetailLoad => '고객 상세 정보를 불러올 수 없습니다.';
+  String get exportSuccess => 'Data exported successfully';
 
   @override
-  String get errorClientSave => '고객을 저장할 수 없습니다.';
+  String get exportError => 'Export failed. Please try again.';
 
   @override
-  String get errorDebtsLoad => '미수금을 불러올 수 없습니다.';
+  String get exportButton => 'Export JSON';
 
   @override
-  String get errorDebtDelete => '미수금을 삭제할 수 없습니다.';
+  String get importTitle => 'Import Data';
 
   @override
-  String get errorDebtSave => '미수금을 저장할 수 없습니다.';
+  String get importDesc => 'Select a Mini CRM JSON file to import your data.';
 
   @override
-  String get errorFormDataLoad => '양식 데이터를 불러올 수 없습니다.';
+  String get importSuccess => 'Data imported successfully';
 
   @override
-  String get errorProjectsLoad => '프로젝트를 불러올 수 없습니다.';
+  String get importError => 'Import failed. Invalid or corrupted file.';
 
   @override
-  String get errorProjectDelete => '프로젝트를 삭제할 수 없습니다.';
+  String get importWarning => 'Importing will replace ALL existing data. This action cannot be undone.';
 
   @override
-  String get errorProjectSave => '프로젝트를 저장할 수 없습니다.';
+  String get importButton => 'Select File';
 
   @override
-  String get errorLeadsLoad => '리드를 불러올 수 없습니다.';
+  String get importReplace => 'Replace all existing data';
 
   @override
-  String get errorLeadDelete => '리드를 삭제할 수 없습니다.';
+  String get deleteConfirmTitle => 'Delete';
 
   @override
-  String get errorLeadSave => '리드를 저장할 수 없습니다.';
+  String get deleteConfirmMessage => 'Are you sure you want to delete this? This action cannot be undone.';
 
   @override
-  String get errorIncomeLoad => '수익을 불러올 수 없습니다.';
+  String get deleteConfirmButton => 'Delete';
 
   @override
-  String get errorIncomeDelete => '수익 기록을 삭제할 수 없습니다.';
+  String get validationRequired => 'This field is required';
 
   @override
-  String get errorIncomeSave => '수익 기록을 저장할 수 없습니다.';
+  String get validationEmail => 'Please enter a valid email address';
 
   @override
-  String get errorRemindersLoad => '알림을 불러올 수 없습니다.';
+  String get validationAmount => 'Please enter a valid amount';
 
   @override
-  String get errorStatusUpdate => '상태를 업데이트할 수 없습니다.';
+  String get validationPositiveAmount => 'Amount must be greater than zero';
 
   @override
-  String get errorReminderDelete => '알림을 삭제할 수 없습니다.';
+  String get validationDateInvalid => 'Please select a valid date';
 
   @override
-  String get errorReminderAdd => '알림을 추가할 수 없습니다.';
+  String get errorGeneric => 'Something went wrong. Please try again.';
 
   @override
-  String get errorExportFailed => '내보내기에 실패했습니다.';
+  String get errorDatabase => 'Database error. Please restart the app.';
 
   @override
-  String get errorFileRead => '파일을 읽을 수 없습니다.';
+  String get errorLoadFailed => 'Failed to load data';
 
   @override
-  String get errorImportFailed => '가져오기에 실패했습니다.';
+  String get errorSaveFailed => 'Failed to save';
 
   @override
-  String get validationRequired => '이 필드는 필수입니다.';
+  String get errorDeleteFailed => 'Failed to delete';
 
   @override
-  String get validationEmail => '유효한 이메일 주소를 입력해 주세요.';
+  String get currencyUSD => 'USD — US Dollar';
 
   @override
-  String get validationPhone => '유효한 전화번호를 입력해 주세요.';
+  String get currencyEUR => 'EUR — Euro';
 
   @override
-  String get validationAmountRequired => '금액은 필수입니다.';
+  String get currencyTRY => 'TRY — Turkish Lira';
 
   @override
-  String get validationAmountInvalid => '유효한 금액을 입력해 주세요.';
+  String get currencyGBP => 'GBP — British Pound';
 
   @override
-  String get validationAmountPositive => '금액은 0보다 커야 합니다.';
+  String get currencyJPY => 'JPY — Japanese Yen';
 
   @override
-  String get validationSelectClient => '클라이언트를 선택해 주세요.';
+  String get currencyCNY => 'CNY — Chinese Yuan';
+
+  @override
+  String get currencyINR => 'INR — Indian Rupee';
+
+  @override
+  String get currencyBRL => 'BRL — Brazilian Real';
+
+  @override
+  String get currencyAUD => 'AUD — Australian Dollar';
+
+  @override
+  String get currencyCAD => 'CAD — Canadian Dollar';
+
+  @override
+  String get reminderRelatedClient => 'Client';
+
+  @override
+  String get reminderRelatedDebt => 'Debt';
+
+  @override
+  String get reminderRelatedProject => 'Project';
+
+  @override
+  String get reminderRelatedLead => 'Lead';
+
+  @override
+  String get reminderRelatedIncome => 'Income';
+
+  @override
+  String get reminderRelatedGeneral => 'General';
+
+  @override
+  String daysOverdue(int days) {
+    return '$days day(s) overdue';
+  }
+
+  @override
+  String daysRemaining(int days) {
+    return '$days day(s) remaining';
+  }
+
+  @override
+  String get dueToday => 'Due today';
+
+  @override
+  String get dueTomorrow => 'Due tomorrow';
 }
